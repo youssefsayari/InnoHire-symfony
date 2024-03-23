@@ -11,8 +11,8 @@ class Commentaire
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Column(name: "id_commentaire", type: "integer")]
+    private ?int $id_commentaire = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
@@ -28,9 +28,9 @@ class Commentaire
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_co = null;
 
-    public function getId(): ?int
+    public function getIdCommentaire(): ?int
     {
-        return $this->id;
+        return $this->id_commentaire;
     }
 
     public function getIdPublication(): ?Post
