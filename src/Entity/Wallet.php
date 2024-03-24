@@ -11,15 +11,17 @@ class Wallet
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Column(name: "id_wallet")]
+    private ?int $id_wallet = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $balance = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Etablissement $id_etablissement = null;
+   
+
+    #[ORM\OneToOne(targetEntity: Etablissement::class)]
+    #[ORM\JoinColumn(name: "id_etablissement", referencedColumnName: "id_etablissement",nullable: false)]
+    private ?Etablissement $etablissement = null; 
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date_c = null;
@@ -29,7 +31,7 @@ class Wallet
 
     public function getId(): ?int
     {
-        return $this->id;
+        return $this->id_wallet;
     }
 
     public function getBalance(): ?int
@@ -44,14 +46,14 @@ class Wallet
         return $this;
     }
 
-    public function getIdEtablissement(): ?Etablissement
+    public function getEtablissement(): ?Etablissement
     {
-        return $this->id_etablissement;
+        return $this->etablissement;
     }
 
-    public function setIdEtablissement(Etablissement $id_etablissement): static
+    public function setEtablissement(Etablissement $etablissement): self
     {
-        $this->id_etablissement = $id_etablissement;
+        $this->etablissement = $etablissement;
 
         return $this;
     }

@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Utilisateur
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: "IDENTITY")]
+    #[ORM\GeneratedValue]
     #[ORM\Column(name: "id_utilisateur", type: "integer")]
     private ?int $id_utilisateur = null;
 
@@ -39,6 +39,22 @@ class Utilisateur
 
     #[ORM\Column(nullable: true)]
     private ?int $status = null;
+
+
+
+
+
+
+
+    #[ORM\OneToMany]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Post $post = null;
+
+
+
+
+
+
 
     public function getIdUtilisateur(): ?int
     {
@@ -152,4 +168,38 @@ class Utilisateur
 
         return $this;
     }
+
+
+
+
+public function getPost(): ?int
+    {
+        return $this->post;
+    }
+
+    public function setPost(Post $post): self
+    {
+        $this->post = $post;
+
+        return $this;
+    }
+
+
+
+
+
+
+//sayari chzed
+    public function __toString(): string
+    {
+        // Replace 'nom' with the actual property you want to use for the string representation
+        return (string) $this->id_utilisateur;
+    }
+
+
+
+
+
+
+
 }

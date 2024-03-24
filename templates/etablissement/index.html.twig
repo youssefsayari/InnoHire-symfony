@@ -1,0 +1,45 @@
+ {# {% extends 'base.html.twig' %} #} 
+
+{% block title %}Etablissement index{% endblock %}
+
+{% block body %}
+    <h1>Etablissement index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>  
+                <th>Nom</th>
+                <th>Lieu</th>
+                <th>Code_etablissement</th>
+                <th>Type_etablissement</th>
+                <th>Image</th>
+                <th>Id Utilisateur</th> {# Add this column header #}
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for etablissement in etablissements %}
+            <tr>
+                <td>{{ etablissement.id }}</td> 
+                <td>{{ etablissement.nom }}</td>
+                <td>{{ etablissement.lieu }}</td>
+                <td>{{ etablissement.codeEtablissement }}</td>
+                <td>{{ etablissement.typeEtablissement }}</td>
+                <td>{{ etablissement.image }}</td>
+               <td>{{ etablissement.getUtilisateur().getIdUtilisateur()}}</td>
+                <td>
+                    <a href="{{ path('app_etablissement_show', {'id': etablissement.id}) }}">show</a> 
+                    <a href="{{ path('app_etablissement_edit', {'id': etablissement.id}) }}">edit</a> 
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_etablissement_new') }}">Create new</a>
+{% endblock %}

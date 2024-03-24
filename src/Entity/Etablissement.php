@@ -10,8 +10,8 @@ class Etablissement
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Column(name: "id_etablissement", type: "integer")]
+    private ?int $id_etablissement = null;
 
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
@@ -28,13 +28,19 @@ class Etablissement
     #[ORM\Column(length: 255)]
     private ?string $image = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $id_utilisateur = null;
+
+    #[ORM\OneToOne(targetEntity: Wallet::class)]
+    #[ORM\JoinColumn(name: "id_wallet", referencedColumnName: "id_wallet",nullable: false)]
+    private ?Wallet $wallet = null; 
+
+
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
+    #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
+    private ?Utilisateur $utilisateur = null;
 
     public function getId(): ?int
     {
-        return $this->id;
+        return $this->id_etablissement;
     }
 
     public function getNom(): ?string
@@ -97,15 +103,29 @@ class Etablissement
         return $this;
     }
 
-    public function getIdUtilisateur(): ?Utilisateur
+    public function getUtilisateur(): ?Utilisateur
     {
-        return $this->id_utilisateur;
+        return $this->utilisateur;
     }
 
-    public function setIdUtilisateur(?Utilisateur $id_utilisateur): static
+    public function setUtilisateur(?Utilisateur $utilisateur): self
     {
-        $this->id_utilisateur = $id_utilisateur;
+        $this->utilisateur = $utilisateur;
 
         return $this;
     }
+
+
+
+//jdiiiiiiiiiiiiiiiiiiid
+public function __toString(): string
+{
+    // Replace 'nom' with the actual property you want to use for the string representation
+    return (string) $this->id_etablissement;
+}
+
+
+
+
+
 }

@@ -12,7 +12,7 @@ class Messagerie
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(name: "id_message")]
-    private ?int $id = null;
+    private ?int $id_message = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $datetime = null;
@@ -33,7 +33,7 @@ class Messagerie
 
     public function getId(): ?int
     {
-        return $this->id;
+        return $this->id_message;
     }
 
     public function getDatetime(): ?\DateTimeInterface

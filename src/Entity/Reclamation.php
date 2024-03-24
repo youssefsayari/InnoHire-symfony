@@ -12,7 +12,7 @@ class Reclamation
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(name: "id_reclamation")]
-    private ?int $id = null;
+    private ?int $id_reclamation = null;
 
     #[ORM\Column(length: 255)]
     private ?string $type = null;
@@ -30,16 +30,16 @@ class Reclamation
     private ?int $status = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Post $id_post = null;
+    #[ORM\JoinColumn(targetEntity:"Post",nullable: false)]
+    private ?Post $post = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $id_utilisateur = null;
+    #[ORM\JoinColumn(targetEntity:"Utilisateur", nullable: false)]
+    private ?Utilisateur $utilisateur = null;
 
     public function getId(): ?int
     {
-        return $this->id;
+        return $this->id_reclamation;
     }
 
     public function getType(): ?string
@@ -102,26 +102,26 @@ class Reclamation
         return $this;
     }
 
-    public function getIdPost(): ?Post
+    public function getPost(): ?Post
     {
-        return $this->id_post;
+        return $this->post;
     }
 
-    public function setIdPost(?Post $id_post): static
+    public function setPost(?Post $post): static
     {
-        $this->id_post = $id_post;
+        $this->post = $post;
 
         return $this;
     }
 
-    public function getIdUtilisateur(): ?Utilisateur
+    public function getUtilisateur(): ?Utilisateur
     {
-        return $this->id_utilisateur;
+        return $this->utilisateur;
     }
 
-    public function setIdUtilisateur(?Utilisateur $id_utilisateur): static
+    public function setUtilisateur(?Utilisateur $utilisateur): static
     {
-        $this->id_utilisateur = $id_utilisateur;
+        $this->utilisateur = $utilisateur;
 
         return $this;
     }

@@ -16,7 +16,17 @@ class Post
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $id_utilisateur = null;
+    private ?Utilisateur $utilisateur = null;
+
+
+
+
+
+    #[ORM\OneToMany]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Reclamation $reclamation = null;
+
+
 
     #[ORM\Column(length: 255)]
     private ?string $audience = null;
@@ -41,14 +51,14 @@ class Post
         return $this->id_post;
     }
 
-    public function getIdUtilisateur(): ?Utilisateur
+    public function getUtilisateur(): ?Utilisateur
     {
-        return $this->id_utilisateur;
+        return $this->utilisateur;
     }
 
-    public function setIdUtilisateur(?Utilisateur $id_utilisateur): static
+    public function setUtilisateur(?Utilisateur $utilisateur): static
     {
-        $this->id_utilisateur = $id_utilisateur;
+        $this->utilisateur = $utilisateur;
 
         return $this;
     }
@@ -124,4 +134,26 @@ class Post
 
         return $this;
     }
+
+
+
+
+
+    public function getReclamation(): ?Reclamation
+    {
+        return $this->reclamation;
+    }
+
+
+    public function setReclamation(?Reclamation $reclamation): static
+    {
+        $this->reclamation = $reclamation;
+
+        return $this;
+    }
+
+
+
+
+
 }

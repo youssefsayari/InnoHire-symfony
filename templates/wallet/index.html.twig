@@ -1,0 +1,43 @@
+{#{% extends 'base.html.twig' %}#}
+
+{% block title %}Wallet index{% endblock %}
+
+{% block body %}
+    <h1>Wallet index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Balance</th>
+                <th>Date_c</th>
+                <th>Status</th>
+                <th>Id Etablissement</th> {# Add this column header #}
+
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for wallet in wallets %}
+            <tr>
+                <td>{{ wallet.id }}</td>
+                <td>{{ wallet.balance }}</td>
+                <td>{{ wallet.dateC ? wallet.dateC|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ wallet.status }}</td>
+                 <td>{{ wallet.getEtablissement().getId()}}</td>
+
+                <td>
+                    <a href="{{ path('app_wallet_show', {'id': wallet.id}) }}">show</a>
+                    <a href="{{ path('app_wallet_edit', {'id': wallet.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_wallet_new') }}">Create new</a>
+{% endblock %}
