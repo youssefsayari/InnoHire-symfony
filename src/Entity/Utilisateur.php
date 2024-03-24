@@ -42,20 +42,6 @@ class Utilisateur
 
 
 
-
-
-
-
-    #[ORM\OneToMany]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Post $post = null;
-
-
-
-
-
-
-
     public function getIdUtilisateur(): ?int
     {
         return $this->id_utilisateur;
@@ -172,29 +158,14 @@ class Utilisateur
 
 
 
-public function getPost(): ?int
-    {
-        return $this->post;
-    }
-
-    public function setPost(Post $post): self
-    {
-        $this->post = $post;
-
-        return $this;
-    }
 
 
 
 
 
 
-//sayari chzed
-    public function __toString(): string
-    {
-        // Replace 'nom' with the actual property you want to use for the string representation
-        return (string) $this->id_utilisateur;
-    }
+
+
 
 
 

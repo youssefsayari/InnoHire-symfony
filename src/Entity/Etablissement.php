@@ -29,14 +29,12 @@ class Etablissement
     private ?string $image = null;
 
 
-    #[ORM\OneToOne(targetEntity: Wallet::class)]
-    #[ORM\JoinColumn(name: "id_wallet", referencedColumnName: "id_wallet",nullable: false)]
-    private ?Wallet $wallet = null; 
+    
 
 
     #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
     #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
-    private ?Utilisateur $utilisateur = null;
+    private ?Utilisateur $utilisateur;
 
     public function getId(): ?int
     {
@@ -115,16 +113,7 @@ class Etablissement
         return $this;
     }
 
-
-
-//jdiiiiiiiiiiiiiiiiiiid
-public function __toString(): string
-{
-    // Replace 'nom' with the actual property you want to use for the string representation
-    return (string) $this->id_etablissement;
-}
-
-
+  
 
 
 

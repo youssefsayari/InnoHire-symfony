@@ -14,17 +14,14 @@ class Post
     #[ORM\Column(name: "id_post", type: "integer")]
     private ?int $id_post = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $utilisateur = null;
+    #[ORM\ManyToOne(targetEntity:"Utilisateur")]
+    #[ORM\JoinColumn(name:"id_utilisateur",nullable: false, referencedColumnName: "id_utilisateur")]
+    private ?Utilisateur $utilisateur;
 
 
 
 
 
-    #[ORM\OneToMany]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Reclamation $reclamation = null;
 
 
 
@@ -56,7 +53,7 @@ class Post
         return $this->utilisateur;
     }
 
-    public function setUtilisateur(?Utilisateur $utilisateur): static
+    public function setUtilisateur(?Utilisateur $utilisateur): self
     {
         $this->utilisateur = $utilisateur;
 
@@ -139,18 +136,7 @@ class Post
 
 
 
-    public function getReclamation(): ?Reclamation
-    {
-        return $this->reclamation;
-    }
-
-
-    public function setReclamation(?Reclamation $reclamation): static
-    {
-        $this->reclamation = $reclamation;
-
-        return $this;
-    }
+   
 
 
 

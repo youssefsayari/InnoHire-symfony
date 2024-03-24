@@ -29,13 +29,13 @@ class Reclamation
     #[ORM\Column]
     private ?int $status = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(targetEntity:"Post",nullable: false)]
-    private ?Post $post = null;
+    #[ORM\ManyToOne(targetEntity:"Post")]
+    #[ORM\JoinColumn(name:"id_post",nullable: false, referencedColumnName:"id_post")]
+    private ?Post $post;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(targetEntity:"Utilisateur", nullable: false)]
-    private ?Utilisateur $utilisateur = null;
+    #[ORM\ManyToOne(targetEntity:"Utilisateur")]
+    #[ORM\JoinColumn(name:"id_utilisateur",nullable: false, referencedColumnName:"id_utilisateur")]
+    private ?Utilisateur $utilisateur;
 
     public function getId(): ?int
     {
