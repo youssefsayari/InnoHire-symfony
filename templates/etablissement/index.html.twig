@@ -5,35 +5,48 @@
 
 
 {% block body %}
-    <h1>Etablissement index</h1>
+    <h1  style="color: white;" >Etablissement index</h1>
+
+
+<div style="background-color: #333; color: white; padding: 20px;">
+
+
 
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>  
-                <th>Nom</th>
-                <th>Lieu</th>
-                <th>Code_etablissement</th>
-                <th>Type_etablissement</th>
-                <th>Image</th>
-                <th>Id Utilisateur</th> {# Add this column header #}
-                <th>actions</th>
+                <th style="padding: 20px;" >Id</th>  
+                <th style="padding: 20px;" >Nom</th>
+                <th style="padding: 20px;" >Lieu</th>
+                <th style="padding: 20px;">Code_etablissement</th>
+                <th style="padding: 20px;">Type_etablissement</th>
+                <th style="padding: 20px;">Image</th>
+                <th style="padding: 20px;">Id Utilisateur</th> {# Add this column header #}
+                <th style="padding: 20px;">actions</th>
             </tr>
         </thead>
         <tbody>
         {% for etablissement in etablissements %}
             <tr>
-                <td>{{ etablissement.id }}</td> 
-                <td>{{ etablissement.nom }}</td>
-                <td>{{ etablissement.lieu }}</td>
-                <td>{{ etablissement.codeEtablissement }}</td>
-                <td>{{ etablissement.typeEtablissement }}</td>
-                <td>{{ etablissement.image }}</td>
-               <td>{{ etablissement.getUtilisateur().getIdUtilisateur()}}</td>
-                <td>
-                    <a href="{{ path('app_etablissement_show', {'id': etablissement.id}) }}">show</a> 
-                    <a href="{{ path('app_etablissement_edit', {'id': etablissement.id}) }}">edit</a> 
-                </td>
+                <td style="padding: 20px;">{{ etablissement.id }}</td> 
+                <td style="padding: 20px;">{{ etablissement.nom }}</td>
+                <td style="padding: 20px;">{{ etablissement.lieu }}</td>
+                <td style="padding: 50px;">{{ etablissement.codeEtablissement }}</td>
+                <td style="padding: 50px;">{{ etablissement.typeEtablissement }}</td>
+                <td style="padding: 20px;">{{ etablissement.image }}</td>
+               <td style="padding: 50px;">{{ etablissement.getUtilisateur().getIdUtilisateur()}}</td>
+            <td>
+                        <a href="{{ path('app_etablissement_show', {'id': etablissement.id}) }}" style="color: white; text-decoration: none;">
+                            <button class="my-button">
+                                Show
+                            </button>
+                        </a>
+                        <a href="{{ path('app_etablissement_edit', {'id': etablissement.id}) }}" style="color: white; text-decoration: none;">
+                            <button class="my-button">
+                                Edit
+                            </button>
+                        </a>
+                    </td>
             </tr>
         {% else %}
             <tr>
@@ -43,5 +56,28 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_etablissement_new') }}">Create new</a>
-{% endblock %}
+
+    </div>
+
+    <a href="{{ path('app_etablissement_new') }}" style="color: white;" >Create new</a>
+
+                            {#------------------CSS---------------------------- #}
+ <style>
+       
+        .my-button {
+            background-color: #444;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        
+        .my-button:hover {
+            background-color: #666; 
+            
+        }
+    </style>
+
+    {#------------------END CSS---------------------------- #}
+
+    {% endblock %}
