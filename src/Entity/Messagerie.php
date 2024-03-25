@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\MessagerieRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MessagerieRepository::class)]
@@ -14,8 +13,8 @@ class Messagerie
     #[ORM\Column(name: "id_message")]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $datetime = null;
+    #[ORM\Column(name: "date", type: "datetime")]
+    private ?\DateTimeInterface $date = null;
 
     #[ORM\Column(length: 255)]
     private ?string $type = null;
@@ -23,27 +22,27 @@ class Messagerie
     #[ORM\Column(length: 255)]
     private ?string $contenu = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $sender_id = null;
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
+    #[ORM\JoinColumn(name: "sender_id", referencedColumnName: "id_utilisateur", nullable: false)]
+    private ?Utilisateur $sender;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $reciver_id = null;
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
+    #[ORM\JoinColumn(name: "reciver_id", referencedColumnName: "id_utilisateur", nullable: false)]
+    private ?Utilisateur $receiver;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getDatetime(): ?\DateTimeInterface
+    public function getDate(): ?\DateTimeInterface
     {
-        return $this->datetime;
+        return $this->date;
     }
 
-    public function setDatetime(\DateTimeInterface $datetime): static
+    public function setDate(\DateTimeInterface $date): static
     {
-        $this->datetime = $datetime;
+        $this->date = $date;
 
         return $this;
     }
@@ -72,26 +71,26 @@ class Messagerie
         return $this;
     }
 
-    public function getSenderId(): ?Utilisateur
+    public function getSender(): ?Utilisateur
     {
-        return $this->sender_id;
+        return $this->sender;
     }
 
-    public function setSenderId(?Utilisateur $sender_id): static
+    public function setSender(?Utilisateur $sender): static
     {
-        $this->sender_id = $sender_id;
+        $this->sender = $sender;
 
         return $this;
     }
 
-    public function getReciverId(): ?Utilisateur
+    public function getReciver(): ?Utilisateur
     {
-        return $this->reciver_id;
+        return $this->receiver;
     }
 
-    public function setReciverId(?Utilisateur $reciver_id): static
+    public function setReciver(?Utilisateur $receiver): static
     {
-        $this->reciver_id = $reciver_id;
+        $this->receiver = $receiver;
 
         return $this;
     }

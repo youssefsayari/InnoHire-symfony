@@ -29,13 +29,18 @@ class Reclamation
     #[ORM\Column]
     private ?int $status = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: Post::class)]
+    #[ORM\JoinColumn(name: "id_post", referencedColumnName: "id_post", nullable: false)]
     private ?Post $id_post = null;
+    
+   /* #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
+    #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
+    private ?Utilisateur $id_utilisateur = null;*/
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $id_utilisateur = null;
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
+#[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
+private ?Utilisateur $utilisateur = null;
+    
 
     public function getId(): ?int
     {
@@ -114,15 +119,27 @@ class Reclamation
         return $this;
     }
 
-    public function getIdUtilisateur(): ?Utilisateur
+   /* public function getIdUtilisateur(): ?Utilisateur
     {
         return $this->id_utilisateur;
-    }
+    }*/
 
-    public function setIdUtilisateur(?Utilisateur $id_utilisateur): static
+   /* public function setIdUtilisateur(?Utilisateur $id_utilisateur): static
     {
         $this->id_utilisateur = $id_utilisateur;
 
         return $this;
-    }
+    }*/
+
+    public function getUtilisateur(): ?Utilisateur
+{
+    return $this->utilisateur;
+}
+
+public function setUtilisateur(?Utilisateur $utilisateur): self
+{
+    $this->utilisateur = $utilisateur;
+
+    return $this;
+}
 }

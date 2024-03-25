@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 #[Route('/reclamation')]
 class ReclamationController extends AbstractController
@@ -26,16 +27,20 @@ class ReclamationController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $reclamation = new Reclamation();
+        
+        // Set the default value for the date field as a DateTime object
+        $reclamation->setDate(new \DateTime());
+        
         $form = $this->createForm(ReclamationType::class, $reclamation);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($reclamation);
             $entityManager->flush();
-
+    
             return $this->redirectToRoute('app_reclamation_index', [], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->renderForm('reclamation/new.html.twig', [
             'reclamation' => $reclamation,
             'form' => $form,
@@ -71,7 +76,7 @@ class ReclamationController extends AbstractController
     #[Route('/{id}', name: 'app_reclamation_delete', methods: ['POST'])]
     public function delete(Request $request, Reclamation $reclamation, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$reclamation->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $reclamation->getId(), $request->request->get('_token'))) {
             $entityManager->remove($reclamation);
             $entityManager->flush();
         }
