@@ -14,45 +14,44 @@ class Commentaire
     #[ORM\Column(name: "id_commentaire", type: "integer")]
     private ?int $id_commentaire = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Post $id_publication = null;
+    #[ORM\ManyToOne(targetEntity: "Post")]
+    #[ORM\JoinColumn(name: "id_publication", nullable: false, referencedColumnName:"id_post")]
+    private ?Post $post;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $id_utilisateur = null;
+    #[ORM\ManyToOne(targetEntity: "Utilisateur")]
+    #[ORM\JoinColumn(name: "id_utilisateur", nullable: false, referencedColumnName:"id_utilisateur")]
+    private ?Utilisateur $utilisateur;
 
     #[ORM\Column(length: 255)]
     private ?string $description_co = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_co = null;
-
-    public function getIdCommentaire(): ?int
+public function getIdCommentaire(): ?int
     {
         return $this->id_commentaire;
     }
 
-    public function getIdPublication(): ?Post
+    public function getPost(): ?Post
     {
-        return $this->id_publication;
+        return $this->post;
     }
 
-    public function setIdPublication(?Post $id_publication): static
+    public function setPost(?Post $post): static
     {
-        $this->id_publication = $id_publication;
+        $this->post = $post;
 
         return $this;
     }
 
-    public function getIdUtilisateur(): ?Utilisateur
+    public function getUtilisateur(): ?Utilisateur
     {
-        return $this->id_utilisateur;
+        return $this->utilisateur;
     }
 
-    public function setIdUtilisateur(?Utilisateur $id_utilisateur): static
+    public function setUtilisateur(?Utilisateur $utilisateur): static
     {
-        $this->id_utilisateur = $id_utilisateur;
+        $this->utilisateur = $utilisateur;
 
         return $this;
     }

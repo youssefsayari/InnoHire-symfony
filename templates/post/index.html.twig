@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{#{% extends 'base.html.twig' %}#}
 
 {% block title %}Post index{% endblock %}
 
@@ -28,9 +28,10 @@
                 <td>{{ post.image }}</td>
                 <td>{{ post.totalReactions }}</td>
                 <td>{{ post.nbComments }}</td>
+                
                 <td>
-                    <a href="{{ path('app_post_show', {'id_post': post.id_post}) }}">show</a>
-                    <a href="{{ path('app_post_edit', {'id_post': post.id_post}) }}">edit</a>
+                    <a href="{{ path('app_post_show', {'id_post': post.idPost}) }}">show</a>
+                    <a href="{{ path('app_post_edit', {'id_post': post.idPost}) }}">edit</a>
                 </td>
             </tr>
         {% else %}

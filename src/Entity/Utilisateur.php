@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Utilisateur
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: "IDENTITY")]
+    #[ORM\GeneratedValue]
     #[ORM\Column(name: "id_utilisateur", type: "integer")]
     private ?int $id_utilisateur = null;
 
@@ -39,8 +39,7 @@ class Utilisateur
 
     #[ORM\Column(nullable: true)]
     private ?int $status = null;
-
-    public function getIdUtilisateur(): ?int
+public function getIdUtilisateur(): ?int
     {
         return $this->id_utilisateur;
     }
@@ -152,4 +151,5 @@ class Utilisateur
 
         return $this;
     }
+
 }

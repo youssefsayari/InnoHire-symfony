@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Post;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\Utilisateur;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,8 +20,11 @@ class PostType extends AbstractType
             ->add('image')
             ->add('totalReactions')
             ->add('nbComments')
-            ->add('id_utilisateur')
-        ;
+            ->add('utilisateur', EntityType::class, ['class' => Utilisateur::class,
+                             'choice_label' => 'id_utilisateur', 
+                             // ou tout autre propriété de Utilisateur que vous souhaitez afficher
+                                              'placeholder' => 'Choisissez un utilisateur', ]);
+        
     }
 
     public function configureOptions(OptionsResolver $resolver): void

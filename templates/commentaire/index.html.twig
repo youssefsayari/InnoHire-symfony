@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{#{% extends 'base.html.twig' %}#}
 
 {% block title %}Commentaire index{% endblock %}
 
@@ -17,12 +17,12 @@
         <tbody>
         {% for commentaire in commentaires %}
             <tr>
-                <td>{{ commentaire.idCommentaire }}</td>
+                <td>{{ commentaire.getIdCommentaire }}</td>
                 <td>{{ commentaire.descriptionCo }}</td>
                 <td>{{ commentaire.dateCo ? commentaire.dateCo|date('Y-m-d') : '' }}</td>
                 <td>
-                    <a href="{{ path('app_commentaire_show', {'id_commentaire': commentaire.id_commentaire}) }}">show</a>
-                    <a href="{{ path('app_commentaire_edit', {'id_commentaire': commentaire.id_commentaire}) }}">edit</a>
+                    <a href="{{ path('app_commentaire_show', {'id_commentaire': commentaire.getIdCommentaire}) }}">show</a>
+                    <a href="{{ path('app_commentaire_edit', {'id_commentaire': commentaire.getIdCommentaire}) }}">edit</a>
                 </td>
             </tr>
         {% else %}
