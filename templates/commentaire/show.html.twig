@@ -9,7 +9,7 @@
         <tbody>
             <tr>
                 <th>Id_commentaire</th>
-                <td>{{ commentaire.idCommentaire }}</td>
+                <td>{{ commentaire.getIdCommentaire }}</td>
             </tr>
             <tr>
                 <th>Description_co</th>
@@ -24,7 +24,7 @@
 
     <a href="{{ path('app_commentaire_index') }}">back to list</a>
 
-    <a href="{{ path('app_commentaire_edit', {'id_commentaire': commentaire.id_commentaire}) }}">edit</a>
+    <a href="{{ path('app_commentaire_edit', {'id_commentaire': commentaire.getIdCommentaire}) }}">edit</a>
 
     {{ include('commentaire/_delete_form.html.twig') }}
 {% endblock %}
