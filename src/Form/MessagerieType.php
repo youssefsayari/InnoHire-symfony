@@ -31,12 +31,12 @@ class MessagerieType extends AbstractType
                 'choice_label' => 'nom', // Assuming you want to display the user's name
                 // You can customize other options like placeholder, required, etc.
             ]);*/
-            ->add('sender', HiddenType::class, [
+            /*->add('sender', HiddenType::class, [
                 'data' => $options['sender_id'], // Assuming you pass the current user ID from the controller
             ])
             ->add('reciver', HiddenType::class, [
                 'data' => $options['reciver_id'], // Assuming you pass the receiver ID from the controller
-            ]);
+            ]);*/
             //->add('sender')
             //->add('reciver')
         ;

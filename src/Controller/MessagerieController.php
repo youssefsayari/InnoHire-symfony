@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Messagerie;
 use App\Form\MessagerieType;
 use App\Repository\MessagerieRepository;
+use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +26,6 @@ class MessagerieController extends AbstractController
     #[Route('/new', name: 'app_messagerie_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $messagerie = new Messagerie();
         $messagerie = new Messagerie();
         // Set the default value for the date field as a DateTime object
         $messagerie->setDate(new \DateTime());
@@ -85,31 +85,43 @@ class MessagerieController extends AbstractController
         return $this->redirectToRoute('app_messagerie_messages', ['senderId' => $senderId, 'reciverId' => $reciverId], Response::HTTP_SEE_OTHER);
     }
 
-
     #[Route('/messages/{senderId}/{reciverId}', name: 'app_messagerie_messages')]
-    public function getMessagesBySenderReciver(int $senderId, int $reciverId, MessagerieRepository $messagerieRepository, Request $request, EntityManagerInterface $entityManager): Response
+    public function getMessagesBySenderreciver(int $senderId, int $reciverId, MessagerieRepository $messagerieRepository, Request $request, EntityManagerInterface $entityManager, UtilisateurRepository $utilisateurRepository): Response
     {
-        $messages = $messagerieRepository->findMessagesBySenderReciverOrderedByDateDesc($senderId, $reciverId);
-
+        // Fetch sender and reciver entities from the repository
+        $sender = $utilisateurRepository->find($senderId);
+        $reciver = $utilisateurRepository->find($reciverId);
+    
+        $messages = $messagerieRepository->findMessagesBySenderreciverOrderedByDateDesc($senderId, $reciverId);
+    
         $messagerie = new Messagerie();
         
         // Set the default value for the date field as a DateTime object
         $messagerie->setDate(new \DateTime());
+        // Set the sender and reciver directly
+        $messagerie->setSender($sender);
+        $messagerie->setReciver($reciver);
+    
         $form = $this->createForm(MessagerieType::class, $messagerie);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             // Handle form submission
             $entityManager->persist($messagerie);
             $entityManager->flush();
             // Redirect after form submission
-            return $this->redirectToRoute('app_messagerie_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_messagerie_messages', [
+                'senderId' => $senderId,
+                'reciverId' => $reciverId,
+            ], Response::HTTP_SEE_OTHER);
+            
         }
-
+    
         return $this->render('messagerie/messages.html.twig', [
             'messages' => $messages,
             'messagerie' => $messagerie,
             'form' => $form->createView(),
         ]);
     }
+    
 }

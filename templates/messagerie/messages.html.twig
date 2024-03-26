@@ -79,7 +79,7 @@
 									<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
 									<!-- Divs are used just to display the examples. Use only the button. -->
 									<div>
-										<button class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-full active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" aria-label="Edit">
+										<button class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-full active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" aria-label="Edit" data-bs-toggle="modal" data-bs-target="#exampleModal">
 											<svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20">
 												<path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
 											</svg>
@@ -103,6 +103,32 @@
 								</div>
 
 
+								<!-- Edit -->
+								<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+									<div class="modal-dialog">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h1 class="modal-title fs-5" id="exampleModalLabel">Update Message  !</h1>
+												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+											</div>
+											<div class="modal-body">
+
+												              <input
+                class="w-full pl-8 pr-2 text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input"
+                type="text" placeholder="Write a new messagae here" aria-label="Search" />
+											</div>
+											<div
+												class="modal-footer">
+												<!-- Form for deletion -->
+												<form method="post" action="{{ path('app_messagerie_delete', {'id': message.id}) }}">
+													<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ message.id) }}">
+													<button type="submit" class="btn btn-success">Confirm</button>
+												</form>
+												<button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+											</div>
+										</div>
+									</div>
+								</div>
 								<!-- Modal -->
 								<div class="modal fade" id="exampleModal{{ message.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 									<div class="modal-dialog">
@@ -149,12 +175,12 @@
 				<div class="flex items-center justify-between">
 
 					{{ form_widget(form.contenu, {'attr': {'class': 'block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray', 'rows': '7','cols': '3', 'placeholder': 'Enter your message content here'}}) }}
-					&nbsp;&nbsp;<button class="flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+										&nbsp;&nbsp;<button class="flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
 						<span>
 							<!--&LeftArrow;-->
 							{{ button_label|default('Send') }}</span>
 					</button>
-						
+
 				</div>
 			</div>
 
