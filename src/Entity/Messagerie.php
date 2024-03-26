@@ -28,7 +28,7 @@ class Messagerie
 
     #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
     #[ORM\JoinColumn(name: "reciver_id", referencedColumnName: "id_utilisateur", nullable: false)]
-    private ?Utilisateur $receiver;
+    private ?Utilisateur $reciver;
 
     public function getId(): ?int
     {
@@ -85,12 +85,12 @@ class Messagerie
 
     public function getReciver(): ?Utilisateur
     {
-        return $this->receiver;
+        return $this->reciver;
     }
 
-    public function setReciver(?Utilisateur $receiver): static
+    public function setReciver(?Utilisateur $reciver): static
     {
-        $this->receiver = $receiver;
+        $this->reciver = $reciver;
 
         return $this;
     }

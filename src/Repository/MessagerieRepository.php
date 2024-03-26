@@ -45,4 +45,17 @@ class MessagerieRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+public function findMessagesBySenderReciverOrderedByDateDesc(int $senderId, int $reciverId): array
+{
+    return $this->createQueryBuilder('m')
+        ->andWhere('m.sender = :senderId')
+        ->andWhere('m.reciver = :reciverId')
+        ->orWhere('m.sender = :reciverId AND m.reciver = :senderId')
+        ->setParameter('senderId', $senderId)
+        ->setParameter('reciverId', $reciverId)
+        ->orderBy('m.date', 'DESC')
+        ->getQuery()
+        ->getResult();
+}
 }
