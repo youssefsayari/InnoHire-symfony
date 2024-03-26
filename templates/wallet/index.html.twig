@@ -69,13 +69,18 @@
                       <td class="px-4 py-3 text-sm">
                        {{ wallet.balance }} DT
                       </td>
-                      <td class="px-4 py-3 text-xs">
-                        <span
-                          class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
-                        >
-                          {{ wallet.status }}
-                        </span>
-                      </td>
+                     <td class="px-4 py-3 text-xs">
+  {% if wallet.status == 1 %}
+    <span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
+      Verified
+    </span>
+  {% elseif wallet.status == 0 %}
+    <span class="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-full dark:bg-red-700 dark:text-red-100">
+      Not-Verified
+    </span>
+  {% endif %}
+</td>
+
                       <td class="px-4 py-3 text-sm">
                         {{ wallet.dateC ? wallet.dateC|date('Y-m-d H:i:s') : '' }}
                       </td>
@@ -97,8 +102,9 @@
                         <div class="flex items-center space-x-4 text-sm">
 
 
-                          <a href="{{ path('app_wallet_show', {'id': wallet.id}) }}">
+                          {#<a href="{{ path('app_wallet_show', {'id': wallet.id}) }}">#}
                           <button
+                           @click="openModal"
                            class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray"
                            aria-label="Show"
                             >
@@ -115,7 +121,88 @@
                                 ></path>
                             </svg>
                           </button>
-                           </a>
+                           {#</a>#}
+                           <div
+  x-show="isModalOpen"
+  x-transition:enter="transition ease-out duration-150"
+  x-transition:enter-start="opacity-0"
+  x-transition:enter-end="opacity-100"
+  x-transition:leave="transition ease-in duration-150"
+  x-transition:leave-start="opacity-100"
+  x-transition:leave-end="opacity-0"
+  class="fixed inset-0 z-30 flex items-center justify-center bg-black bg-opacity-50"
+>
+  <!-- Modal -->
+  <div
+    x-show="isModalOpen"
+    x-transition:enter="transition ease-out duration-150"
+    x-transition:enter-start="opacity-0 transform translate-y-1/2"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0 transform translate-y-1/2"
+    @click.away="closeModal"
+    @keydown.escape="closeModal"
+    class="w-full max-w-xl px-6 py-4 overflow-hidden bg-white rounded-lg dark:bg-gray-800"
+    role="dialog"
+    id="modal"
+    style="margin: auto"
+  >
+    
+<!-- Modal description -->
+<div class="mt-4 mb-6 flex flex-col items-center justify-center text-center">
+  <!-- Modal title -->
+  <p class="mb-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
+    Wallet
+  </p>
+  <!-- Modal body -->
+  <div class="flex items-center justify-center"> <!-- Ajout de ces classes pour centrer verticalement et horizontalement -->
+    <table class="table">
+      <tbody>
+        <tr>
+          <th>Id</th>
+          <td>{{ wallet.id }}</td>
+        </tr>
+        <tr>
+          <th>Balance</th>
+          <td>{{ wallet.balance }}</td>
+        </tr>
+        <tr>
+          <th>Date</th>
+          <td>{{ wallet.dateC ? wallet.dateC|date('Y-m-d H:i:s') : '' }}</td>
+        </tr>
+        <tr>
+          <th>Status</th>
+                  <td class="px-4 py-3 text-xs">
+  {% if wallet.status == 1 %}
+    <span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
+      Verified
+    </span>
+  {% elseif wallet.status == 0 %}
+    <span class="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-full dark:bg-red-700 dark:text-red-100">
+      Not-Verified
+    </span>
+  {% endif %}
+</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+    <!-- Footer -->
+   <footer class="flex justify-center mt-6"> <!-- Modification de la classe pour centrer horizontalement -->
+  <!-- Accept button -->
+  <button
+  @click="closeModal"
+    class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg sm:px-4 sm:py-2 active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+  >
+    Close
+  </button>
+</footer>
+  </div>
+</div>
 
 
 
@@ -141,24 +228,11 @@
                           </button>
                            </a>
 
+    {{ include('wallet/_delete_form.html.twig', {'wallet': wallet}) }}
 
-                          <button
-                            class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray"
-                            aria-label="Delete"
-                          >
-                            <svg
-                              class="w-5 h-5"
-                              aria-hidden="true"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                            >
-                              <path
-                                fill-rule="evenodd"
-                                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                                clip-rule="evenodd"
-                              ></path>
-                            </svg>
-                          </button>
+
+
+
                         </div>
                       </td>
                     </tr>
