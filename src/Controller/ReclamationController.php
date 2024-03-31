@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Reclamation;
+use App\Entity\Utilisateur;
 use App\Form\ReclamationType;
 use App\Repository\ReclamationRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,6 +31,9 @@ class ReclamationController extends AbstractController
         
         // Set the default value for the date field as a DateTime object
         $reclamation->setDate(new \DateTime());
+    
+        // Set the id_utilisateur to 1
+        $reclamation->setUtilisateur($this->getDoctrine()->getRepository(Utilisateur::class)->find(3));
         
         $form = $this->createForm(ReclamationType::class, $reclamation);
         $form->handleRequest($request);

@@ -16,10 +16,12 @@ class MessagerieType extends AbstractType
     {
         $builder
             //->add('date')
-            //->add('type')
-            ->add('type', HiddenType::class, [
-                'data' => "text", // Set the default value of status to 0
+            ->add('type', HiddenType::class, [ // Add type field as a HiddenType
+                'data' => 'text', // Set the default value if needed
             ])
+           /* ->add('type', HiddenType::class, [
+                'data' => "text", // Set the default value of status to 0
+            ])*/
             ->add('contenu')
             /*->add('sender', EntityType::class, [
                 'class' => Utilisateur::class,

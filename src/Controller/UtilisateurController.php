@@ -71,7 +71,7 @@ class UtilisateurController extends AbstractController
     #[Route('/{id_utilisateur}', name: 'app_utilisateur_delete', methods: ['POST'])]
     public function delete(Request $request, Utilisateur $utilisateur, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$utilisateur->getId_utilisateur(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$utilisateur->getIdUtilisateur(), $request->request->get('_token'))) {
             $entityManager->remove($utilisateur);
             $entityManager->flush();
         }

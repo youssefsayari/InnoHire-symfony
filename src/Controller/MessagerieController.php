@@ -11,6 +11,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+
 
 #[Route('/messagerie')]
 class MessagerieController extends AbstractController
@@ -27,23 +31,38 @@ class MessagerieController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $messagerie = new Messagerie();
+        
+        // Handle file upload
+       $file = $request->files->get('file');
+        if ($file instanceof UploadedFile) {
+            // Get the original file name and set it as the contenu
+            $messagerie->setContenu($file->getClientOriginalName());
+            // Set the type to "file"
+            $messagerie->setType('file');
+        } else {
+            // If no file is uploaded, set type to "text"
+            $messagerie->setType('text');
+        }
+       // $messagerie->setType('file');
         // Set the default value for the date field as a DateTime object
         $messagerie->setDate(new \DateTime());
+        
         $form = $this->createForm(MessagerieType::class, $messagerie);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($messagerie);
             $entityManager->flush();
-
+    
             return $this->redirectToRoute('app_messagerie_index', [], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->renderForm('messagerie/new.html.twig', [
             'messagerie' => $messagerie,
             'form' => $form,
         ]);
     }
+    
 
     #[Route('/{id}', name: 'app_messagerie_show', methods: ['GET'])]
     public function show(Messagerie $messagerie): Response
@@ -123,5 +142,22 @@ class MessagerieController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+#[Route('/download/{fileName}', name: 'app_download_file')]
+public function downloadFile(string $fileName): Response
+{
+    // Define the directory where the files are stored
+    $fileDirectory = $this->getParameter('kernel.project_dir') . '\public\downloads';
+    
+    // Generate the file path
+    $filePath = $fileDirectory . DIRECTORY_SEPARATOR . $fileName;
+    
+    // Create a new File object
+    $file = new File($filePath);
+    
+    // Return a response with the file contents and specify the download location
+    return $this->file($file, $fileName, ResponseHeaderBag::DISPOSITION_ATTACHMENT, null, true);
+}
+
     
 }
