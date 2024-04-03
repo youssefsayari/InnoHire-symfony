@@ -4,12 +4,137 @@
 
 {% block body %}
 
-    <h1>Edit Etablissement</h1>
+   <div class="flex items-center justify-between">
+    <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+       Update Etablissement
+    </h2>
+    <button onclick="window.location.href='{{ path('app_etablissement_index') }}'"
+            class="flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+        <span><!--&LeftArrow;--> Back to List</span>
+    </button>
+</div>
 
-    {{ include('etablissement/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('app_etablissement_index') }}">back to list</a>
+	<div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+		{{ form_start(form , {'attr': {'class':'form-horizontal','novalidate':'novalidate'}}
+		) }}
+		
 
-    {{ include('etablissement/_delete_form.html.twig') }}
+
+
+
+      <label class="block text-sm">
+    <span class="text-gray-700 dark:text-gray-400">Nom</span>
+    {{ form_widget(form.nom, {'id': 'nomInput'})}}
+    <span id="nomError" class="text-xs text-red-600 dark:text-red-400"></span>
+</label>
+
+ <label class="block text-sm">
+    <span class="text-gray-700 dark:text-gray-400">Lieu</span>
+    {{ form_widget(form.lieu, {'id': 'lieuInput'})}}
+    <span id="lieuError" class="text-xs text-red-600 dark:text-red-400"></span>
+</label>
+
+ <label class="block text-sm">
+    <span class="text-gray-700 dark:text-gray-400">Code</span>
+    {{ form_widget(form.code_etablissement, {'id': 'code_etablissementInput'})}}
+    <span id="code_etablissementError" class="text-xs text-red-600 dark:text-red-400"></span>
+</label>
+
+
+
+
+
+
+
+ <label class="block text-sm">
+    <span class="text-gray-700 dark:text-gray-400">Type</span>
+    {{ form_widget(form.type_etablissement, {'id': 'type_etablissementInput'})}}
+    <span id="type_etablissementError" class="text-xs text-red-600 dark:text-red-400"></span>
+</label>
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+    <label class="block text-sm">
+        <span class="text-gray-700 dark:text-gray-400">
+            Image
+        </span>
+        <div class="relative flex items-center">
+            <!-- Bouton pour le téléchargement de l'image -->
+            <button
+                type="button"
+                class="px-4 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-l-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                onclick="document.getElementById('fileInput').click();"
+            >
+                Import
+            </button>
+           
+                  {{ form_widget(form.image, {'id': 'fileNameInput', 'attr': {'class': 'w-full pl-2 py-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-input'}}) }} 
+            
+            <!-- Input caché pour le téléchargement de fichier -->
+            <input
+                type="file"
+                id="fileInput"
+                class="hidden"
+                onchange="updateFileName(event)"
+            />
+            <!-- JavaScript pour mettre à jour la valeur de l'input -->
+            <script>
+                function updateFileName(event) {
+                    const input = document.getElementById('fileNameInput');
+                    input.value = event.target.files[0].name;
+                    input.placeholder = '';
+                }
+            </script>
+        </div>
+    </label>
+</div>
+
+
+
+
+
+
+
+
+
+
+<label class="block text-sm">
+    <span class="text-gray-700 dark:text-gray-400">Choose a User</span>
+    {{ form_widget(form.utilisateur) }}
+</label>
+
+
+
+
+
+
+	</div>
+
+
+	<button id="submitButton" type="submit" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" >
+            {{ button_label|default(' + Update') }}
+        </button>
+	<br>
+
+
+	{{ form_end(form) }}
+
+
 
 {% endblock %}

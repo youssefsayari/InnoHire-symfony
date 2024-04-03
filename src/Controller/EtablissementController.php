@@ -12,6 +12,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 
+
+
+
+
+use Symfony\Component\HttpFoundation\JsonResponse;
+
+
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 #[Route('/etablissement')]
@@ -25,34 +32,42 @@ class EtablissementController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_wallet_new', methods: ['GET', 'POST'])]
-public function new(Request $request, EntityManagerInterface $entityManager, WalletRepository $walletRepository): Response
-{
-    $wallet = new Wallet();
-    $form = $this->createForm(WalletType::class, $wallet);
-    $form->handleRequest($request);
 
-    if ($form->isSubmitted() && $form->isValid()) {
-        // Vérifier si l'établissement est unique
-        $idEtablissement = $wallet->getEtablissement()->getId();
-        $isUnique = $walletRepository->isUniqueEstablishment($idEtablissement);
-        if ($isUnique) {
-            // Ajouter le wallet à la base de données
-            $entityManager->persist($wallet);
+    #[Route('/new', name: 'app_etablissement_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager, EtablissementRepository $etablissementRepository): Response
+    {
+        $etablissement = new Etablissement();
+        $form = $this->createForm(EtablissementType::class, $etablissement);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+
+            $codeEtablissement = $etablissement->getCodeEtablissement();               
+          // Vérifier si le code établissement est unique
+          if (!$etablissementRepository->isCodeEtablissementUnique($codeEtablissement)) {
+            $this->addFlash('error', 'Le code établissement existe déjà. Veuillez entrer un code unique.'); 
+            // Retourner la vue avec les données déjà soumises
+            return $this->renderForm('etablissement/new.html.twig', [
+                'etablissement' => $etablissement,
+                'form' => $form,
+            ]);
+        }
+        
+
+
+            $entityManager->persist($etablissement);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Wallet créé avec succès.');
-            return $this->redirectToRoute('app_etablissement_index', [], Response::HTTP_SEE_OTHER);        } else {
-            // Afficher une alerte si l'établissement existe déjà
-            $this->addFlash('danger', 'L\'établissement existe déjà dans la base de données.');
+            return $this->redirectToRoute('app_etablissement_index', [], Response::HTTP_SEE_OTHER);
         }
+
+        return $this->renderForm('etablissement/new.html.twig', [
+            'etablissement' => $etablissement,
+            'form' => $form,
+        ]);
     }
 
-    return $this->render('wallet/new.html.twig', [
-        'wallet' => $wallet,
-        'form' => $form->createView(),
-    ]);
-}
 
     #[Route('/{id}', name: 'app_etablissement_show', methods: ['GET'])]
     public function show(Etablissement $etablissement): Response
@@ -90,4 +105,24 @@ public function new(Request $request, EntityManagerInterface $entityManager, Wal
 
         return $this->redirectToRoute('app_etablissement_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
 }

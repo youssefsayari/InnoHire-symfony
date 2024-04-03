@@ -1,46 +1,97 @@
-     {% extends 'base.html.twig' %}       
+{% extends 'base.html.twig' %}
 
 {% block title %}Etablissement{% endblock %}
 
 {% block body %}
-    <h1>Etablissement</h1>
+<div x-data="{ isModalOpen: true }"> <!-- Initialisez la variable isModalOpen à true pour ouvrir le modal par défaut -->
+    <div x-show="isModalOpen"
+        x-transition:enter="transition ease-out duration-150"
+        x-transition:enter-start="opacity-0 transform translate-y-1/2"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0 transform translate-y-1/2"
+        class="fixed inset-0 z-30 flex items-end bg-black bg-opacity-50 sm:items-center sm:justify-center"
+    >
+        <!-- Modal -->
+        <div
+            x-show="isModalOpen"
+            x-transition:enter="transition ease-out duration-150"
+            x-transition:enter-start="opacity-0 transform translate-y-1/2"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0 transform translate-y-1/2"
+            @click.away="closeModal"
+            @keydown.escape="closeModal"
+            class="w-full max-w-xl px-6 py-4 overflow-hidden bg-white rounded-lg dark:bg-gray-800"
+            role="dialog"
+            id="modal"
+            style="margin: auto"
+        >
+            
+           <!-- Modal description -->
+            <div class="mt-4 mb-2 text-lg font-semibold text-gray-700 dark:text-gray-300 items-center justify-center text-center">
+                <!-- Modal title -->
+                <p class="mb-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
+                    Etablissement
+                </p>
+                <br>
+                <!-- Modal body -->
+                <div class="flex items-center justify-center">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th class="px-4 py-2">Id</th>
+                                <td class="px-4 py-2">{{ etablissement.id }}</td>
+                            </tr>
+                            <tr>
+                                <th class="px-4 py-2">User</th>
+                                <td class="px-4 py-2">{{ etablissement.getUtilisateur().getIdUtilisateur() }}</td>
+                            </tr>
+                            <tr>
+                                <th class="px-4 py-2">Nom</th>
+                                <td class="px-4 py-2">{{ etablissement.nom }}</td>
+                            </tr>
+                            <tr>
+                                <th class="px-4 py-2">Lieu</th>
+                                <td class="px-4 py-2">{{ etablissement.lieu }}</td>
+                            </tr>
+                            <tr>
+                                <th class="px-4 py-2">Code</th>
+                                <td class="px-4 py-2">{{ etablissement.codeEtablissement }}</td>
+                            </tr>
+                            <tr>
+                                <th class="px-4 py-2">Type</th>
+                                <td class="px-4 py-2">{{ etablissement.typeEtablissement }}</td>
+                            </tr>
+                            <tr>
+                                <th class="px-4 py-2">Image</th>
+                                <td class="px-4 py-2">
+                                    <img
+                                        src="{{ asset('imagesEtablissements/' ~ etablissement.image) }}"
+                                        alt="Image de l'établissement {{ etablissement.nom }}"
+                                    />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ etablissement.id }}</td> 
-            </tr>
-            <tr>
-                <th>Nom</th>
-                <td>{{ etablissement.nom }}</td>
-            </tr>
-            <tr>
-                <th>Lieu</th>
-                <td>{{ etablissement.lieu }}</td>
-            </tr>
-            <tr>
-                <th>Code_etablissement</th>
-                <td>{{ etablissement.codeEtablissement }}</td>
-            </tr>
-            <tr>
-                <th>Type_etablissement</th>
-                <td>{{ etablissement.typeEtablissement }}</td>
-            </tr>
-            <tr>
-                <th>Image</th>
-                <td>{{ etablissement.image }}</td>
-            </tr>
-            <tr>
-                <th>Utilisateur</th>
-                <td>{{ etablissement.getUtilisateur().getIdUtilisateur() }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_etablissement_index') }}">back to list</a>
-
-    <a href="{{ path('app_etablissement_edit', {'id': etablissement.id}) }}">edit</a>
-
-    {{ include('etablissement/_delete_form.html.twig') }}
+            <!-- Footer -->
+            <footer class="flex justify-center mt-6"> <!-- Modification de la classe pour centrer horizontalement -->
+                <!-- Accept button -->
+                <a href="{{ path('app_etablissement_index') }}">
+                    <button
+                        @click="closeModal"
+                        class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg sm:px-4 sm:py-2 active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                    >
+                        Close
+                    </button>
+                </a>
+            </footer>
+        </div>
+    </div>
+</div>
 {% endblock %}

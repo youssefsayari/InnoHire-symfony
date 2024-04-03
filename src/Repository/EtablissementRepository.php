@@ -21,6 +21,12 @@ class EtablissementRepository extends ServiceEntityRepository
         parent::__construct($registry, Etablissement::class);
     }
 
+    public function isCodeEtablissementUnique(int $codeEtablissement): bool
+{
+    $existingEtablissement = $this->findOneBy(['code_etablissement' => $codeEtablissement]);
+    return $existingEtablissement === null;
+}
+
 //    /**
 //     * @return Etablissement[] Returns an array of Etablissement objects
 //     */
