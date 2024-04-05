@@ -78,7 +78,7 @@ class EtablissementType extends AbstractType
 
             ->add('utilisateur', EntityType::class, [
                 'class' => Utilisateur::class,
-                'choice_label' => 'id_utilisateur', // ou tout autre propriété de Utilisateur que vous souhaitez afficher
+                'choice_label' => 'nom', // ou tout autre propriété de Utilisateur que vous souhaitez afficher
                 'placeholder' => 'Choisissez un utilisateur', // texte à afficher pour le choix vide
             ]);
         ;

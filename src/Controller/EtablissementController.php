@@ -33,6 +33,21 @@ class EtablissementController extends AbstractController
     }
 
 
+
+
+    #[Route('/front', name: 'app_etablissement_front', methods: ['GET'])]
+    public function front(EtablissementRepository $etablissementRepository): Response
+    {
+        return $this->render('etablissement/front.html.twig', [
+            'etablissements' => $etablissementRepository->findAll(),
+        ]);
+    }
+
+
+
+
+
+
     #[Route('/new', name: 'app_etablissement_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, EtablissementRepository $etablissementRepository): Response
     {
@@ -107,22 +122,7 @@ class EtablissementController extends AbstractController
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
     
-
-
-
-
 
 
 }
