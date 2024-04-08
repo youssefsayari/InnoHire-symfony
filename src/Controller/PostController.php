@@ -22,6 +22,14 @@ class PostController extends AbstractController
         ]);
     }
 
+    #[Route('/front', name: 'app_post_front', methods: ['GET'])]
+    public function front(PostRepository $postRepository): Response
+    {
+        return $this->render('post/front.html.twig', [
+            'posts' => $postRepository->findAll(),
+        ]);
+    }
+    
     #[Route('/new', name: 'app_post_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
