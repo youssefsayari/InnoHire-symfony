@@ -66,6 +66,26 @@ class PostController extends AbstractController
             'form' => $form,
         ]);
     }
+     //#FRONT AJOUTER#}
+    #[Route('/newFront', name: 'app_post_newFront', methods: ['GET', 'POST'])]
+    public function newFront(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $post = new Post();
+        $form = $this->createForm(PostType::class, $post);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($post);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_post_front', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('post/contact.html.twig', [
+            'post' => $post,
+            'form' => $form,
+        ]);
+    }
 
     #[Route('/{id_post}', name: 'app_post_show', methods: ['GET'])]
     public function show(Post $post): Response
