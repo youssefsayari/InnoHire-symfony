@@ -29,6 +29,23 @@ class PostController extends AbstractController
             'posts' => $postRepository->findAll(),
         ]);
     }
+    #[Route('/{id_post}/editfront', name: 'app_post_editfront', methods: ['GET', 'POST'])]
+    public function editfront(Request $request, Post $post, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(PostType::class, $post);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_post_front', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('post/editfront.html.twig', [
+            'post' => $post,
+            'form' => $form,
+        ]);
+    }
     
     #[Route('/new', name: 'app_post_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response

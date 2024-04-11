@@ -1,0 +1,44 @@
+{% block body %}
+    <h1>Edit Your Post</h1>
+
+    <!-- Button to trigger modal -->
+    <button onclick="openEditModal()"
+            class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+        Edit
+    </button>
+
+    <!-- Modal HTML structure -->
+    <div id="editModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <!-- Close button -->
+            <span class="close" onclick="closeEditModal()">&times;</span>
+            <!-- Your edit form here -->
+            <form>
+                <label>Description</label>
+                <textarea class="block w-full mt-1" rows="7" placeholder="Enter some long form description"></textarea>
+
+                <!-- Other form fields -->
+
+                <!-- Save button -->
+                <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                    Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript to handle modal -->
+    <script>
+        // Function to open modal
+        function openEditModal() {
+            var modal = document.getElementById("editModal");
+            modal.style.display = "block";
+        }
+
+        // Function to close modal
+        function closeEditModal() {
+            var modal = document.getElementById("editModal");
+            modal.style.display = "none";
+        }
+    </script>
+{% endblock %}
