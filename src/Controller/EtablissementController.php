@@ -27,6 +27,7 @@ class EtablissementController extends AbstractController
     #[Route('/', name: 'app_etablissement_index', methods: ['GET'])]
     public function index(EtablissementRepository $etablissementRepository): Response
     {
+  
         return $this->render('etablissement/index.html.twig', [
             'etablissements' => $etablissementRepository->findAll(),
         ]);
@@ -43,7 +44,40 @@ class EtablissementController extends AbstractController
         ]);
     }
 
+    #[Route('/newFront', name: 'app_etablissement_newFront', methods: ['GET', 'POST'])]
+    public function newFront(Request $request, EntityManagerInterface $entityManager, EtablissementRepository $etablissementRepository): Response
+    {
+        $etablissement = new Etablissement();
+        $form = $this->createForm(EtablissementType::class, $etablissement);
+        $form->handleRequest($request);
 
+        if ($form->isSubmitted() && $form->isValid()) {
+
+
+            $codeEtablissement = $etablissement->getCodeEtablissement();               
+          // Vérifier si le code établissement est unique
+          if (!$etablissementRepository->isCodeEtablissementUnique($codeEtablissement)) {
+            $this->addFlash('error', 'Le code établissement existe déjà. Veuillez entrer un code unique.'); 
+            // Retourner la vue avec les données déjà soumises
+            return $this->renderForm('etablissement/newFront.html.twig', [
+                'etablissement' => $etablissement,
+                'form' => $form,
+            ]);
+        }
+        
+
+
+            $entityManager->persist($etablissement);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_etablissement_front', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('etablissement/newFront.html.twig', [
+            'etablissement' => $etablissement,
+            'form' => $form,
+        ]);
+    }
 
 
 
