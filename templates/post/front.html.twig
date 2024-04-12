@@ -15,8 +15,8 @@
 			</div>
 			<div class="row g-4">
 
-
-
+<a href="{{ path('app_post_newFront') }}">Create new +</a>
+    
 {% for post in posts %}
 			
 				<div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
@@ -69,11 +69,14 @@
 							<a class="btn btn-square mx-1" href="#">
 								<i class="far fa-thumbs-up"></i>
 							</a>
-							<a class="btn btn-square mx-1" href="#">
+							<a class="btn btn-square mx-1"  href="{{ path('app_post_editfront', {'id_post': post.idPost}) }}">
 								<i class="far fa-comment"></i>
 							</a>
+							<a class="btn btn-square mx-1"  href="{{ path('app_post_editfront', {'id_post': post.idPost}) }}">
+								<i class="far fa-sync"></i>
+							</a>
 
-							<a class="btn btn-square mx-1" href="#">
+							<a class="btn btn-square mx-1" href="{{ path('app_post_deleteFront', {'id_post': post.idPost}) }}">
 								<i class="fas fa-exclamation-triangle"></i>
 							</a>
 
@@ -83,23 +86,7 @@
 
 {% endfor %}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-			</div>
+</div>
 		</div>
 	</div>
 	<!-- Team End -->

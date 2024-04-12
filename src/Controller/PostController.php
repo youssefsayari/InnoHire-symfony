@@ -29,23 +29,7 @@ class PostController extends AbstractController
             'posts' => $postRepository->findAll(),
         ]);
     }
-    #[Route('/{id_post}/editfront', name: 'app_post_editfront', methods: ['GET', 'POST'])]
-    public function editfront(Request $request, Post $post, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(PostType::class, $post);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_post_front', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->renderForm('post/editfront.html.twig', [
-            'post' => $post,
-            'form' => $form,
-        ]);
-    }
+    
     
     #[Route('/new', name: 'app_post_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -112,6 +96,23 @@ class PostController extends AbstractController
             'form' => $form,
         ]);
     }
+    #[Route('/{id_post}/editfront', name: 'app_post_editfront', methods: ['GET', 'POST'])]
+    public function editfront(Request $request, Post $post, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(PostType::class, $post);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_post_front', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('post/editfront.html.twig', [
+            'post' => $post,
+            'form' => $form,
+        ]);
+    }
 
     #[Route('/{id_post}', name: 'app_post_delete', methods: ['POST'])]
     public function delete(Request $request, Post $post, EntityManagerInterface $entityManager): Response
@@ -122,5 +123,15 @@ class PostController extends AbstractController
         }
 
         return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
+    }
+    #[Route('/{id_post}', name: 'app_post_deleteFront', methods: ['POST'])]
+    public function deleteFront(Request $request, Post $post, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$post->getIdpost(), $request->request->get('_token'))) {
+            $entityManager->remove($post);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_post_front', [], Response::HTTP_SEE_OTHER);
     }
 }
