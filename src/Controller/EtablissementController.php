@@ -34,7 +34,7 @@ class EtablissementController extends AbstractController
     }
 
 
-
+//------------------front
 
     #[Route('/front', name: 'app_etablissement_front', methods: ['GET'])]
     public function front(EtablissementRepository $etablissementRepository): Response
@@ -78,6 +78,21 @@ class EtablissementController extends AbstractController
             'form' => $form,
         ]);
     }
+
+
+    #[Route('/front/{id}', name: 'app_etablissement_deleteFront', methods: ['POST'])]
+    public function deleteFront(Request $request, Etablissement $etablissement, EntityManagerInterface $entityManager): Response
+    {
+        
+            $entityManager->remove($etablissement);
+            $entityManager->flush();
+        
+
+        return $this->redirectToRoute('app_etablissement_front', [], Response::HTTP_SEE_OTHER);
+    }
+
+
+    //------------------End-Front--------------------
 
 
 

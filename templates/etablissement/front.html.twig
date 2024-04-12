@@ -68,9 +68,14 @@
 										<a class="btn btn-square btn-outline-light mx-1" href="">
 											<i class="fa fa-link"></i>
 										</a>
-										<a class="btn btn-square btn-outline-light mx-1" href="">
-											<i class="fa fa-link"></i>
-										</a>
+										
+										 <form action="{{ path('app_etablissement_deleteFront', {'id': etablissement.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet établissement ?')">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ etablissement.id) }}">
+                        <button type="submit" class="btn btn-square btn-outline-light mx-1">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </form>
 										
 									</div>
 								</div>
