@@ -83,10 +83,10 @@ class EtablissementController extends AbstractController
     #[Route('/front/{id}', name: 'app_etablissement_deleteFront', methods: ['POST'])]
     public function deleteFront(Request $request, Etablissement $etablissement, EntityManagerInterface $entityManager): Response
     {
-        
+        if ($this->isCsrfTokenValid('delete'.$etablissement->getId(), $request->request->get('_token'))) {
             $entityManager->remove($etablissement);
             $entityManager->flush();
-        
+        }
 
         return $this->redirectToRoute('app_etablissement_front', [], Response::HTTP_SEE_OTHER);
     }
