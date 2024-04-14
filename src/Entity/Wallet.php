@@ -17,11 +17,14 @@ class Wallet
     #[ORM\Column(nullable: true)]
     private ?int $balance = null;
 
-   
+
 
     #[ORM\OneToOne(targetEntity: Etablissement::class)]
     #[ORM\JoinColumn(name: "id_etablissement", referencedColumnName: "id_etablissement",nullable: false)]
     private ?Etablissement $etablissement = null; 
+
+   
+    
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date_c = null;
@@ -57,6 +60,8 @@ class Wallet
 
         return $this;
     }
+
+   
 
     public function getDateC(): ?\DateTimeInterface
     {

@@ -63,7 +63,43 @@ class WalletController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+//---------------Start Front---------------
+#[Route('/{id}/newFront', name: 'app_wallet_newFront', methods: ['GET', 'POST'])]
+    public function newFront(Request $request, EntityManagerInterface $entityManager, WalletRepository $walletRepository,Etablissement $etablissement): Response
+    {
+        $wallet = new Wallet();
+        $wallet->setEtablissement($etablissement);
+        $form = $this->createForm(WalletType::class, $wallet);
+        $form->handleRequest($request);
 
+        if ($form->isSubmitted() && $form->isValid()) {
+             // Vérifier si l'établissement existe déjà
+    $idEtablissement = $wallet->getEtablissement()->getId();
+    $etablissementExists = $walletRepository->etablissementExists($idEtablissement);
+    if ($etablissementExists) {
+        // Afficher une alerte JavaScript si l'établissement existe déjà
+        echo "<script>alert('L\'établissement choisi possède déjà un Wallet');</script>";
+        // Rediriger vers la page 'app_wallet_new' en JavaScript après que l'utilisateur clique sur 'OK'
+        echo "<script>window.location.href = window.location.href;</script>";
+        return null;
+
+    }
+    else{
+        // Ajouter le wallet à la base de données
+        $entityManager->persist($wallet);
+        $entityManager->flush();
+        return $this->redirectToRoute('app_etablissement_front', [], Response::HTTP_SEE_OTHER);
+    }
+        }
+        
+
+        return $this->render('wallet/newFront.html.twig', [
+            'wallet' => $wallet,
+            'form' => $form->createView(),
+            
+        ]);
+    }
+//---------------End Front----------------
     #[Route('/{id}', name: 'app_wallet_show', methods: ['GET'])]
     public function show(Wallet $wallet): Response
     {
@@ -121,18 +157,6 @@ class WalletController extends AbstractController
 
         return $this->redirectToRoute('app_wallet_index', [], Response::HTTP_SEE_OTHER);
     }
-
-
-
-
-
-
-
-    
-
-   
-
-
 
 
 

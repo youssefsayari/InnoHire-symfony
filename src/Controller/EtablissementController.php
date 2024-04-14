@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Etablissement;
+use App\Entity\Wallet;
 use App\Form\EtablissementType;
 use App\Repository\EtablissementRepository;
+use App\Repository\WalletRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,10 +39,25 @@ class EtablissementController extends AbstractController
 //------------------front
 
     #[Route('/front', name: 'app_etablissement_front', methods: ['GET'])]
-    public function front(EtablissementRepository $etablissementRepository): Response
+    public function front(EtablissementRepository $etablissementRepository,
+    WalletRepository $walletRepository): Response
     {
+
+        $etablissements = $etablissementRepository->findAll(); // Get all establishments
+
+        $etablissementsAndWallets = []; // Initialize empty array
+
+        foreach ($etablissements as $etablissement) {
+            $wallets = $walletRepository->findBy(['etablissement' => $etablissement]);
+
+            $etablissementsAndWallets[] = [
+                'etablissement' => $etablissement,
+                'wallets' => $wallets,
+            ];
+        }
+
         return $this->render('etablissement/front.html.twig', [
-            'etablissements' => $etablissementRepository->findAll(),
+            'etablissementsAndWallets' => $etablissementsAndWallets,
         ]);
     }
 
@@ -92,6 +109,40 @@ class EtablissementController extends AbstractController
     }
 
 
+    #[Route('/front/{id}/edit', name: 'app_etablissement_editFront', methods: ['GET', 'POST'])]
+    public function editFront(Request $request, Etablissement $etablissement, EntityManagerInterface $entityManager,EtablissementRepository $etablissementRepository): Response
+    {
+        $form = $this->createForm(EtablissementType::class, $etablissement);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            
+            
+            
+            $codeEtablissement = $etablissement->getCodeEtablissement();               
+            // Vérifier si le code établissement est unique
+            if (!$etablissementRepository->isCodeEtablissementUnique($codeEtablissement,$etablissement)) {
+              $this->addFlash('error', 'Le code établissement existe déjà. Veuillez entrer un code unique.'); 
+              // Retourner la vue avec les données déjà soumises
+              return $this->renderForm('etablissement/editFront.html.twig', [
+                  'etablissement' => $etablissement,
+                  'form' => $form,
+              ]);
+          }
+            
+            
+            
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_etablissement_front', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('etablissement/editFront.html.twig', [
+            'etablissement' => $etablissement,
+            'form' => $form,
+        ]);
+    }
+
     //------------------End-Front--------------------
 
 
@@ -142,15 +193,28 @@ class EtablissementController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_etablissement_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Etablissement $etablissement, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Etablissement $etablissement, EntityManagerInterface $entityManager, EtablissementRepository $etablissementRepository): Response
     {
         $form = $this->createForm(EtablissementType::class, $etablissement);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            
+            
+            $codeEtablissement = $etablissement->getCodeEtablissement();               
+            // Vérifier si le code établissement est unique
+            if (!$etablissementRepository->isCodeEtablissementUnique($codeEtablissement,$etablissement)) {
+              $this->addFlash('error', 'Le code établissement existe déjà. Veuillez entrer un code unique.'); 
+              // Retourner la vue avec les données déjà soumises
+              return $this->renderForm('etablissement/edit.html.twig', [
+                  'etablissement' => $etablissement,
+                  'form' => $form,
+              ]);
+          }
 
-            return $this->redirectToRoute('app_etablissement_index', [], Response::HTTP_SEE_OTHER);
+            
+            $entityManager->flush();
+           return $this->redirectToRoute('app_etablissement_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('etablissement/edit.html.twig', [

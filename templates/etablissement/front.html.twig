@@ -55,55 +55,118 @@
 
 					
 					<div class="row g-4 portfolio-container">
-					{% for etablissement in etablissements %}
-						<div class="col-lg-4 col-md-6 portfolio-item {{ etablissement.typeEtablissement|lower }} wow fadeInUp" data-wow-delay="0.1s">
+					{% for etablissementAndWallet in etablissementsAndWallets %}
+						<div class="col-lg-4 col-md-6 portfolio-item {{ etablissementAndWallet.etablissement.typeEtablissement|lower }} wow fadeInUp" data-wow-delay="0.1s">
 							<div class="rounded overflow-hidden">
 								<div class="position-relative overflow-hidden" style="width: 400px; height: 250px;">
 								
-									<img class="img-fluid w-100" src="{{ asset('imagesEtablissements/' ~ etablissement.image) }}" alt="">
+									<img class="img-fluid w-100" src="{{ asset('imagesEtablissements/' ~ etablissementAndWallet.etablissement.image) }}" alt="">
 									<div class="portfolio-overlay">
-										<a class="btn btn-square btn-outline-light mx-1" href="{{ asset('imagesEtablissements/' ~ etablissement.image) }}" data-lightbox="portfolio">
+										<a class="btn btn-square btn-outline-light mx-1" href="{{ asset('imagesEtablissements/' ~ etablissementAndWallet.etablissement.image) }}" data-lightbox="portfolio">
 											<i class="fa fa-eye"></i>
 										</a>
-										<a class="btn btn-square btn-outline-light mx-1" href="">
-											<i class="fa fa-link"></i>
+										<a class="btn btn-square btn-outline-light mx-1" href="{{ path('app_etablissement_editFront', {'id': etablissementAndWallet.etablissement.id}) }}">
+											<i class="fa fa-edit"></i>
 										</a>
 										
-										 <form action="{{ path('app_etablissement_deleteFront', {'id': etablissement.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet établissement ?')">
+										
+										 <form action="{{ path('app_etablissement_deleteFront', {'id': etablissementAndWallet.etablissement.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet établissement ?')">
                         <input type="hidden" name="_method" value="DELETE">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ etablissement.id) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ etablissementAndWallet.etablissement.id) }}">
                         <button type="submit" class="btn btn-square btn-outline-light mx-1">
                             <i class="fa fa-trash"></i>
                         </button>
                     </form>
-										
+
+  									 	
+        									
+    {% if etablissementAndWallet.wallets %}
+		{% for wallet in etablissementAndWallet.wallets %}
+        
+								<table>
+    									<tr>
+											<td>
+   												 <button class="btn btn-square btn-outline-light mx-1" {#onclick="openModal('{{ wallet.getBalance()}}')"#}>
+                   									 <i class="fa fa-wallet"></i>
+               									 </button>
+       										</td>
+											<td>
+        
+				{% if wallet.getStatus() == 1 %}							
+            <div>
+                <div><span style="font-weight: bold; color: white;">Balance :</span></div>
+                <div><span style="font-weight: bold; font-size: smaller; color: white;">{{ wallet.getBalance() }} DT</span></div>
+											
+            </div>
+											
+                                 {% else %}
+                                 
+    <div>
+        <i class="fas fa-exclamation-triangle" style="color: yellow; font-size: 16px; vertical-align: middle;"></i>
+        <span style="font-weight: bold; color: yellow;">Wallet</span>
+       <div> <span style="font-weight: bold; font-size: smaller; color: yellow;">Not Verified</span></div>
+    </div>
+
+
+
+                                {% endif %}
+        {% endfor %}
+                                            </td>
+										</tr>
+								</table>
+       
+											
+    {% else %}
+
+									<table>
+    									<tr>
+											<td>
+   												 <a href="{{ path('app_wallet_newFront', {'id': etablissementAndWallet.etablissement.id}) }}" class="btn btn-square btn-outline-light mx-1">
+                                                     <i class="fa fa-wallet"></i>
+                                                </a>
+
+       										</td>
+											<td>
+
+        <div style="text-align: center;">
+    <i class="fas fa-exclamation-circle" style="color: red; font-size: 24px; vertical-align: middle;"></i>
+    <span style="font-weight: bold; color: red; vertical-align: middle;">No Wallet</span>
+    		<div><span style="font-weight: bold; color: red; font-size: smaller;">associated </span></div>
+
+</div>
+											</td>
+										</tr>
+									</table>
+    {% endif %}
+
+					
+	
+
 									</div>
 								</div>
 								<div class="bg-light p-4">
 									<p class="text-primary fw-medium mb-2">
-										Code : {{ etablissement.codeEtablissement }}
+										Code : {{ etablissementAndWallet.etablissement.codeEtablissement }}
 
 									</p>
 									<h5 class="lh-base mb-0">
-										Nom : {{ etablissement.nom }}
+										Nom : {{ etablissementAndWallet.etablissement.nom }}
 
 									</a>
 									<h5 class="lh-base mb-0">
-										Lieu : {{ etablissement.lieu }}
+										Lieu : {{ etablissementAndWallet.etablissement.lieu }}
 
 									</a>
 									<h5 class="lh-base mb-0">
-										Type : {{ etablissement.typeEtablissement }}
+										Type : {{ etablissementAndWallet.etablissement.typeEtablissement }}
 
 									</a>
 									<h5 class="lh-base mb-0">
-										User : {{ etablissement.getUtilisateur().getNom() }}
+										User : {{ etablissementAndWallet.etablissement.getUtilisateur().getNom() }}
 
 									</a>
-									<h5 class="lh-base mb-0">
-										User : {{ etablissement.getWallet().getBalance() }}
 
-									</a>
+
 								</div>
 							</div>
 						</div>
@@ -158,6 +221,88 @@
             });
         });
     </script>
+
+
+
+
+
+
+{#-------------------START MODAL WALLET--------------------------#}
+
+			<!-- Modal -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+         <!-- Balise span pour afficher la balance -->
+        <span id="modalBalance" style="font-weight: bold; font-size: smaller; color: black;"></span>
+    </div>
+</div>
+
+
+
+<style>
+    /* Style pour centrer le modal */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    /* Style pour le bouton de fermeture */
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    // Fonction pour ouvrir le modal
+    function openModal(balance) {
+        var modal = document.getElementById("myModal");
+        var modalBalance = document.getElementById("modalBalance");
+        modalBalance.textContent = balance + " DT"; // Affiche la balance dans le modal
+        modal.style.display = "block";
+    }
+	
+     // Fonction pour fermer le modal
+    function closeModal() {
+        var modal = document.getElementById("myModal");
+        modal.style.display = "none";
+    }
+
+      // Fermer le modal lorsque l'utilisateur clique en dehors de celui-ci
+    window.onclick = function(event) {
+        var modal = document.getElementById("myModal");
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
+{#-------------------END MODAL WALLET--------------------------#}
 
 
 

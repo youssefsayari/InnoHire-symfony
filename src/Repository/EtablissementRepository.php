@@ -21,11 +21,18 @@ class EtablissementRepository extends ServiceEntityRepository
         parent::__construct($registry, Etablissement::class);
     }
 
-    public function isCodeEtablissementUnique(int $codeEtablissement): bool
+    public function isCodeEtablissementUnique(int $codeEtablissement, ?Etablissement $currentEtablissement = null): bool
 {
     $existingEtablissement = $this->findOneBy(['code_etablissement' => $codeEtablissement]);
-    return $existingEtablissement === null;
+
+    // Si aucun établissement existant n'est trouvé, ou si l'établissement trouvé est le même que l'établissement actuel en cours de modification, le code est unique
+    if ($existingEtablissement === null || ($currentEtablissement !== null && $existingEtablissement === $currentEtablissement)) {
+        return true;
+    }
+
+    return false;
 }
+
 
  
 
