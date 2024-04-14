@@ -18,7 +18,7 @@ class UtilisateurType extends AbstractType
             ->add('adresse')
             ->add('mdp')
             ->add('role')
-            ->add('image')
+           // ->add('image')
             
         ;
     }
