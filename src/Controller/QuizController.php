@@ -71,7 +71,8 @@ class QuizController extends AbstractController
     #[Route('/{id_quiz}', name: 'app_quiz_delete', methods: ['POST'])]
     public function delete(Request $request, Quiz $quiz, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$quiz->getId_quiz(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$quiz->getId(), $request->request->get('_token'))) {
+
             $entityManager->remove($quiz);
             $entityManager->flush();
         }

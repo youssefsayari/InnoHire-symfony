@@ -2,10 +2,124 @@
 
 {% block title %}New Quiz{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Styles CSS */
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .form-container {
+            background-color: #f9f9f9;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-title {
+            font-size: 28px;
+            color: #6a1b9a;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-size: 18px;
+            color: #6a1b9a;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+            background-color: #fff;
+        }
+
+        .form-control:focus {
+            border-color: #6a1b9a;
+            outline: none;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background-color: #6a1b9a;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #4a148c;
+        }
+
+        .btn-back {
+            background-color: #1976d2;
+        }
+
+        .btn-back:hover {
+            background-color: #1565c0;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
-    <h1>Create new Quiz</h1>
+    <div class="container">
+        <div class="form-container">
+            <h1 class="form-title">Create new Quiz</h1>
 
-    {{ include('quiz/_form.html.twig') }}
+            <form action="{{ path('app_quiz_index') }}" method="post">
+                <div class="form-group">
+                    <label for="codeQuiz" class="form-label">Code Quiz</label>
+                    <input type="text" id="codeQuiz" name="codeQuiz" value="" class="form-control" placeholder="Enter code quiz">
+                </div>
 
-    <a href="{{ path('app_quiz_index') }}">back to list</a>
+                <div class="form-group">
+                    <label for="nomQuiz" class="form-label">Nom Quiz</label>
+                    <input type="text" id="nomQuiz" name="nomQuiz" value="" class="form-control" placeholder="Enter nom quiz">
+                </div>
+
+                <div class="form-group">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea id="description" name="description" class="form-control" rows="4" placeholder="Enter description"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="prixQuiz" class="form-label">Prix Quiz</label>
+                    <input type="number" id="prixQuiz" name="prixQuiz" value="" class="form-control" placeholder="Enter prix quiz">
+                </div>
+
+                <div class="form-group">
+                    <label for="imageQuiz" class="form-label">Image Quiz</label>
+                    <input type="text" id="imageQuiz" name="imageQuiz" value="" class="form-control" placeholder="Enter image quiz">
+                </div>
+
+                <div class="btn-container">
+                    <button type="submit" class="btn">Create</button>
+                    <a href="{{ path('app_quiz_index') }}" class="btn btn-back">Back to list</a>
+                </div>
+            </form>
+        </div>
+    </div>
 {% endblock %}
