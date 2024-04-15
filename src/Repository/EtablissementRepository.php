@@ -33,7 +33,14 @@ class EtablissementRepository extends ServiceEntityRepository
     return false;
 }
 
-
+public function findByUserId(int $userId): array
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.utilisateur = :userId')//jointure m3a lvariable utilisateur fi lentity etablissement
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->getResult();
+    }
  
 
 

@@ -165,13 +165,19 @@
 
 
 
- <div class="col-12">
+<div class="col-12">
     <div class="form-floating">
         <label for="utilisateurInput" class="block text-sm"></label>
-        {{ form_widget(form.utilisateur, {'id': 'utilisateurInput', 'attr': {'class': 'form-select'}}) }}
+        {% set selectedUserId = form.utilisateur.vars.value %}
+        {{ form_widget(form.utilisateur, {'id': 'utilisateurInput', 'attr': {'class': 'form-select', 'disabled': true}}) }}
+        <input type="hidden" id="utilisateurHidden" name="etablissement[utilisateur]" value="{{ selectedUserId }}">
         <span id="utilisateurError" class="text-xs" style="color: red;"></span>
     </div>
 </div>
+
+
+
+
 <br>
 
 

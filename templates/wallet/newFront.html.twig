@@ -102,10 +102,12 @@
  <div class="col-12">
     <div class="form-floating">
         <label for="utilisateurInput" class="block text-sm"></label>
-        {{ form_widget(form.etablissement) }}
+        {{ form_widget(form.etablissement, {'attr': {'class': 'form-select', 'style': 'background-color: #f8f9fa; color: #6c757d; pointer-events: none'}}) }}
         <span id="utilisateurError" class="text-xs" style="color: red;"></span>
     </div>
 </div>
+
+
 
 <br>
 

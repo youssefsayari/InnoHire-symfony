@@ -55,11 +55,21 @@
 
 					
 					<div class="row g-4 portfolio-container">
+                        {% if etablissementsAndWallets is null or etablissementsAndWallets == {} %}
+                             <div class="container d-flex justify-content-center align-items-center" >
+    <div class="alert alert-warning text-center" role="alert" style="max-width: 400px;">
+        <p>Vous n'avez pas encore d'établissement.</p>
+        <p>Essayez d'en créer un !</p>
+    </div>
+</div>
+
+                        {% endif %}
 					{% for etablissementAndWallet in etablissementsAndWallets %}
+                   
 						<div class="col-lg-4 col-md-6 portfolio-item {{ etablissementAndWallet.etablissement.typeEtablissement|lower }} wow fadeInUp" data-wow-delay="0.1s">
 							<div class="rounded overflow-hidden">
 								<div class="position-relative overflow-hidden" style="width: 400px; height: 250px;">
-								
+
 									<img class="img-fluid w-100" src="{{ asset('imagesEtablissements/' ~ etablissementAndWallet.etablissement.image) }}" alt="">
 									<div class="portfolio-overlay">
 										<a class="btn btn-square btn-outline-light mx-1" href="{{ asset('imagesEtablissements/' ~ etablissementAndWallet.etablissement.image) }}" data-lightbox="portfolio">

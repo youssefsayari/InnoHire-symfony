@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Etablissement;
+use App\Entity\Utilisateur;
 use App\Entity\Wallet;
 use App\Form\EtablissementType;
 use App\Repository\EtablissementRepository;
+use App\Repository\UtilisateurRepository;
 use App\Repository\WalletRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,6 +28,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 #[Route('/etablissement')]
 class EtablissementController extends AbstractController
 {
+
     #[Route('/', name: 'app_etablissement_index', methods: ['GET'])]
     public function index(EtablissementRepository $etablissementRepository): Response
     {
@@ -36,14 +39,19 @@ class EtablissementController extends AbstractController
     }
 
 
-//------------------front
+//------------------front---------------------------------
 
+public $idUtilisateurConnecte = 2;//change iciiiiiiiiiiiiiiiiiiiiiiiii
+
+        
     #[Route('/front', name: 'app_etablissement_front', methods: ['GET'])]
     public function front(EtablissementRepository $etablissementRepository,
     WalletRepository $walletRepository): Response
     {
-
-        $etablissements = $etablissementRepository->findAll(); // Get all establishments
+        
+        $idUtilisateurConnecte = $this->idUtilisateurConnecte;
+        //$etablissements = $etablissementRepository->findAll(); // Get all establishments
+        $etablissements = $etablissementRepository->findByUserId($idUtilisateurConnecte); 
 
         $etablissementsAndWallets = []; // Initialize empty array
 
@@ -62,9 +70,15 @@ class EtablissementController extends AbstractController
     }
 
     #[Route('/newFront', name: 'app_etablissement_newFront', methods: ['GET', 'POST'])]
-    public function newFront(Request $request, EntityManagerInterface $entityManager, EtablissementRepository $etablissementRepository): Response
+    public function newFront(Request $request, EntityManagerInterface $entityManager, EtablissementRepository $etablissementRepository,UtilisateurRepository $userRepository ): Response
     {
+        $idUtilisateurConnecte = $this->idUtilisateurConnecte;
+        $user = $userRepository->find($idUtilisateurConnecte);
+
+
         $etablissement = new Etablissement();
+        $etablissement->setUtilisateur($user);
+        
         $form = $this->createForm(EtablissementType::class, $etablissement);
         $form->handleRequest($request);
 
