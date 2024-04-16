@@ -26,6 +26,11 @@ class UtilisateurController extends AbstractController
             'utilisateurs' => $utilisateurRepository->findAll(),
         ]);
     }
+    #[Route('/login', name: 'login')]
+    public function login(): Response
+    {
+        return $this->render('utilisateur/login.html.twig');
+    }
 
     #[Route('/new', name: 'app_utilisateur_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
