@@ -82,7 +82,7 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-7">
                         <div class="wow fadeInUp" data-wow-delay="0.3s">
-                         {{ form_start(form , {'attr': {'class':'form-horizontal','novalidate':'novalidate'}}) }}
+                         {{ form_start(form , {'attr': {'class':'form-horizontal','novalidate':'novalidate','id': 'Form'}}) }}
                             
                                 <div class="row g-3">
                                   
@@ -106,7 +106,7 @@
 
 
 
-                                   <div class="col-md-6">
+<div class="col-md-6">
     <div class="d-flex align-items-center">
     <span class="text-gray-700 dark:text-gray-400">Date : </span>
         <label for="date" class="block mt-4 text-sm mr-3">
@@ -151,7 +151,7 @@
 
 
 
-                           <div class="col-12">
+<div class="col-12">
     <div class="d-flex align-items-center">
     <span class="text-gray-700 dark:text-gray-400">Comments : </span>
         <label for="nbComments" class="block mt-4 text-sm mr-3">
@@ -169,12 +169,12 @@
 
                                    <div class="col-12">
     <div class="d-flex align-items-center">
-    <span class="text-gray-700 dark:text-gray-400">Description : </span>
+    <span id="captionError"  class="text-gray-700 dark:text-gray-400">Description : </span>
         <label for="caption" class="block mt-4 text-sm mr-3">
             
         </label>
         <div class="flex-grow-1">
-            {{ form_widget(form.caption, {'attr': {'class': 'form-control'}}) }}
+            {{ form_widget(form.caption, {'id': 'captionInput','attr': {'class': 'form-control'}}) }}
         </div>
     </div>
 </div>
@@ -245,7 +245,52 @@
             </div>
         </div>
         <!-- Contact End -->
-        
+    <script>
+		// Fonction de validation du formulaire
+function validateForm() {
+
+
+
+let nom = document.getElementById('captionInput').value.trim();
+let nomError = document.getElementById('captionError');
+let image = document.getElementById('fileNameInput').value.trim();
+let imageError = document.getElementById('imageError');
+// Expression régulière pour valider que le champ ne contient que des lettres et des espaces
+let letterOnlyRegex = /^[A-Za-z\s]+$/;
+
+
+if (nom === '') {
+nomError.textContent = 'Description is required';
+return false;
+} else if (! letterOnlyRegex.test(nom)) {
+nomError.textContent = 'Description doit contenir uniquement des lettres';
+return false;
+} else {
+nomError.textContent = '';
+}
+
+
+if (image === '') {
+imageError.textContent = 'Image is required';
+return false;
+} else {
+imageError.textContent = '';
+}
+
+
+
+// Si toutes les validations passent, retourne true pour soumettre le formulaire
+return true;
+}
+
+// Attachez l'événement de soumission du formulaire à la fonction de validation
+document.getElementById('Form').addEventListener('submit', function (event) {
+if (! validateForm()) { // Empêche la soumission du formulaire si la validation échoue
+event.preventDefault();
+}
+});
+	</script>
+     
 
        
 {% endblock %}

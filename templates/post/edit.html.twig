@@ -15,17 +15,20 @@
     </button>
 </div>
 <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
-    {{ form_start(form , {'attr': {'class':'form-horizontal','novalidate':'novalidate'}}) }}
+    {{ form_start(form , {'attr': {'class':'form-horizontal','novalidate':'novalidate' ,'id': 'Form'}}) }}
     
   
-      <label class="block mt-4 text-sm">
-        <span class="text-gray-700 dark:text-gray-400">Description</span>
-        {{ form_widget(form.audience, {'attr': {'class': 'block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray', 'rows': '7', 'placeholder': 'Enter some long form description'}}) }}
-    </label>  
-    <label class="block mt-4 text-sm">
-        <span class="text-gray-700 dark:text-gray-400">Description</span>
-        {{ form_widget(form.caption, {'attr': {'class': 'block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray', 'rows': '7', 'placeholder': 'Enter some long form description'}}) }}
+     <label class="block mt-4 text-sm">
+        <span class="text-gray-700 dark:text-gray-400">Audience</span>
+        {{ form_widget(form.audience, {'attr': {'class': 'block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray', 'rows': '7'}}) }}
+        <span id="audienceError" class="text-xs text-red-600 dark:text-red-400"></span>
     </label>
+
+    <label class="block text-sm">
+			<span class="text-gray-700 dark:text-gray-400">Caption</span>
+			{{ form_widget(form.caption, {'id': 'captionInput', 'attr': {'class': 'block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray'}}) }}
+			<span id="captionError" class="text-xs text-red-600 dark:text-red-400"></span>
+		</label>
 
   <label class="block text-sm">
     <span class="text-gray-700 dark:text-gray-400">Date</span>
@@ -36,12 +39,15 @@
 
     <label class="block text-sm">
         <span class="text-gray-700 dark:text-gray-400">Choose User</span>
-        {{ form_widget(form.utilisateur) }}
+        {{ form_widget(form.utilisateur, {'id': 'utilisateur'}) }}
+        <span id="utilisateurError" class="text-xs text-red-600 dark:text-red-400"></span>
     </label>
+
     <label class="block mt-4 text-sm">
         <span class="text-gray-700 dark:text-gray-400">Reactions</span>
         {{ form_widget(form.totalReactions, {'attr': {'class': 'block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray', 'rows': '7', 'placeholder': 'Enter some long form description'}}) }}
     </label>
+
     <label class="block mt-4 text-sm">
         <span class="text-gray-700 dark:text-gray-400">Comments</span>
         {{ form_widget(form.nbComments, {'attr': {'class': 'block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray', 'rows': '7', 'placeholder': 'Enter some long form description'}}) }}
@@ -87,6 +93,62 @@
    
     {{ form_end(form) }}
 
+<script>
+		// Fonction de validation du formulaire
+function validateForm() {
+
+
+
+let nom = document.getElementById('captionInput').value.trim();
+let nomError = document.getElementById('captionError');
+
+let image = document.getElementById('fileNameInput').value.trim();
+let imageError = document.getElementById('imageError');
+
+let utilisateur = document.getElementById('utilisateur').value;
+let utilisateurError = document.getElementById('utilisateurError');
+
+// Expression régulière pour valider que le champ ne contient que des lettres et des espaces
+let letterOnlyRegex = /^[A-Za-z\s]+$/;
+
+
+if (nom === '') {
+nomError.textContent = 'Description is required';
+return false;
+} else if (! letterOnlyRegex.test(nom)) {
+nomError.textContent = 'Description doit contenir uniquement des lettres';
+return false;
+} else {
+nomError.textContent = '';
+}
+
+
+if (image === '') {
+imageError.textContent = 'Image is required';
+return false;
+} else {
+imageError.textContent = '';
+}
+
+if (utilisateur === '') {
+utilisateurError.textContent = 'Utilisateur is required';
+return false;
+} else {
+utilisateurError.textContent = '';
+}
+
+
+// Si toutes les validations passent, retourne true pour soumettre le formulaire
+return true;
+}
+
+// Attachez l'événement de soumission du formulaire à la fonction de validation
+document.getElementById('Form').addEventListener('submit', function (event) {
+if (! validateForm()) { // Empêche la soumission du formulaire si la validation échoue
+event.preventDefault();
+}
+});
+	</script>
 
 
 

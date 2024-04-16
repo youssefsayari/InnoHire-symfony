@@ -1,6 +1,6 @@
 {#{% extends 'base.html.twig' %}#}
 
-{% block title %}Edit Commentaire{% endblock %}
+{#{% block title %}Edit Commentaire{% endblock %}
 
 {% block body %}
     <h1>Edit Commentaire</h1>
@@ -10,4 +10,62 @@
     <a href="{{ path('app_commentaire_index') }}">back to list</a>
 
     {{ include('commentaire/_delete_form.html.twig') }}
+{% endblock %}#}
+ {% extends 'base.html.twig' %}
+
+{% block title %}New Comment{% endblock %}
+
+{% block body %}
+<div class="flex items-center justify-between">
+    <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+        Update ur Comment
+    </h2>
+
+    <button onclick="window.location.href='{{ path('app_commentaire_index') }}'"
+            class="flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+        <span> Back to List</span>
+    </button>
+</div>
+
+<div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+    {{ form_start(form , {'attr': {'class':'form-horizontal','novalidate':'novalidate'}}) }}
+    
+
+<label class="block mt-4 text-sm">
+        <span class="text-gray-700 dark:text-gray-400">Description</span>
+        {{ form_widget(form.description_co, {'attr': {'class': 'block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray', 'rows': '7', }}) }}
+    </label>
+
+       
+   
+
+  <label class="block text-sm">
+    <span class="text-gray-700 dark:text-gray-400">Date</span>
+    {{ form_widget(form.date_co) }}
+</label>
+
+
+
+    <label class="block text-sm">
+        <span class="text-gray-700 dark:text-gray-400">Choose User</span>
+        {{ form_widget(form.post) }}
+    </label>
+     <label class="block text-sm">
+        <span class="text-gray-700 dark:text-gray-400">Choose User</span>
+        {{ form_widget(form.utilisateur) }}
+    </label>
+  
+    
+    
+	</div>
+<button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+        {{ button_label|default(' + Upadate') }}
+    </button>
+   
+    {{ form_end(form) }}
+
+
+
 {% endblock %}
+
+

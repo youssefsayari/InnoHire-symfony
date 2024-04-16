@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Commentaire;
+use App\Entity\Post;
 use App\Form\CommentaireType;
 use App\Repository\CommentaireRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,6 +22,8 @@ class CommentaireController extends AbstractController
             'commentaires' => $commentaireRepository->findAll(),
         ]);
     }
+
+   
 
     #[Route('/new', name: 'app_commentaire_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -42,6 +45,29 @@ class CommentaireController extends AbstractController
         ]);
     }
 
+
+    #[Route('/{id_post}/newFront', name: 'app_commentaire_newFront', methods: ['GET', 'POST'])]
+    public function newFront(Request $request, EntityManagerInterface $entityManager,Post $post): Response
+    {
+        $commentaire = new Commentaire();
+        $commentaire->setPost($post);
+        $form = $this->createForm(CommentaireType::class, $commentaire);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($commentaire);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_post_front', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('commentaire/newFront.html.twig', [
+            'commentaire' => $commentaire,
+            'form' => $form,
+        ]);
+    }
+
+    
     #[Route('/{id_commentaire}', name: 'app_commentaire_show', methods: ['GET'])]
     public function show(Commentaire $commentaire): Response
     {

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Post;
 use App\Form\PostType;
+use App\Repository\CommentaireRepository;
 use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,10 +24,20 @@ class PostController extends AbstractController
     }
 
     #[Route('/front', name: 'app_post_front', methods: ['GET'])]
-    public function front(PostRepository $postRepository): Response
+    public function front(PostRepository $postRepository,CommentaireRepository $commentaireRepository): Response
     {
+        $posts = $postRepository->findAll(); // Get all establishments
+        $postsAndComments = []; // Initialize empty array
+        foreach ($posts as $post) {
+            $comments = $commentaireRepository->findBy(['post' => $post]);
+
+            $postsAndComments[] = [
+                'post' => $post,
+                'comments' => $comments,
+            ];
+        }
         return $this->render('post/front.html.twig', [
-            'posts' => $postRepository->findAll(),
+            'postsAndComments' => $postsAndComments,
         ]);
     }
     
