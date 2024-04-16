@@ -1,0 +1,112 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    chatbot
+{% endblock %}
+
+{% block body %}
+    <div class="flex items-center justify-between">
+        <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+            How can I help you today ?
+        </h2>
+        <button onclick="window.location.href='{{ path('app_messagerie_index') }}'" class="flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+            <span>
+                <!--&LeftArrow;-->
+                Back Home</span>
+        </button>
+    </div>
+
+    <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800" style="width: 62rem;">
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <img src="{{ asset('/images/blink.gif') }}" class="rounded-circle" style="width: 65px; height: 65px;" alt="...">
+            </div>
+            <div class="col">
+                <p class="card-text">
+                    I'm ChatBot, an AI designed to assist and converse with people like you. Whether you need information, want to chat, or have questions, I'm here to help!</p>
+            </div>
+        </div>
+    </div>
+
+<div id="conversation" class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800" style="width: 62rem;">
+   {# {% if userMessage %}
+        <div class="user-message">
+            <p>{{ userMessage }}</p>
+        </div>
+    {% endif %}
+    {% if aiResponse %}
+        <div class="ai-response">
+            <p>{{ aiResponse }}</p>
+        </div>
+    {% endif %}#}   
+</div>
+
+    <br><br><br><br><br>
+
+    {% block footer %}
+        <footer class="fixed bottom-0 w-full bg-gray-200 p-4">
+            <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800" style="width: 59rem;">
+                <div class="flex items-center justify-between">
+                    <textarea id="userMessage" class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray" rows="2" cols="3" placeholder="Enter your message here"></textarea>
+                    <button id="sendMessageBtn" class="flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                        <span>Send</span>
+                    </button>
+                </div>
+            </div>
+        </footer>
+    {% endblock %}
+
+    <script>
+        // Function to append user's message to the conversation area
+        function appendUserMessage(message) {
+            var conversationDiv = document.getElementById("conversation");
+            var messageDiv = document.createElement("div");
+            messageDiv.innerHTML = `
+	    <div class="px-2 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800" style="width: 59rem;">
+                <div class="flex items-center justify-between">
+                    <div class="d-grid gap-2 d-md-block">
+                        <div class="row">
+                            <div class="col-auto">
+                                <img src="{{ asset('/images/manh.png') }}" class="card-img-top" style="width: 45px; height: 45px;" alt="...">&nbsp;&nbsp;
+                            </div>
+                            <div class="col-auto">
+                                <p class="card-text">${message}</p>
+                            </div>
+                        </div>
+                    </div>
+		 </div>
+              </div>`;
+            conversationDiv.appendChild(messageDiv);
+        }
+
+ document.getElementById("sendMessageBtn").addEventListener("click", function () {
+    var userMessage = document.getElementById("userMessage").value.trim();
+    if (userMessage !== "") {
+        // Send message to backend
+        fetch('/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: userMessage }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Display AI response
+            appendResponse(data.response);
+        });
+
+        // Clear the input field
+        document.getElementById("userMessage").value = "";
+    }
+});
+
+function appendResponse(response) {
+    var conversationDiv = document.getElementById("conversation");
+    var messageDiv = document.createElement("div");
+    messageDiv.textContent = response;
+    conversationDiv.appendChild(messageDiv);
+}
+
+    </script>
+{% endblock %}
