@@ -20,6 +20,12 @@ class UtilisateurRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Utilisateur::class);
     }
+    public function findUserByCredentials(string $cin, string $mdp): ?Utilisateur
+    {
+        return $this->findOneBy(['cin' => $cin, 'mdp' => $mdp]);
+    }
+
+
 
 //    /**
 //     * @return Utilisateur[] Returns an array of Utilisateur objects
