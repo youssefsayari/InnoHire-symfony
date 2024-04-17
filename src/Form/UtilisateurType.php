@@ -5,11 +5,15 @@ namespace App\Form;
 use App\Entity\Utilisateur;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Positive;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 class UtilisateurType extends AbstractType
 {
@@ -19,21 +23,34 @@ class UtilisateurType extends AbstractType
             ->add('cin', IntegerType::class, [
                 'constraints' => [
                     new NotBlank(['message' => 'Cin cannot be blank']),
+                    new Positive(['message' => 'Cin must be a positive number']),
+                  
                 ],
             ])
             ->add('nom', TextType::class, [
                 'constraints' => [
-                    new NotBlank(['message' => 'Nom  cannot be blank']),
+                    new NotBlank(['message' => 'Nom cannot be blank']),
+                    new Regex([
+                        'pattern' => '/\d/',
+                        'match' => false,
+                        'message' => 'Nom must not contain numbers',
+                    ]),
                 ],
             ])
             ->add('prenom', TextType::class, [
                 'constraints' => [
-                    new NotBlank(['message' => 'Prenom  cannot be blank']),
+                    new NotBlank(['message' => 'Prenom cannot be blank']),
+                    new Regex([
+                        'pattern' => '/\d/',
+                        'match' => false,
+                        'message' => 'Prenom must not contain numbers',
+                    ]),
                 ],
             ])
             ->add('adresse', TextType::class, [
                 'constraints' => [
-                    new NotBlank(['message' => 'Email  cannot be blank']),
+                    new NotBlank(['message' => 'Adresse cannot be blank']),
+                    new Email(['message' => 'Adresse must be a valid email address']),
                 ],
             ])
             ->add('mdp', TextType::class, [
@@ -59,6 +76,12 @@ class UtilisateurType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Utilisateur::class,
+            'constraints' => [
+                new UniqueEntity([
+                    'fields' => 'cin',
+                    'message' => 'Cin must be unique',
+                ]),
+            ],
         ]);
     }
 }
