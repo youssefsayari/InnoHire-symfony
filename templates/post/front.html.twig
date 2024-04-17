@@ -73,8 +73,6 @@
 							<a class="btn btn-square mx-1"  href="{{ path('app_post_editfront', {'id_post': postAndComment.post.idPost}) }}">
 								<i class="far fa-edit"></i>
 							</a>
-							
-
 							<a class="btn btn-square mx-1" href="{{ path('app_post_deleteFront', {'id_post': postAndComment.post.idPost}) }}">
 								<i class="fas fa-trash"></i>
 							</a>
@@ -100,6 +98,10 @@
     <div class="card-body mt-0 pt-0">
         <p class="card-text">{{ comment.DescriptionCo() }}</p>
     </div>
+	<a class="btn btn-square mx-1"  href="{{ path('app_commentaire_editFront', {'id_commentaire': comment.getIdCommentaire}) }}">
+								<i class="far fa-edit"></i>
+	</a>
+
 </div>
 
 
@@ -114,15 +116,7 @@
     </div>
    {% endif %}
 </div>
-
-
-
-
-
-
-
-						
-					</div>
+</div>
 				</div>
 
 {% endfor %}

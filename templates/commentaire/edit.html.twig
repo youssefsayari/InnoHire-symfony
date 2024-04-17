@@ -1,16 +1,4 @@
-{#{% extends 'base.html.twig' %}#}
 
-{#{% block title %}Edit Commentaire{% endblock %}
-
-{% block body %}
-    <h1>Edit Commentaire</h1>
-
-    {{ include('commentaire/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('app_commentaire_index') }}">back to list</a>
-
-    {{ include('commentaire/_delete_form.html.twig') }}
-{% endblock %}#}
  {% extends 'base.html.twig' %}
 
 {% block title %}New Comment{% endblock %}
@@ -28,12 +16,13 @@
 </div>
 
 <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
-    {{ form_start(form , {'attr': {'class':'form-horizontal','novalidate':'novalidate'}}) }}
+    {{ form_start(form , {'attr': {'class':'form-horizontal','novalidate':'novalidate','id': 'Form'}}) }}
     
 
+
 <label class="block mt-4 text-sm">
-        <span class="text-gray-700 dark:text-gray-400">Description</span>
-        {{ form_widget(form.description_co, {'attr': {'class': 'block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray', 'rows': '7', }}) }}
+        <span id="DescriptionError" class="text-gray-700 dark:text-gray-400">Description</span>
+        {{ form_widget(form.description_co, {'id': 'DescriptionInput','attr': {'class': 'block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray', 'rows': '7', }}) }}
     </label>
 
        
@@ -63,6 +52,35 @@
     </button>
    
     {{ form_end(form) }}
+
+<script>
+		// Fonction de validation du formulaire
+function validateForm() {
+
+let Description = document.getElementById('DescriptionInput').value.trim();
+let DescriptionError = document.getElementById('DescriptionError');
+let letterOnlyRegex = /^[A-Za-z\s]+$/;
+if (Description === '') {
+DescriptionError.textContent = 'Description is required';
+return false;
+} else if (! letterOnlyRegex.test(Description)) {
+DescriptionError.textContent = 'Description doit contenir uniquement des lettres';
+return false;
+} else {
+DescriptionError.textContent = '';
+}
+
+return true;
+}
+
+// Attachez l'événement de soumission du formulaire à la fonction de validation
+document.getElementById('Form').addEventListener('submit', function (event) {
+if (! validateForm()) { // Empêche la soumission du formulaire si la validation échoue
+event.preventDefault();
+}
+});
+	</script>
+    
 
 
 

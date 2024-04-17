@@ -93,6 +93,23 @@ class CommentaireController extends AbstractController
             'form' => $form,
         ]);
     }
+    #[Route('/{id_commentaire}/editFront', name: 'app_commentaire_editFront', methods: ['GET', 'POST'])]
+    public function editFront(Request $request, Commentaire $commentaire, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(CommentaireType::class, $commentaire);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_post_front', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('commentaire/editFront.html.twig', [
+            'commentaire' => $commentaire,
+            'form' => $form,
+        ]);
+    }
 
     #[Route('/{id_commentaire}', name: 'app_commentaire_delete', methods: ['POST'])]
     public function delete(Request $request, Commentaire $commentaire, EntityManagerInterface $entityManager): Response

@@ -169,12 +169,13 @@
 
                                    <div class="col-12">
     <div class="d-flex align-items-center">
-    <span id="captionError"  class="text-gray-700 dark:text-gray-400">Description : </span>
+    <span  class="text-gray-700 dark:text-gray-400">Description : </span>
         <label for="caption" class="block mt-4 text-sm mr-3">
             
         </label>
         <div class="flex-grow-1">
             {{ form_widget(form.caption, {'id': 'captionInput','attr': {'class': 'form-control'}}) }}
+            <span id="captionError" class="text-xs text-red-600 dark:text-red-400"></span>
         </div>
     </div>
 </div>

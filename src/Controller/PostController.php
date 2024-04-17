@@ -135,6 +135,9 @@ class PostController extends AbstractController
 
         return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    
+    
     #[Route('/{id_post}', name: 'app_post_deleteFront', methods: ['POST'])]
     public function deleteFront(Request $request, Post $post, EntityManagerInterface $entityManager): Response
     {
