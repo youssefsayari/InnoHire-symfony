@@ -2,14 +2,15 @@
 
 namespace App\Controller;
 
+use App\Form\AdminType;
 use App\Entity\Utilisateur;
 use App\Form\UtilisateurType;
-use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\UtilisateurRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/utilisateur')]
 class UtilisateurController extends AbstractController
@@ -55,12 +56,33 @@ class UtilisateurController extends AbstractController
         // If it's a GET request, simply show the login form
         return $this->render('utilisateur/login.html.twig');
     }
+    #[Route('/register', name: 'app_utilisateur_register', methods: ['GET', 'POST'])]
+    public function register(Request $request): Response
+    {
+        $utilisateur = new Utilisateur();
+        $form = $this->createForm(UtilisateurType::class, $utilisateur);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($utilisateur);
+            $entityManager->flush();
+    
+            return $this->redirectToRoute('login', [], Response::HTTP_SEE_OTHER);
+        }
+    
+        return $this->renderForm('utilisateur/register.html.twig', [
+            'utilisateur' => $utilisateur,
+            'form' => $form,
+        ]);
+    }
+ 
 
     #[Route('/new', name: 'app_utilisateur_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $utilisateur = new Utilisateur();
-        $form = $this->createForm(UtilisateurType::class, $utilisateur);
+        $form = $this->createForm(AdminType::class, $utilisateur);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -98,7 +120,7 @@ public function edit(Request $request,int $id_utilisateur, Utilisateur $utilisat
         throw $this->createNotFoundException('Utilisateur not found');
     }
 
-    $form = $this->createForm(UtilisateurType::class, $utilisateur);
+    $form = $this->createForm(AdminType::class, $utilisateur);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {

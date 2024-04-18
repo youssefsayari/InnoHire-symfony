@@ -15,7 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-class UtilisateurType extends AbstractType
+class AdminType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -60,7 +60,7 @@ class UtilisateurType extends AbstractType
             ])
             ->add('role', ChoiceType::class, [
                 'choices' => [
-                    
+                    'Admin' => 0,
                     'Representant' => 1,
                     'Candidat' => 2,
                 ],
