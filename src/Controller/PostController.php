@@ -27,6 +27,9 @@ class PostController extends AbstractController
     #[Route('/front', name: 'app_post_front', methods: ['GET'])]
     public function front(PostRepository $postRepository,CommentaireRepository $commentaireRepository): Response
     {
+
+        $idUtilisateurConnecte = $this->idUtilisateurConnecte;
+        
         $posts = $postRepository->findAll(); // Get all establishments
         $postsAndComments = []; // Initialize empty array
         foreach ($posts as $post) {
@@ -39,6 +42,7 @@ class PostController extends AbstractController
         }
         return $this->render('post/front.html.twig', [
             'postsAndComments' => $postsAndComments,
+            'idUtilisateurConnecte' => $idUtilisateurConnecte,
         ]);
     }
     
@@ -85,6 +89,7 @@ class PostController extends AbstractController
         return $this->renderForm('post/contact.html.twig', [
             'post' => $post,
             'form' => $form,
+            
         ]);
     }
 
@@ -144,7 +149,7 @@ class PostController extends AbstractController
 
     
     
-    #[Route('/{id_post}', name: 'app_post_deleteFront', methods: ['POST'])]
+    #[Route('/front/{id_post}', name: 'app_post_deleteFront', methods: ['POST'])]
     public function deleteFront(Request $request, Post $post, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$post->getIdpost(), $request->request->get('_token'))) {

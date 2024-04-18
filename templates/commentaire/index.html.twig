@@ -28,13 +28,13 @@
                       class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
                     >
                     
-                <th>Id_commentaire</th>
-                <th>Description_co</th>
-                <th>Date_co</th>
-                <th>Username</th>
-                <th>Userimage</th>
-                <th>Post</th>
-                <th>actions</th>
+                <th class="px-4 py-3">Id_commentaire</th>
+                <th class="px-4 py-3">Description_co</th>
+                <th class="px-4 py-3">Date_co</th>
+                <th class="px-4 py-3">Username</th>
+                <th class="px-4 py-3">Userimage</th>
+                <th class="px-4 py-3">Post</th>
+                <th class="px-4 py-3">actions</th>
             </tr>
         </thead>
         <tbody
@@ -42,7 +42,7 @@
                   >
         {% for commentaire in commentaires %}
              <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-4 py-3">
+                      <td class="px-4 py-4">
                         <div class="flex items-center text-sm">
                           <!-- Avatar with inset shadow -->
                          
@@ -52,14 +52,14 @@
                           </div>
                         </div>
                       </td>
-                <td class="px-4 py-3 text-sm">
+                <td class="px-4 py-4 text-sm">
                        {{  commentaire.descriptionCo }}
                       </td>
                
-               <td class="px-4 py-3 text-sm">
+               <td class="px-4 py-4 text-sm">
                         {{  commentaire.dateCo ? commentaire.dateCo|date('Y-m-d') : '' }}
                       </td>
-                 <td class="px-4 py-3">
+                 <td class="px-4 py-4">
                         <div class="flex items-center text-sm">
                           <!-- Avatar with inset shadow -->
                          
@@ -69,18 +69,18 @@
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3">
+                      <td class="px-4 py-4">
 										<div
 											class="flex items-center text-sm">
 											<!-- Avatar with inset shadow -->
 											<div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
-												<img class="object-cover w-full h-full rounded-full" src="{{ asset('imagesOumayma/' ~ commentaire.getUtilisateur().getNom() ) }}" alt="" loading="lazy"/>
+												<img class="object-cover w-full h-full rounded-full" src="{{ asset('images/' ~ commentaire.getUtilisateur().getImage() ) }}" alt="" loading="lazy"/>
 												<div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
 											</div>
 											
 										</div>
 									</td>  
-                  <td class="px-4 py-3">
+                  <td class="px-4 py-4">
                         <div class="flex items-center text-sm">
                           <!-- Avatar with inset shadow -->
                          
@@ -90,7 +90,7 @@
                           </div>
                         </div>
                       </td>
-                <td class="px-4 py-3">
+                <td class="px-4 py-4">
                         <div class="flex items-center space-x-4 text-sm">
 
 
