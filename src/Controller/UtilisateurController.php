@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Exception;
 use App\Form\AdminType;
 use App\Entity\Utilisateur;
 use App\Form\UtilisateurType;
@@ -11,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 #[Route('/utilisateur')]
 class UtilisateurController extends AbstractController
@@ -84,19 +86,56 @@ class UtilisateurController extends AbstractController
         $utilisateur = new Utilisateur();
         $form = $this->createForm(AdminType::class, $utilisateur);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form['image']->getData();
+            
+            if ($imageFile) {
+                // Use the original filename of the uploaded file
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                // Use the file extension of the uploaded file
+                $fileExtension = $imageFile->guessExtension();
+    
+                // Concatenate the original filename and extension
+                $imageName = $originalFilename.'.'.$fileExtension;
+    
+                // Move the file to the directory where images are stored
+                try {
+                    $imageFile->move(
+                        $this->getParameter('images_directory'), // Defined in services.yaml
+                        $imageName
+                    );
+                } catch (FileException $e) {
+                    // Handle file upload error
+                    // You may want to customize this part based on your application's needs
+                    throw new Exception('Unable to upload the image file.');
+                }
+    
+                // Store the image file name in the database
+                $utilisateur->setImage($imageName);
+            }
+    
+            // Persist the Utilisateur entity
             $entityManager->persist($utilisateur);
             $entityManager->flush();
-
+    
             return $this->redirectToRoute('app_utilisateur_index', [], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->renderForm('utilisateur/new.html.twig', [
             'utilisateur' => $utilisateur,
             'form' => $form,
         ]);
     }
+    
+
+
+
+
+    
+
+    
+    
 
     #[Route('/{id_utilisateur}', name: 'app_utilisateur_show', methods: ['GET'])]
     public function show(int $id_utilisateur, UtilisateurRepository $utilisateurRepository): Response

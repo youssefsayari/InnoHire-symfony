@@ -4,8 +4,12 @@ namespace App\Entity;
 
 use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
+#[Vich\Uploadable]
 class Utilisateur
 {
     #[ORM\Id]
@@ -33,6 +37,9 @@ class Utilisateur
 
     #[ORM\Column(type: "string", length: 255, nullable: true)]
     private ?string $image = null;
+
+    #[Vich\UploadableField(mapping: "user_images", fileNameProperty: "image")]
+    private ?File $imageFile = null;
 
     public function getIdUtilisateur(): ?int
     {
@@ -116,10 +123,20 @@ class Utilisateur
         return $this->image;
     }
 
-    public function setImage(string $image): self
+    public function setImage(?string $image): self
     {
         $this->image = $image;
 
         return $this;
+    }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    public function setImageFile(?File $imageFile): void
+    {
+        $this->imageFile = $imageFile;
     }
 }

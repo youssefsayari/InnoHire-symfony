@@ -5,16 +5,15 @@ namespace App\Form;
 use App\Entity\Utilisateur;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints\File;
-use Symfony\Component\Validator\Constraints\Email;
-use Symfony\Component\Validator\Constraints\Regex;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Positive;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Positive;
+use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 class AdminType extends AbstractType
@@ -26,7 +25,6 @@ class AdminType extends AbstractType
                 'constraints' => [
                     new NotBlank(['message' => 'Cin cannot be blank']),
                     new Positive(['message' => 'Cin must be a positive number']),
-                  
                 ],
             ])
             ->add('nom', TextType::class, [
@@ -52,12 +50,11 @@ class AdminType extends AbstractType
             ->add('adresse', TextType::class, [
                 'constraints' => [
                     new NotBlank(['message' => 'Adresse cannot be blank']),
-                    new Email(['message' => 'Adresse must be a valid email address']),
                 ],
             ])
             ->add('mdp', TextType::class, [
                 'constraints' => [
-                    new NotBlank(['message' => 'mdp  cannot be blank']),
+                    new NotBlank(['message' => 'mdp cannot be blank']),
                 ],
             ])
             ->add('role', ChoiceType::class, [
@@ -66,12 +63,12 @@ class AdminType extends AbstractType
                     'Representant' => 1,
                     'Candidat' => 2,
                 ],
-                'expanded' => true, // Optionally, if you want radio buttons instead of a dropdown
-                'multiple' => false, // Optionally, if you want to allow selecting multiple roles
+                'expanded' => true,
+                'multiple' => false,
             ])
             ->add('image', FileType::class, [
                 'label' => 'User Image',
-                'mapped' => false, // This field is not mapped to any entity property
+                'mapped' => false,
                 'required' => false,
                 'constraints' => [
                     new File([
@@ -82,11 +79,9 @@ class AdminType extends AbstractType
                             'image/gif',
                         ],
                         'mimeTypesMessage' => 'Please upload a valid image file (jpeg, png, gif)',
-                    ])
+                    ]),
                 ],
             ]);
-            
-        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
