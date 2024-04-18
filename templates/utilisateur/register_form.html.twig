@@ -38,9 +38,9 @@
                    {% endif %}
     </div>
     <div class="form-group">
-    {{ form_label(form.role, 'Role:', {'label_attr': {'class': 'form-label text-purple'}}) }}
-    {{ form_widget(form.role, {'attr': {'class': 'form-control'}, 'choices': {'Representant': 1, 'Candidat': 2}}) }}
-</div>
+        {{ form_label(form.role, 'Role:', {'label_attr': {'class': 'form-label text-purple'}}) }}
+        {{ form_widget(form.role, {'attr': {'class': 'form-control'}}) }}
+    </div>
 <div class="form-group">
     {{ form_label(form.mdp, 'Mot de passe:', {'label_attr': {'class': 'form-label text-purple'}}) }}
     {{ form_widget(form.mdp, {'attr': {'class': 'form-control masked-password', 'autocomplete': 'new-password'}}) }}
