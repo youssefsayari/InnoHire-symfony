@@ -66,6 +66,32 @@ class UtilisateurController extends AbstractController
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form['image']->getData();
+            
+            if ($imageFile) {
+                // Use the original filename of the uploaded file
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                // Use the file extension of the uploaded file
+                $fileExtension = $imageFile->guessExtension();
+    
+                // Concatenate the original filename and extension
+                $imageName = $originalFilename.'.'.$fileExtension;
+    
+                // Move the file to the directory where images are stored
+                try {
+                    $imageFile->move(
+                        $this->getParameter('images_directory'), // Defined in services.yaml
+                        $imageName
+                    );
+                } catch (FileException $e) {
+                    // Handle file upload error
+                    // You may want to customize this part based on your application's needs
+                    throw new Exception('Unable to upload the image file.');
+                }
+    
+                // Store the image file name in the database
+                $utilisateur->setImage($imageName);
+            }
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($utilisateur);
             $entityManager->flush();
@@ -132,7 +158,7 @@ class UtilisateurController extends AbstractController
 
 
 
-    
+
 
     
     

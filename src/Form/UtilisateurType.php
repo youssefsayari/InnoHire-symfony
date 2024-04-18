@@ -5,11 +5,13 @@ namespace App\Form;
 use App\Entity\Utilisateur;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Positive;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -67,9 +69,24 @@ class UtilisateurType extends AbstractType
                 'expanded' => true, // Optionally, if you want radio buttons instead of a dropdown
                 'multiple' => false, // Optionally, if you want to allow selecting multiple roles
             ])
-           // ->add('image')
+            ->add('image', FileType::class, [
+                'label' => 'User Image',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '1024k',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/gif',
+                        ],
+                        'mimeTypesMessage' => 'Please upload a valid image file (jpeg, png, gif)',
+                    ]),
+                ],
+            ]);
             
-        ;
+        
     }
 
     public function configureOptions(OptionsResolver $resolver): void
