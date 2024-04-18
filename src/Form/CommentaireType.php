@@ -10,12 +10,18 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+
 class CommentaireType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('description_co')
+        ->add('description_co', TextareaType::class, [
+            'attr' => ['class' => 'form-control', 'rows' => 5], // Vous pouvez ajuster rows pour modifier la hauteur du champ
+            'label' => 'Description :',
+            // Ajoutez d'autres options selon vos besoins
+        ])
             
             ->add('date_co', DateTimeType::class, [
                 'widget' => 'single_text',

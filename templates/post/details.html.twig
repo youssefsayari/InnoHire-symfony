@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Post
+{% endblock %}
+
+{% block body %}
+	<div
+		x-data="{ isModalOpen: true }">
+		<!-- Initialisez la variable isModalOpen à true pour ouvrir le modal par défaut -->
+		<div
+			x-show="isModalOpen" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 transform translate-y-1/2" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0 transform translate-y-1/2" class="fixed inset-0 z-30 flex items-end bg-black bg-opacity-50 sm:items-center sm:justify-center">
+			<!-- Modal -->
+			<div
+				x-show="isModalOpen" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 transform translate-y-1/2" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0 transform translate-y-1/2" @click.away="closeModal" @keydown.escape="closeModal" class="w-full max-w-xl px-6 py-4 overflow-hidden bg-white rounded-lg dark:bg-gray-800" role="dialog" id="modal" style="margin: auto">
+
+				<!-- Modal description -->
+				<div
+					class="mt-4 mb-2 text-lg font-semibold text-gray-700 dark:text-gray-300 items-center justify-center text-center">
+					<!-- Modal title -->
+					<p class="mb-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
+						Post
+					</p>
+					<br>
+					<!-- Modal body -->
+					<div class="flex items-center justify-center">
+						<table class="table">
+							<tbody>
+
+
+								<tr>
+									<th class="px-4 py-2">Username</th>
+									<td class="px-4 py-2">{{ post.getUtilisateur().getNom() }}</td>
+								</tr>
+                                <tr>
+									<th class="px-4 py-2">Audience</th>
+									<td class="px-4 py-2">{{ post.audience}}</td>
+								</tr>
+								<tr>
+									<th class="px-4 py-2">Caption</th>
+									<td class="px-4 py-2">{{post.caption}}</td>
+								</tr>
+								
+								<tr>
+									<th class="px-4 py-2">Date</th>
+									<td class="px-4 py-2">{{ post.date ? post.date|date('Y-m-d H:i:s') : '' }}</td>
+								</tr>
+								<tr>
+									<th class="px-4 py-2">Number of Comments</th>
+									<td class="px-4 py-2">{{ post.nbComments }}</td>
+								</tr>
+								<tr>
+									<th class="px-4 py-2">Image</th>
+									<td class="px-4 py-2">
+										<img src="{{ asset('imagesOumayma/' ~ post.image) }}" alt="Image of Post {{ post.caption }}"/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<!-- Footer -->
+				<footer class="flex justify-center mt-6">
+					<!-- Modification de la classe pour centrer horizontalement -->
+					<!-- Accept button -->
+						<a href="{{ path('app_post_index') }}"> <button @click="closeModal" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg sm:px-4 sm:py-2 active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+							Close
+						</button>
+					</a>
+				</footer>
+			</div>
+		</div>
+	</div>
+{% endblock %}

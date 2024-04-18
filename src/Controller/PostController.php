@@ -91,7 +91,7 @@ class PostController extends AbstractController
     #[Route('/{id_post}', name: 'app_post_show', methods: ['GET'])]
     public function show(Post $post): Response
     {
-        return $this->render('post/show.html.twig', [
+        return $this->render('post/details.html.twig', [
             'post' => $post,
         ]);
     }
