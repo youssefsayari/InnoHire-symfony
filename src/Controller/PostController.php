@@ -6,6 +6,7 @@ use App\Entity\Post;
 use App\Form\PostType;
 use App\Repository\CommentaireRepository;
 use App\Repository\PostRepository;
+use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -62,10 +63,15 @@ class PostController extends AbstractController
         ]);
     }
      //#FRONT AJOUTER#}
+     public $idUtilisateurConnecte = 2;//change iciiiiiiiiiiiiiiiiiiiiiiiii
     #[Route('/newFront', name: 'app_post_newFront', methods: ['GET', 'POST'])]
-    public function newFront(Request $request, EntityManagerInterface $entityManager): Response
+    public function newFront(Request $request, EntityManagerInterface $entityManager,UtilisateurRepository $userRepository): Response
     {
+        $idUtilisateurConnecte = $this->idUtilisateurConnecte;
+        $user = $userRepository->find($idUtilisateurConnecte);
+        
         $post = new Post();
+        $post->setUtilisateur($user);
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
 

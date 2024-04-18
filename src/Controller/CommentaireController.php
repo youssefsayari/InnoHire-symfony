@@ -6,6 +6,7 @@ use App\Entity\Commentaire;
 use App\Entity\Post;
 use App\Form\CommentaireType;
 use App\Repository\CommentaireRepository;
+use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,30 +32,50 @@ class CommentaireController extends AbstractController
         $commentaire = new Commentaire();
         $form = $this->createForm(CommentaireType::class, $commentaire);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
+            // Tout d'abord, persistez l'entité Commentaire
             $entityManager->persist($commentaire);
             $entityManager->flush();
-
-            return $this->redirectToRoute('app_commentaire_index', [], Response::HTTP_SEE_OTHER);
+    
+            // Ensuite, mettez à jour le nombre de commentaires dans l'entité Post
+            $post = $commentaire->getPost();
+            $post->setNbComments($post->getNbComments() + 1);
+            $entityManager->persist($post);
+            $entityManager->flush();
+    
+            return $this->redirectToRoute('app_commentaire_index');
         }
-
+    
         return $this->renderForm('commentaire/new.html.twig', [
             'commentaire' => $commentaire,
             'form' => $form,
         ]);
     }
-
-
+    
+    
     #[Route('/{id_post}/newFront', name: 'app_commentaire_newFront', methods: ['GET', 'POST'])]
-    public function newFront(Request $request, EntityManagerInterface $entityManager,Post $post): Response
+    public function newFront(Request $request, EntityManagerInterface $entityManager,Post $post,UtilisateurRepository $userRepository): Response
     {
+         // Créez une instance du PostController pour accéder à la propriété $idUtilisateurConnecte
+         $postController = new PostController();
+
+         // Accédez à la propriété $idUtilisateurConnecte
+         $idUtilisateurConnecte = $postController->idUtilisateurConnecte;
+        
+        $user = $userRepository->find($idUtilisateurConnecte);
+        
         $commentaire = new Commentaire();
+        $commentaire->setUtilisateur($user);
         $commentaire->setPost($post);
         $form = $this->createForm(CommentaireType::class, $commentaire);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Ensuite, mettez à jour le nombre de commentaires dans l'entité Post
+            $post = $commentaire->getPost();
+            $post->setNbComments($post->getNbComments() + 1);
+            $entityManager->persist($post);
             $entityManager->persist($commentaire);
             $entityManager->flush();
 

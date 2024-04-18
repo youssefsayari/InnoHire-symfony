@@ -14,7 +14,7 @@ class Commentaire
     #[ORM\Column(name: "id_commentaire", type: "integer")]
     private ?int $id_commentaire = null;
 
-    #[ORM\ManyToOne(targetEntity: "Post")]
+    #[ORM\ManyToOne(targetEntity: "Post", cascade: ["persist"])]// cascade: ["persist"]) Doctrine vérifiera si l'entité Post associée a été modifiée et si oui, elle sera persistée automatiquement.
     #[ORM\JoinColumn(name: "id_publication", nullable: false, referencedColumnName:"id_post")]
     private ?Post $post;
 

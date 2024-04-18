@@ -59,8 +59,8 @@
 
 										</div>
 									</div>
+									{{postAndComment.post.nbComments}} Comments | {{postAndComment.post.totalReactions}} Reactions
 									<br>
-
 								</div>
 							</div>
 						</div>
@@ -86,6 +86,7 @@
 
 <div class="d-flex justify-content-center p-4 flex-column">
 <h5 class="d-flex justify-content-center" >Commentaires:</h5>
+
  {% if postAndComment.comments %}
  {% for comment in postAndComment.comments %}
   <div class="card mb-3">

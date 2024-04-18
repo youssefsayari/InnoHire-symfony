@@ -10,6 +10,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+
 class PostType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -48,8 +50,12 @@ class PostType extends AbstractType
 
                 ]
             ])
-            ->add('totalReactions')
-            ->add('nbComments')
+            ->add('totalReactions', IntegerType::class, [
+                'attr' => ['value' => 0],
+            ])
+            ->add('nbComments', IntegerType::class, [
+                'attr' => ['value' => 0],
+            ])
             ->add('utilisateur', EntityType::class, ['class' => Utilisateur::class,
                              'choice_label' => 'id_utilisateur', 
                              // ou tout autre propriété de Utilisateur que vous souhaitez afficher
