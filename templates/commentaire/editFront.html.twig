@@ -99,6 +99,8 @@
         <div class="flex-grow-1">
             {{ form_widget(form.description_co, {'id': 'DescriptionInput','attr': {'class': 'form-control'}}) }}
             <span id="DescriptionError" class="text-xs text-red-600 dark:text-red-400"></span>
+            <span class="error-message">{{ form_errors(form.description_co) }}</span>
+
         </div>
     </div>
 </div>
@@ -115,6 +117,7 @@
         </label>
         <div class="flex-grow-1">
             {{ form_widget(form.date_co, {'attr': {'class': 'form-control'}}) }}
+            <span class="error-message">{{ form_errors(form.date_co) }}</span>
         </div>
     </div>
 </div>
@@ -128,6 +131,7 @@
         </label>
         <div class="flex-grow-1">
             {{ form_widget(form.post, {'attr': {'class': 'form-select'}}) }}
+            <span class="error-message">{{ form_errors(form.post) }}</span>
         </div>
     </div>
 </div>
@@ -141,6 +145,7 @@
         </label>
         <div class="flex-grow-1">
             {{ form_widget(form.utilisateur, {'attr': {'class': 'form-select'}}) }}
+            <span class="error-message">{{ form_errors(form.utilisateur) }}</span>
         </div>
     </div>
 </div>
@@ -164,8 +169,7 @@
             </div>
         </div>
         <!-- Contact End -->
-        
-<script>
+        {#<script>
 		// Fonction de validation du formulaire
 function validateForm() {
 
@@ -192,5 +196,11 @@ event.preventDefault();
 }
 });
 	</script>
+    #}
+<style>
+	.error-message {
+    color: red;
+}
+</style>
        
 {% endblock %}

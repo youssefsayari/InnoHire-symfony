@@ -6,6 +6,10 @@ use App\Repository\PostRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+
+use Symfony\Component\Validator\Constraints as Assert;
+
+
 #[ORM\Entity(repositoryClass: PostRepository::class)]
 class Post
 {
@@ -14,27 +18,33 @@ class Post
     #[ORM\Column(name: "id_post", type: "integer")]
     private ?int $id_post = null;
 
-    #[ORM\ManyToOne(targetEntity:"Utilisateur")]
-    #[ORM\JoinColumn(name:"id_utilisateur",nullable: false, referencedColumnName: "id_utilisateur")]
+    #[ORM\ManyToOne(targetEntity: "Utilisateur")]
+    #[ORM\JoinColumn(name: "id_utilisateur", nullable: false, referencedColumnName: "id_utilisateur")]
+    #[Assert\NotBlank(message: "Le champ utilisateur ne peut pas être vide.")]
     private ?Utilisateur $utilisateur;
 
+    #[Assert\NotBlank(message: "Le champ audience ne peut pas être vide.")]
     #[ORM\Column(length: 255)]
     private ?string $audience = null;
 
+    #[Assert\NotNull(message: "La date ne peut pas être vide.")]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
+    #[Assert\NotBlank(message: "Le champ caption ne peut pas être vide.")]
     #[ORM\Column(length: 255)]
     private ?string $caption = null;
 
+    #[Assert\NotBlank(message: "Le champ image ne peut pas être vide.")]
     #[ORM\Column(length: 255)]
     private ?string $image = null;
 
-   
-    #[ORM\Column(name: "totalReactions",nullable: true)]
+    #[Assert\Range(min: 0, minMessage: "Le nombre total de réactions doit être supérieur ou égal à zéro.")]
+    #[ORM\Column(name: "totalReactions", nullable: true)]
     private ?int $totalReactions = null;
 
-    #[ORM\Column(name: "nbComments",nullable: true)]
+    #[Assert\Range(min: 0, minMessage: "Le nombre de commentaires doit être supérieur ou égal à zéro.")]
+    #[ORM\Column(name: "nbComments", nullable: true)]
     private ?int $nbComments = null;
 public function getIdPost(): ?int
     {

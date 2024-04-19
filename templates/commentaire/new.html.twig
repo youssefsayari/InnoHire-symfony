@@ -21,6 +21,8 @@
 <label class="block mt-4 text-sm">
         <span id="DescriptionError" class="text-gray-700 dark:text-gray-400">Description</span>
         {{ form_widget(form.description_co, {'id': 'DescriptionInput','attr': {'class': 'block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray', 'rows': '7', }}) }}
+                      			<span class="error-message">{{ form_errors(form.description_co) }}</span>
+
     </label>
 
        
@@ -36,10 +38,14 @@
     <label class="block text-sm">
         <span class="text-gray-700 dark:text-gray-400">Choose User</span>
         {{ form_widget(form.post) }}
+                      			<span class="error-message">{{ form_errors(form.post) }}</span>
+
     </label>
      <label class="block text-sm">
         <span class="text-gray-700 dark:text-gray-400">Choose User</span>
         {{ form_widget(form.utilisateur) }}
+                      			<span class="error-message">{{ form_errors(form.utilisateur) }}</span>
+
     </label>
   
     
@@ -50,7 +56,7 @@
     </button>
    
     {{ form_end(form) }}
-    
+    {#
 <script>
 		// Fonction de validation du formulaire
 function validateForm() {
@@ -78,6 +84,12 @@ event.preventDefault();
 }
 });
 	</script>
+    #}
+    <style>
+	.error-message {
+    color: red;
+}
+</style>
 {% endblock %}
 
 

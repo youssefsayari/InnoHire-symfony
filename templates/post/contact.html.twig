@@ -99,6 +99,8 @@
         </label>
         <div class="flex-grow-1">
             {{ form_widget(form.audience, {'attr': {'class': 'form-select'}}) }}
+            <span class="error-message">{{ form_errors(form.audience) }}</span>
+
         </div>
     </div>
 </div>
@@ -127,6 +129,8 @@
         {{ form_widget(form.utilisateur, {'id': 'utilisateurInput', 'attr': {'class': 'form-select', 'disabled': true}}) }}
         <input type="hidden" id="utilisateurHidden" name="post[utilisateur]" value="{{ selectedUserId }}">
         <span id="utilisateurError" class="text-xs" style="color: red;"></span>
+        <span class="error-message">{{ form_errors(form.utilisateur) }}</span>
+
     </div>
 </div>
 
@@ -175,6 +179,8 @@
         <div class="flex-grow-1">
             {{ form_widget(form.caption, {'id': 'captionInput','attr': {'class': 'form-control'}}) }}
             <span id="captionError" class="text-xs text-red-600 dark:text-red-400"></span>
+            <span class="error-message">{{ form_errors(form.caption) }}</span>
+
         </div>
     </div>
 </div>
@@ -214,6 +220,8 @@
                     </script>
                 </div>
                 <span id="imageError" class="text-xs text-red-600 dark:text-red-400"></span>
+                <span class="error-message">{{ form_errors(form.image) }}</span>
+
             </div>
         </div>
     </div>
@@ -245,6 +253,7 @@
             </div>
         </div>
         <!-- Contact End -->
+        {#
     <script>
 		// Fonction de validation du formulaire
 function validateForm() {
@@ -290,7 +299,12 @@ event.preventDefault();
 }
 });
 	</script>
-     
+     #}
+      <style>
+	.error-message {
+    color: red;
+}
+</style>
 
        
 {% endblock %}
