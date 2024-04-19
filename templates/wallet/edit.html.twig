@@ -31,6 +31,8 @@
 			<span class="text-gray-700 dark:text-gray-400">Balance</span>
                 {{ form_widget(form.balance,{'id': 'balanceInput'})}}
                     <span id="balanceError" class="text-xs text-red-600 dark:text-red-400"></span>
+                        <span class="error-message">{{ form_errors(form.balance) }}</span>
+
 
         </label>
 
@@ -75,7 +77,7 @@
 	</div>
 
 
-	<button id="submitButton" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" disabled>
+	<button id="submitButton" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" >
 		{{ button_label|default('Update') }}
 	</button>
 	<br>
@@ -84,7 +86,7 @@
 	{{ form_end(form) }}
     
 
-
+{#}
  <script>
     document.addEventListener("DOMContentLoaded", function() {
         var balanceInput = document.getElementById('balanceInput');
@@ -121,10 +123,14 @@
     });
 </script>
 
+#}
 
 
-
-
+<style>
+.error-message {
+    color: red;
+}
+</style>
 
 
   

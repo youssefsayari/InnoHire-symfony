@@ -59,6 +59,7 @@
                 {{ form_widget(form.nom, {'id': 'nomInput', 'attr': {'class': 'form-control'}}) }}
             </div>
                 <span id="nomError" class="text-xs" style="color: red;"></span>
+                <span class="error-message">{{ form_errors(form.nom) }}</span>
         </div>
     </div>
     <div class="col-md-6">
@@ -70,6 +71,7 @@
                 {{ form_widget(form.lieu, {'id': 'lieuInput', 'attr': {'class': 'form-control'}}) }}
             </div>
             <span id="lieuError" class="text-xs" style="color: red;"></span>
+            <span class="error-message">{{ form_errors(form.lieu) }}</span>
         </div>
     </div>
 </div>
@@ -90,6 +92,7 @@
             {{ form_widget(form.code_etablissement, {'id': 'code_etablissementInput', 'attr': {'class': 'form-control'}}) }}
         </div>
         <span id="code_etablissementError" class="text-xs" style="color: red;"></span>
+        <span class="error-message">{{ form_errors(form.code_etablissement) }}</span>
     </div>
 </div>
 
@@ -107,6 +110,7 @@
                 {{ form_widget(form.type_etablissement, {'id': 'type_etablissementInput', 'class': 'form-control'}) }}
             </div>
             <span id="type_etablissementError" class="text-xs" style="color: red;"></span>
+            <span class="error-message">{{ form_errors(form.type_etablissement) }}</span>
         </div>
     </div>
 </div>
@@ -149,6 +153,7 @@
                     </script>
                 </div>
                 <span id="imageError" class="text-xs" style="color: red;"></span>
+                <span class="error-message">{{ form_errors(form.image) }}</span>
             </div>
         </div>
     </div>
@@ -165,7 +170,7 @@
 
 
 
-<div class="col-12">
+<div class="col-12" style="display: none;">
     <div class="form-floating">
         <label for="utilisateurInput" class="block text-sm"></label>
         {% set selectedUserId = form.utilisateur.vars.value %}
@@ -205,7 +210,7 @@
             </div>
         </div>
         <!-- Contact End -->
-        
+     {#   
 <script>
 		// Fonction de validation du formulaire
 function validateForm() {
@@ -307,7 +312,7 @@ event.preventDefault();
 });
 	</script>
 
-
+#}
 	{% for message in app.flashes('error') %}
 		<script>
 			// alert("{{ message }}");
@@ -315,6 +320,10 @@ let codeEtablissementError = document.getElementById('code_etablissementError');
 codeEtablissementError.textContent = 'This Code is Already Taken';
 		</script>
 	{% endfor %}
-
+<style>
+	.error-message {
+    color: red;
+}
+</style>
 
 {% endblock %}

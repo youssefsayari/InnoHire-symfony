@@ -67,9 +67,12 @@
 					{% for etablissementAndWallet in etablissementsAndWallets %}
                    
 						<div class="col-lg-4 col-md-6 portfolio-item {{ etablissementAndWallet.etablissement.typeEtablissement|lower }} wow fadeInUp" data-wow-delay="0.1s">
-							<div class="rounded overflow-hidden">
-								<div class="position-relative overflow-hidden" style="width: 400px; height: 250px;">
+							
+                             
 
+                            <div class="rounded overflow-hidden">
+								<div class="position-relative overflow-hidden" style="width: 400px; height: 250px;">
+                                
 									<img class="img-fluid w-100" src="{{ asset('imagesEtablissements/' ~ etablissementAndWallet.etablissement.image) }}" alt="">
 									<div class="portfolio-overlay">
 										<a class="btn btn-square btn-outline-light mx-1" href="{{ asset('imagesEtablissements/' ~ etablissementAndWallet.etablissement.image) }}" data-lightbox="portfolio">
@@ -154,30 +157,46 @@
 
 									</div>
 								</div>
-								<div class="bg-light p-4">
-									<p class="text-primary fw-medium mb-2">
-										Code : {{ etablissementAndWallet.etablissement.codeEtablissement }}
-
-									</p>
-									<h5 class="lh-base mb-0">
-										Nom : {{ etablissementAndWallet.etablissement.nom }}
-
-									</a>
-									<h5 class="lh-base mb-0">
-										Lieu : {{ etablissementAndWallet.etablissement.lieu }}
-
-									</a>
-									<h5 class="lh-base mb-0">
-										Type : {{ etablissementAndWallet.etablissement.typeEtablissement }}
-
-									</a>
-									<h5 class="lh-base mb-0">
-										User : {{ etablissementAndWallet.etablissement.getUtilisateur().getNom() }}
-
-									</a>
 
 
-								</div>
+
+
+
+
+						<style>
+.label {
+    color: #555; /* Couleur du texte pour les labels */
+    font-weight: bold; /* Gras pour les labels */
+}
+
+.variable {
+    color: #000000; /* Couleur du texte pour les variables */
+    font-weight: bold;
+    font-style: italic bold; /* Italique pour les variables */
+}
+</style>
+
+<div class="bg-light p-4 border rounded">
+    <p class="label mb-2">
+        <i class="bi bi-upc-scan"></i> Code : <span style="color: #007bff;">{{ etablissementAndWallet.etablissement.codeEtablissement }}</span>
+    </p>
+    <h5 class="label mb-1">
+        <i class="bi bi-building"></i> Nom : <span class="variable">{{ etablissementAndWallet.etablissement.nom }}</span>
+    </h5>
+    
+    <h5 class="label mb-1">
+        <i class="bi bi-geo-alt"></i> Lieu : <span class="variable">{{ etablissementAndWallet.etablissement.lieu }}</span>
+    </h5>
+    <h5 class="label mb-1">
+        <i class="bi bi-list-nested"></i> Type : <span class="variable">{{ etablissementAndWallet.etablissement.typeEtablissement }}</span>
+    </h5>
+    <h5 class="label mb-1">
+        <i class="bi bi-person-circle"></i> User : <img class="img-fluid" src="{{ asset('images/' ~ etablissementAndWallet.etablissement.utilisateur.image) }}" alt="Profile Picture" style="width: 50px; height: 50px; border-radius: 50%; display: inline-block; margin-bottom: 10px;"><span class="variable"> {{ etablissementAndWallet.etablissement.getUtilisateur().getNom() }} </span><span class="variable">{{ etablissementAndWallet.etablissement.getUtilisateur().getPrenom() }} </span>
+
+    </h5>
+</div>
+
+
 							</div>
 						</div>
 					{% endfor %}

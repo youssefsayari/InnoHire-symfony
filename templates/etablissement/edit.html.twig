@@ -21,24 +21,28 @@
 			<span class="text-gray-700 dark:text-gray-400">Nom</span>
 			{{ form_widget(form.nom, {'id': 'nomInput'})}}
 			<span id="nomError" class="text-xs text-red-600 dark:text-red-400"></span>
+			<span class="error-message">{{ form_errors(form.nom) }}</span>
 		</label>
 
 		<label class="block text-sm">
 			<span class="text-gray-700 dark:text-gray-400">Lieu</span>
 			{{ form_widget(form.lieu, {'id': 'lieuInput'})}}
 			<span id="lieuError" class="text-xs text-red-600 dark:text-red-400"></span>
+			<span class="error-message">{{ form_errors(form.lieu) }}</span>
 		</label>
 
 		<label class="block text-sm">
 			<span class="text-gray-700 dark:text-gray-400">Code</span>
 			{{ form_widget(form.code_etablissement, {'id': 'code_etablissementInput'})}}
 			<span id="code_etablissementError" class="text-xs text-red-600 dark:text-red-400"></span>
+			<span class="error-message">{{ form_errors(form.code_etablissement) }}</span>
 		</label>
 
 		<label class="block text-sm">
 			<span class="text-gray-700 dark:text-gray-400">Type</span>
 			{{ form_widget(form.type_etablissement, {'id': 'type_etablissementInput'})}}
 			<span id="type_etablissementError" class="text-xs text-red-600 dark:text-red-400"></span>
+			<span class="error-message">{{ form_errors(form.type_etablissement) }}</span>
 		</label>
 
 		<div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
@@ -61,6 +65,7 @@ input.placeholder = '';
 
 				</div>
 				<span id="imageError" class="text-xs text-red-600 dark:text-red-400"></span>
+				<span class="error-message">{{ form_errors(form.image) }}</span>
 			</label>
 
 		</div>
@@ -71,16 +76,17 @@ input.placeholder = '';
 			</span>
 			{{ form_widget(form.utilisateur,{'id': 'utilisateurInput'}) }}
 			<span id="utilisateurError" class="text-xs text-red-600 dark:text-red-400"></span>
+			<span class="error-message">{{ form_errors(form.utilisateur) }}</span>
 		</label>
 
 		<br>
 		<button id="submitButton" type="submit" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-			{{ button_label|default(' + Update') }}
+			{{ button_label|default(' + Add') }}
 		</button>
 		<br>
 		{{ form_end(form) }}
 	</div>
-
+{#
 	<script>
 		// Fonction de validation du formulaire
 function validateForm() {
@@ -179,8 +185,9 @@ document.getElementById('etablissementForm').addEventListener('submit', function
 if (! validateForm()) { // Empêche la soumission du formulaire si la validation échoue
 event.preventDefault();
 }
-});
-	</script>
+}); 
+	</script> 
+	#}
 
 
 	{% for message in app.flashes('error') %}
@@ -190,6 +197,12 @@ let codeEtablissementError = document.getElementById('code_etablissementError');
 codeEtablissementError.textContent = 'This Code is Already Taken';
 		</script>
 	{% endfor %}
+	<style>
+	.error-message {
+    color: red;
+}
+</style>
+
 
 
 {% endblock %}

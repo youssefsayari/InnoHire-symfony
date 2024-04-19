@@ -14,49 +14,87 @@
 				x-show="isModalOpen" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 transform translate-y-1/2" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0 transform translate-y-1/2" @click.away="closeModal" @keydown.escape="closeModal" class="w-full max-w-xl px-6 py-4 overflow-hidden bg-white rounded-lg dark:bg-gray-800" role="dialog" id="modal" style="margin: auto">
 
 				<!-- Modal description -->
-				<div
-					class="mt-4 mb-2 text-lg font-semibold text-gray-700 dark:text-gray-300 items-center justify-center text-center">
-					<!-- Modal title -->
-					<p class="mb-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
-						Etablissement
-					</p>
-					<br>
-					<!-- Modal body -->
-					<div class="flex items-center justify-center">
-						<table class="table">
-							<tbody>
+<div class="modal-description">
+  <!-- Modal title -->
+  <h2 class="modal-title">Établissement</h2>
+  
+  <!-- Modal body -->
+  <div class="modal-body">
+    <table class="modal-table">
+      <tbody>
+        <tr>
+          <th>Nom</th>
+          <td>{{ etablissement.nom }}</td>
+        </tr>
+        <tr>
+          <th>Lieu</th>
+          <td>{{ etablissement.lieu }}</td>
+        </tr>
+        <tr>
+          <th>Code</th>
+          <td>{{ etablissement.codeEtablissement }}</td>
+        </tr>
+        <tr>
+          <th>Type</th>
+          <td>{{ etablissement.typeEtablissement }}</td>
+        </tr>
+        <tr>
+          <th>User</th>
+          <td>{{ etablissement.getUtilisateur().getNom() }}</td>
+        </tr>
+        <tr>
+          <th>Image</th>
+          <td>
+            <img src="{{ asset('imagesEtablissements/' ~ etablissement.image) }}" alt="Image de l'établissement {{ etablissement.nom }}" class="etablissement-image"/>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<style>
+.modal-description {
+  margin: 1rem 0;
+  text-align: center;
+  color: #2d3748; /* Gray-700 */
+}
+
+.modal-title {
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem; /* text-lg */
+  font-weight: 600; /* font-semibold */
+  color: #2d3748; /* Gray-700 */
+}
+
+.modal-body {
+  display: flex;
+  justify-content: center;
+}
+
+.modal-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.modal-table th,
+.modal-table td {
+  padding: 0.5rem; /* px-4 py-2 */
+  text-align: left;
+}
+
+.modal-table th {
+  background-color: #C5B4E3; /* Gray-200 */
+  color: #2d3748; /* Gray-700 */
+}
+
+.etablissement-image {
+  max-width: 100%;
+  height: auto;
+}
+</style>
 
 
-								<tr>
-									<th class="px-4 py-2">Nom</th>
-									<td class="px-4 py-2">{{ etablissement.nom }}</td>
-								</tr>
-								<tr>
-									<th class="px-4 py-2">Lieu</th>
-									<td class="px-4 py-2">{{ etablissement.lieu }}</td>
-								</tr>
-								<tr>
-									<th class="px-4 py-2">Code</th>
-									<td class="px-4 py-2">{{ etablissement.codeEtablissement }}</td>
-								</tr>
-								<tr>
-									<th class="px-4 py-2">Type</th>
-									<td class="px-4 py-2">{{ etablissement.typeEtablissement }}</td>
-								</tr>
-								<tr>
-									<th class="px-4 py-2">User</th>
-									<td class="px-4 py-2">{{ etablissement.getUtilisateur().getNom() }}</td>
-								</tr>
-								<tr>
-									<th class="px-4 py-2">Image</th>
-									<td class="px-4 py-2">
-										<img src="{{ asset('imagesEtablissements/' ~ etablissement.image) }}" alt="Image de l'établissement {{ etablissement.nom }}"/>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
+
 
 				<!-- Footer -->
 				<footer class="flex justify-center mt-6">

@@ -6,6 +6,9 @@ use App\Repository\WalletRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
+
 #[ORM\Entity(repositoryClass: WalletRepository::class)]
 class Wallet
 {
@@ -15,20 +18,18 @@ class Wallet
     private ?int $id_wallet = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\Type(type: 'integer', message: 'La balance doit être un nombre entier.')]
+    #[Assert\NotBlank(message: 'Le balance ne peut pas être vide.')]
     private ?int $balance = null;
-
-
-
+    
     #[ORM\OneToOne(targetEntity: Etablissement::class)]
     #[ORM\JoinColumn(name: "id_etablissement", referencedColumnName: "id_etablissement",nullable: false)]
+    #[Assert\NotBlank(message: 'L\'établissement ne peut pas être vide.')]
     private ?Etablissement $etablissement = null; 
-
-   
     
-
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotNull(message: 'La date de création ne peut pas être vide.')]
     private ?\DateTimeInterface $date_c = null;
-
     #[ORM\Column]
     private ?int $status = null;
 
