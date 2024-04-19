@@ -6,7 +6,7 @@
 {% block body %}
 	<div class="flex items-center justify-between">
 		<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
-			Make a New Etablissement
+			Edit Your Etablissement
 		</h2>
 		<button onclick="window.location.href='{{ path('app_etablissement_index') }}'" class="flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
 			<span>
@@ -81,12 +81,12 @@ input.placeholder = '';
 
 		<br>
 		<button id="submitButton" type="submit" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-			{{ button_label|default(' + Add') }}
+			{{ button_label|default(' + Edit') }}
 		</button>
 		<br>
 		{{ form_end(form) }}
 	</div>
-{#
+
 	<script>
 		// Fonction de validation du formulaire
 function validateForm() {
@@ -187,7 +187,7 @@ event.preventDefault();
 }
 }); 
 	</script> 
-	#}
+	
 
 
 	{% for message in app.flashes('error') %}

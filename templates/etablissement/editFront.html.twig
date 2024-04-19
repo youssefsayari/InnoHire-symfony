@@ -19,7 +19,7 @@
 
                 <div class="wow fadeInUp" data-wow-delay="0.1s">
                     <p class="section-title text-secondary justify-content-center"><span></span>Etablissement<span></span></p>
-                    <h1 class="text-center mb-5">Ajouter Etablissement</h1>
+                    <h1 class="text-center mb-5">Modifier Etablissement</h1>
                 </div>
                 <div class="row justify-content-center">
                     <div class="col-lg-7">
@@ -192,7 +192,7 @@
 
 <div class="col-12">
                                         <button id="submitButton" type="submit" class="btn btn-primary w-100 py-3">
-			{{ button_label|default(' + Add') }}
+			{{ button_label|default(' + Update') }}
 		</button>
  		<br>
 		{{ form_end(form) }}
@@ -210,7 +210,7 @@
             </div>
         </div>
         <!-- Contact End -->
-     {#   
+        
 <script>
 		// Fonction de validation du formulaire
 function validateForm() {
@@ -312,7 +312,7 @@ event.preventDefault();
 });
 	</script>
 
-#}
+
 	{% for message in app.flashes('error') %}
 		<script>
 			// alert("{{ message }}");
