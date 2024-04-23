@@ -47,6 +47,24 @@
         .btn-purple:hover {
             background-color: #934ebf; /* Darker purple on hover */
         }
+        /* Custom style for logout button */
+        .btn-logout {
+            background-color: #ff0000; /* Red background */
+            color: #fff; /* White text color */
+            padding: 8px 40px; /* Adjust padding */
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px; /* Add top margin for spacing */
+            font-size: 14px; /* Adjust font size */
+            transition: background-color 0.3s;
+        }
+        .btn-logout:hover {
+            background-color: #cc0000; /* Darker red on hover */
+        }
     </style>
 {% endblock %}
 
@@ -54,15 +72,14 @@
     <h1>Utilisateur List</h1>
 
     <div>
-<form id="searchForm" action="{{ path('app_utilisateur_index', {'sort': app.request.query.get('sort', '')}) }}" method="get">
+        <form id="searchForm" action="{{ path('app_utilisateur_index', {'sort': app.request.query.get('sort', '')}) }}" method="get">
             <input type="text" id="searchInput" name="search" placeholder="Search by Cin..." value="{{ app.request.query.get('search', '') }}">
         </form>
     </div>
 
     <div>
-        <a href="{{ path('app_utilisateur_index', {'sort': 'asc', 'search': searchQuery}) }}" class="btn-purple">Sort by Cin Asc</a>
-<a href="{{ path('app_utilisateur_index', {'sort': 'desc', 'search': searchQuery}) }}" class="btn-purple">Sort by Cin Desc</a>
-
+        <a href="{{ path('app_utilisateur_index', {'sort': 'asc'}) }}" class="btn-purple">Sort by Cin Asc</a>
+        <a href="{{ path('app_utilisateur_index', {'sort': 'desc'}) }}" class="btn-purple">Sort by Cin Desc</a>
     </div>
 
     <table class="table">
@@ -111,6 +128,8 @@
     </table>
 
     <a href="{{ path('app_utilisateur_new') }}" class="btn-purple">Create new</a> <!-- Add btn-purple class -->
+
+    <a href="{{ path('login') }}" class="btn-logout">Logout</a> <!-- Logout button -->
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
