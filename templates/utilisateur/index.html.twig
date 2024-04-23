@@ -54,9 +54,8 @@
     <h1>Utilisateur List</h1>
 
     <div>
-        <form action="{{ path('app_utilisateur_index') }}" method="get">
-            <input type="text" name="search" placeholder="Search by Cin...">
-            <button type="submit" class="btn-purple">Search</button>
+        <form id="searchForm" action="{{ path('app_utilisateur_index') }}" method="get">
+            <input type="text" id="searchInput" name="search" placeholder="Search by Cin..." value="{{ app.request.query.get('search', '') }}">
         </form>
     </div>
 
@@ -111,4 +110,14 @@
     </table>
 
     <a href="{{ path('app_utilisateur_new') }}" class="btn-purple">Create new</a> <!-- Add btn-purple class -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+
+            searchInput.addEventListener('input', function() {
+                document.getElementById('searchForm').submit();
+            });
+        });
+    </script>
 {% endblock %}
