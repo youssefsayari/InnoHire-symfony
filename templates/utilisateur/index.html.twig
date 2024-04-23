@@ -53,6 +53,18 @@
 {% block body %}
     <h1>Utilisateur List</h1>
 
+    <div>
+        <form action="{{ path('app_utilisateur_index') }}" method="get">
+            <input type="text" name="search" placeholder="Search by Cin...">
+            <button type="submit" class="btn-purple">Search</button>
+        </form>
+    </div>
+
+    <div>
+        <a href="{{ path('app_utilisateur_index', {'sort': 'asc'}) }}" class="btn-purple">Sort by Cin Asc</a>
+        <a href="{{ path('app_utilisateur_index', {'sort': 'desc'}) }}" class="btn-purple">Sort by Cin Desc</a>
+    </div>
+
     <table class="table">
         <thead>
             <tr>
@@ -71,23 +83,23 @@
                 <td>{{ utilisateur.nom }}</td>
                 <td>{{ utilisateur.prenom }}</td>
                 <td>{{ utilisateur.adresse }}</td>
-    <td>
-        {% if utilisateur.role == 0 %}
-            Admin
-        {% elseif utilisateur.role == 1 %}
-            Representant
-        {% else %}
-            Candidat
-        {% endif %}
-    </td>
+                <td>
+                    {% if utilisateur.role == 0 %}
+                        Admin
+                    {% elseif utilisateur.role == 1 %}
+                        Representant
+                    {% else %}
+                        Candidat
+                    {% endif %}
+                </td>
                 <td class="actions">
                     <a href="{{ path('app_utilisateur_show', {'id_utilisateur': utilisateur.getIdUtilisateur()}) }}" class="btn-purple">Show</a>
                     <a href="{{ path('app_utilisateur_edit', {'id_utilisateur': utilisateur.getIdUtilisateur()}) }}" class="btn-purple">Edit</a>
- <form action="{{ path('app_utilisateur_delete', {'id_utilisateur': utilisateur.getIdUtilisateur()}) }}" method="post" style="display: inline-block;">
-        <input type="hidden" name="_method" value="DELETE">
-        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ utilisateur.getIdUtilisateur()) }}">
-        <button type="submit" class="btn-purple">Delete</button>
-    </form>
+                    <form action="{{ path('app_utilisateur_delete', {'id_utilisateur': utilisateur.getIdUtilisateur()}) }}" method="post" style="display: inline-block;">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ utilisateur.getIdUtilisateur()) }}">
+                        <button type="submit" class="btn-purple">Delete</button>
+                    </form>
                 </td>
             </tr>
         {% else %}

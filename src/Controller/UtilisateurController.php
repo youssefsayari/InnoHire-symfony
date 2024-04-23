@@ -23,12 +23,24 @@ class UtilisateurController extends AbstractController
         $this->utilisateurRepository = $utilisateurRepository;
     }
     #[Route('/', name: 'app_utilisateur_index', methods: ['GET'])]
-    public function index(UtilisateurRepository $utilisateurRepository): Response
+    public function index(Request $request, UtilisateurRepository $utilisateurRepository): Response
     {
+        // Retrieve the search query from the request
+        $searchQuery = $request->query->get('search');
+    
+        // Retrieve the sort order from the request
+        $sortOrder = $request->query->get('sort');
+    
+        // Fetch utilisateurs based on search query and sorting order
+        $utilisateurs = $utilisateurRepository->findBySearchAndSort($searchQuery, $sortOrder);
+    
         return $this->render('utilisateur/index.html.twig', [
-            'utilisateurs' => $utilisateurRepository->findAll(),
+            'utilisateurs' => $utilisateurs,
         ]);
     }
+    
+
+    
     #[Route('/login', name: 'login', methods: ['GET', 'POST'])]
     public function login(Request $request, UtilisateurRepository $userRepository): Response
     {

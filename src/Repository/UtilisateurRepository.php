@@ -24,7 +24,26 @@ class UtilisateurRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['cin' => $cin, 'mdp' => $mdp]);
     }
-
+    public function findBySearchAndSort($searchQuery, $sortOrder)
+    {
+        $queryBuilder = $this->createQueryBuilder('u');
+    
+        // If a search query is provided, add a condition to filter by Cin
+        if ($searchQuery) {
+            $queryBuilder->andWhere('u.cin LIKE :search')
+                         ->setParameter('search', '%' . $searchQuery . '%');
+        }
+    
+        // If a sort order is provided, add an ORDER BY clause based on the sort order
+        if ($sortOrder === 'asc') {
+            $queryBuilder->orderBy('u.cin', 'ASC');
+        } elseif ($sortOrder === 'desc') {
+            $queryBuilder->orderBy('u.cin', 'DESC');
+        }
+    
+        // Execute the query and return the results
+        return $queryBuilder->getQuery()->getResult();
+    }
 
 
 //    /**
