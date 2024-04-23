@@ -5,15 +5,16 @@ namespace App\Form;
 use App\Entity\Utilisateur;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Positive;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Validator\Constraints\File;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Positive;
-use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 class AdminType extends AbstractType
@@ -50,11 +51,14 @@ class AdminType extends AbstractType
             ->add('adresse', TextType::class, [
                 'constraints' => [
                     new NotBlank(['message' => 'Adresse cannot be blank']),
+                    new Email(['message' => 'Adresse must be a valid email address']),
+
                 ],
             ])
             ->add('mdp', TextType::class, [
                 'constraints' => [
                     new NotBlank(['message' => 'mdp cannot be blank']),
+
                 ],
             ])
             ->add('role', ChoiceType::class, [

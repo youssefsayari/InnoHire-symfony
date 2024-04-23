@@ -82,9 +82,18 @@
                 <td>{{ utilisateur.adresse }}</td>
             </tr>
             <tr>
-                <th>Role:           </th>
-                <td>{{ utilisateur.role }}</td>
-            </tr>
+    <th>Role:</th>
+    <td>
+        {% if utilisateur.role == 0 %}
+            Admin
+        {% elseif utilisateur.role == 1 %}
+            Representant
+        {% else %}
+            Candidat
+        {% endif %}
+    </td>
+</tr>
+
             
         </tbody>
     </table>

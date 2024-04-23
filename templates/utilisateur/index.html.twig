@@ -71,7 +71,15 @@
                 <td>{{ utilisateur.nom }}</td>
                 <td>{{ utilisateur.prenom }}</td>
                 <td>{{ utilisateur.adresse }}</td>
-                <td>{{ utilisateur.role }}</td>
+    <td>
+        {% if utilisateur.role == 0 %}
+            Admin
+        {% elseif utilisateur.role == 1 %}
+            Representant
+        {% else %}
+            Candidat
+        {% endif %}
+    </td>
                 <td class="actions">
                     <a href="{{ path('app_utilisateur_show', {'id_utilisateur': utilisateur.getIdUtilisateur()}) }}" class="btn-purple">Show</a>
                     <a href="{{ path('app_utilisateur_edit', {'id_utilisateur': utilisateur.getIdUtilisateur()}) }}" class="btn-purple">Edit</a>
