@@ -69,7 +69,12 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Utilisateur List</h1>
+    <h1>
+        Welcome utilisateur : {{ app.session.get('user_id') }}
+        <br>
+    
+       <h1>
+ Utilisateur List</h1>
 
     <div>
         <form id="searchForm" action="{{ path('app_utilisateur_index', {'sort': app.request.query.get('sort', '')}) }}" method="get">

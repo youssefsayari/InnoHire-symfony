@@ -43,35 +43,40 @@ public function index(Request $request, UtilisateurRepository $utilisateurReposi
 
 
     
-    #[Route('/login', name: 'login', methods: ['GET', 'POST'])]
-    public function login(Request $request, UtilisateurRepository $userRepository): Response
-    {
-        // Check if the request is a POST to handle form submission
-        if ($request->isMethod('POST')) {
-            $cin = $request->request->get('cin');
-            $mdp = $request->request->get('password');
-    
-            if (empty($cin)) {
-                $error = 'CIN is required.';
-                return $this->render('utilisateur/login.html.twig', ['error' => $error]);
-            }
-    
-            // Find the user by credentials using the repository method
-            $user = $userRepository->findUserByCredentials($cin, $mdp);
-    
-            if ($user) {
-                // Redirect to the index page if user is found
-                return $this->redirectToRoute('app_utilisateur_index');
-            } else {
-                // Show error message if credentials are invalid
-                $error = 'Invalid credentials. Please try again.';
-                return $this->render('utilisateur/login.html.twig', ['error' => $error]);
-            }
+#[Route('/login', name: 'login', methods: ['GET', 'POST'])]
+public function login(Request $request, UtilisateurRepository $userRepository): Response
+{
+    // Check if the request is a POST to handle form submission
+    if ($request->isMethod('POST')) {
+        $cin = $request->request->get('cin');
+        $mdp = $request->request->get('password');
+
+        if (empty($cin)) {
+            $error = 'CIN is required.';
+            return $this->render('utilisateur/login.html.twig', ['error' => $error]);
         }
-    
-        // If it's a GET request, simply show the login form
-        return $this->render('utilisateur/login.html.twig');
+
+        // Find the user by credentials using the repository method
+        $user = $userRepository->findUserByCredentials($cin, $mdp);
+
+        if ($user) {
+            // User found, start session and store user ID
+            $session = $request->getSession();
+            $session->set('user_id', $user->getIdUtilisateur());
+
+            // Redirect to the index page if user is found
+            return $this->redirectToRoute('app_utilisateur_index');
+        } else {
+            // Show error message if credentials are invalid
+            $error = 'Invalid credentials. Please try again.';
+            return $this->render('utilisateur/login.html.twig', ['error' => $error]);
+        }
     }
+
+    // If it's a GET request, simply show the login form
+    return $this->render('utilisateur/login.html.twig');
+}
+
     #[Route('/register', name: 'app_utilisateur_register', methods: ['GET', 'POST'])]
     public function register(Request $request): Response
     {
