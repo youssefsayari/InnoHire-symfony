@@ -24,8 +24,26 @@ class UtilisateurController extends AbstractController
     }
     #[Route('/', name: 'app_utilisateur_index', methods: ['GET'])]
 public function index(Request $request, UtilisateurRepository $utilisateurRepository): Response
-{
+{       /* $user = $this->getUser();
+
+    // Check if a user is authenticated
+    //if ($user) {
+        // Get the user ID
+      //  $userId = $user->getIdUtilisateur();
+    } else {
+        // Handle the case where no user is authenticated
+        // You can redirect the user to the login page or perform any other action
+        // For example:
+        return $this->redirectToRoute('login');
+    }*/
     // Retrieve the search query from the request
+    $userId = $request->getSession()->get('id_utilisateur');
+    $userName = $request->getSession()->get('nom');
+    if (!$userId) {
+        // If no user ID is found in the session, redirect to the login page
+        return $this->redirectToRoute('login');
+    }
+
     $searchQuery = $request->query->get('search');
 
     // Retrieve the sort order from the request
@@ -62,7 +80,15 @@ public function login(Request $request, UtilisateurRepository $userRepository): 
         if ($user) {
             // User found, start session and store user ID
             $session = $request->getSession();
-            $session->set('user_id', $user->getIdUtilisateur());
+            $session->set('id_utilisateur', $user->getIdUtilisateur());
+            $session->set('nom', $user->getNom());
+            $session->set('prenom', $user->getPrenom());
+            $session->set('adresse',$user->getAdresse());
+            $session->set('mdp',$user->getMdp());
+            $session->set('role',$user->getRole());
+
+
+                
 
             // Redirect to the index page if user is found
             return $this->redirectToRoute('app_utilisateur_index');
@@ -76,6 +102,43 @@ public function login(Request $request, UtilisateurRepository $userRepository): 
     // If it's a GET request, simply show the login form
     return $this->render('utilisateur/login.html.twig');
 }
+
+
+
+
+#[Route('/my-profile', name: 'app_utilisateur_my_profile', methods: ['GET', 'POST'])]
+public function myProfile(Request $request, UtilisateurRepository $userRepository): Response
+{
+    // Get the ID of the connected user from the session
+    $userId = $request->getSession()->get('id_utilisateur');
+
+    // Find the user by ID
+    $user = $userRepository->find($userId);
+
+    if (!$user) {
+        throw $this->createNotFoundException('User not found');
+    }
+
+    // Create and handle the form to edit user information
+    $form = $this->createForm(UtilisateurType::class, $user);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        // Persist changes to the database
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->flush();
+
+        // Redirect back to the profile page
+        return $this->redirectToRoute('app_utilisateur_my_profile');
+    }
+
+    // Render the template with the user's information and edit form
+    return $this->render('utilisateur/my_profile.html.twig', [
+        'user' => $user,
+        'form' => $form->createView(),
+    ]);
+}
+
 
     #[Route('/register', name: 'app_utilisateur_register', methods: ['GET', 'POST'])]
     public function register(Request $request): Response

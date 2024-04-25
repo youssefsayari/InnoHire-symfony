@@ -65,16 +65,20 @@
         .btn-logout:hover {
             background-color: #cc0000; /* Darker red on hover */
         }
+        /* Custom style for My Profile button */
+        .btn-my-profile {
+            position: fixed; /* Position the button fixed within the viewport */
+            top: 20px; /* Set top distance */
+            right: 20px; /* Set right distance */
+            z-index: 999; /* Ensure the button stays on top of other content */
+        }
     </style>
 {% endblock %}
 
 {% block body %}
-    <h1>
-        Welcome utilisateur : {{ app.session.get('user_id') }}
-        <br>
+    <h1>Welcome utilisateur : {{ app.session.get('id_utilisateur') }}</h1>
     
-       <h1>
- Utilisateur List</h1>
+    <h1>Utilisateur List</h1>
 
     <div>
         <form id="searchForm" action="{{ path('app_utilisateur_index', {'sort': app.request.query.get('sort', '')}) }}" method="get">
@@ -136,6 +140,9 @@
 
     <a href="{{ path('login') }}" class="btn-logout">Logout</a> <!-- Logout button -->
 
+    <!-- Add My Profile button -->
+    <a href="{{ path('app_utilisateur_my_profile') }}" class="btn-my-profile btn-purple">My Profile</a>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('searchInput');
