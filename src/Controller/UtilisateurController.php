@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Exception;
 use App\Form\AdminType;
+use App\Form\NoRoleType;
 use App\Entity\Utilisateur;
 use App\Form\UtilisateurType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -120,7 +121,7 @@ public function myProfile(Request $request, UtilisateurRepository $userRepositor
     }
 
     // Create and handle the form to edit user information
-    $form = $this->createForm(UtilisateurType::class, $user);
+    $form = $this->createForm(NoRoleType::class, $user);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
