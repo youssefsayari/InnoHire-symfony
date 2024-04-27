@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Map{% endblock %}
+
+{% block body %}
+<div class="art-main-container">
+<div class="art-headline">
+<div class="art-headline__outer art-container">
+<div class="art-headline__inner " >
+<h1 class="art-headline__title">Our Map</h1>
+  </div>
+                </div>
+
+            </div>
+    <div>
+    <br>
+    <br>
+<div id="map" style="height: 600px;"></div>
+
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+<script>
+    // Initialize the map
+    var map = L.map('map').setView([{{ events[0].latitude }}, {{ events[0].longitude }}], 10);
+
+    // Add tile layer to the map (OpenStreetMap tiles)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Define custom icons for different types of places
+    var eventIcon = L.icon({
+        iconUrl: '{{asset('event.png')}}',
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32]
+    });
+
+    var gymIcon = L.icon({
+        iconUrl: '{{asset('gym.png')}}',
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32]
+    });
+
+    var restaurantIcon = L.icon({
+        iconUrl: '{{asset('restaurant.png')}}',
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32]
+    });
+
+    // Add markers for events
+    {% for event in events %}
+    L.marker([{{ event.latitude }}, {{ event.longitude }}], {icon: eventIcon}).addTo(map)
+        .bindPopup('<b>{{ event.nom }}</b><br>Pts: {{ event.ptsfidelite }}');
+    {% endfor %}
+
+    // Add markers for gyms
+    {% for gym in gyms %}
+    L.marker([{{ gym.latitude }}, {{ gym.longitude }}], {icon: gymIcon}).addTo(map)
+        .bindPopup('<b>{{ gym.nom }}</b><br>{{ gym.nom }}');
+    {% endfor %}
+
+    // Add markers for restaurants
+    {% for restaurant in restaurants %}
+    L.marker([{{ restaurant.latitude }}, {{ restaurant.longitude }}], {icon: restaurantIcon}).addTo(map)
+        .bindPopup('<b>{{ restaurant.nom }}</b><br>Specialite : {{ restaurant.specialite }}');
+    {% endfor %}
+</script>
+{% endblock %}

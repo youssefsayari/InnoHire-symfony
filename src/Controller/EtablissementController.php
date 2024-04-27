@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 
-
+use TCPDF;
 
 
 
@@ -35,6 +35,63 @@ class EtablissementController extends AbstractController
   
         return $this->render('etablissement/index.html.twig', [
             'etablissements' => $etablissementRepository->findAll(),
+        ]);
+    }
+
+    #[Route('/generate-pdf', name: 'generate_pdf')]
+    
+        public function generatePdf(): Response
+        {
+            // Créer une instance de TCPDF
+            $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+    
+            // Set document information
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetAuthor('Your Name');
+            $pdf->SetTitle('Your Title');
+            $pdf->SetSubject('Your Subject');
+            $pdf->SetKeywords('Your Keywords');
+    
+            // Supprimer les marges
+            $pdf->SetMargins(0, 0, 0);
+    
+            // Ajouter une nouvelle page
+            $pdf->AddPage();
+    
+            // Obtenir le contenu de la table depuis le template Twig
+            $content = $this->renderView('etablissement/pdf.html.twig', [
+                'etablissements' => $this->getDoctrine()->getRepository(Etablissement::class)->findAll(), // Récupérer tous les établissements
+            ]);
+    
+            // Écrire le contenu de la table dans le PDF
+            $pdf->writeHTML($content, true, false, true, false, '');
+    
+            // Renvoyer le contenu du PDF comme une réponse avec le type de contenu approprié
+            return new Response($pdf->Output('etablissements.pdf', 'D'), 200, [
+                'Content-Type' => 'application/pdf',
+            ]);
+    }
+    
+    #[Route('/Map', name: 'app_map', methods: ['GET'])]
+    public function Map(EntityManagerInterface $entityManager): Response
+    {
+        $events = $entityManager
+            ->getRepository(Event::class)
+            ->findAll();
+            $gyms = $entityManager
+            ->getRepository(Gym::class)
+            ->findAll();
+            $events = $entityManager
+            ->getRepository(Event::class)
+            ->findAll();
+            $restaurants = $entityManager
+            ->getRepository(Restaurant::class)
+            ->findAll();
+
+        return $this->render('etablissement/map.html.twig', [
+            'events' => $events,
+            'gyms' => $gyms,
+            'restaurants' => $restaurants,
         ]);
     }
 
@@ -247,8 +304,7 @@ public $idUtilisateurConnecte = 2;//change iciiiiiiiiiiiiiiiiiiiiiiiii
 
         return $this->redirectToRoute('app_etablissement_index', [], Response::HTTP_SEE_OTHER);
     }
-
-
+    
     
 
 

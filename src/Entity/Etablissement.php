@@ -57,6 +57,26 @@ class Etablissement
     #[Assert\NotBlank(message: "Veuillez sélectionner un utilisateur.")]
     #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
     private ?Utilisateur $utilisateur;
+
+
+
+    #[ORM\Column]
+    private ?int $latitude = null;
+
+    #[ORM\Column]
+    private ?int $longitude = null;
+
+
+    public function getLatitude(): ?int
+    {
+        return $this->latitude;
+    }
+    public function getLongitude(): ?int
+    {
+        return $this->longitude;
+    }
+
+
     public function getId(): ?int
     {
         return $this->id_etablissement;

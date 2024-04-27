@@ -19,6 +19,12 @@ use App\Entity\Etablissement;
 
 
 
+/*start stripe*/
+use Stripe\Checkout\Session;
+use Stripe\Product;
+use Stripe\Price;
+/* end stripe*/
+
 #[Route('/wallet')]
 class WalletController extends AbstractController
 {
@@ -29,7 +35,38 @@ class WalletController extends AbstractController
             'wallets' => $walletRepository->findAll(),
         ]);
     }
+    /*start stripe */
+    
+    #[Route('/recharger/{id}', name: 'app_wallet_recharger', methods: ['GET'])]
+    public function recharger(Wallet $wallet): Response
+    { 
+        return $this->render('wallet/recharger.html.twig', [
+            'walletId' => $wallet->getId(),
+        ]);
+    }
+    
+    #[Route('/rechargerSuccess/{id}', name: 'app_wallet_rechargerSuccess', methods: ['GET'])]
+    public function rechargerSuccess(Request $request,EntityManagerInterface $entityManager, WalletRepository $walletRepository,Wallet $wallet): Response
+    {
+        $montant = $request->query->get('montant');
+        
+        $balance = $wallet->getBalance();
+        $newBalance = $balance + $montant;
+        $wallet->setBalance($newBalance);
+        $entityManager->persist($wallet);
+        $entityManager->flush();
 
+        return $this->render('wallet/rechargerSuccess.html.twig', [
+            'montant' => $montant,
+        ]);
+    }
+    #[Route('/rechargerCancel', name: 'app_wallet_rechargerCancel', methods: ['GET'])]
+    public function rechargerCancel(): Response
+    {
+        return $this->render('wallet/rechargerCancel.html.twig'); 
+    }
+    
+    /*end stripe */
     #[Route('/new', name: 'app_wallet_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, WalletRepository $walletRepository): Response
     {

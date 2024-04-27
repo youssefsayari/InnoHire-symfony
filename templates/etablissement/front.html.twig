@@ -99,9 +99,24 @@
 								<table>
     									<tr>
 											<td>
+                                            {% if wallet.getStatus() == 1 %}							
+                                                
+                                                 <a href="{{ path('app_wallet_recharger', {'id': wallet.id}) }}">
+
    												 <button class="btn btn-square btn-outline-light mx-1" {#onclick="openModal('{{ wallet.getBalance()}}')"#}>
                    									 <i class="fa fa-wallet"></i>
                									 </button>
+                                                 </a>
+											
+                                 {% else %}
+      
+   												 <button class="btn btn-square btn-outline-light mx-1" {#onclick="openModal('{{ wallet.getBalance()}}')"#}>
+                   									 <i class="fa fa-wallet"></i>
+               									 </button>
+                                                
+
+                                {% endif %}
+                                               	 
        										</td>
 											<td>
         
