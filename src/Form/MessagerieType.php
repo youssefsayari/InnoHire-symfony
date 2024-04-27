@@ -9,6 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class MessagerieType extends AbstractType
 {
@@ -22,7 +23,12 @@ class MessagerieType extends AbstractType
            /* ->add('type', HiddenType::class, [
                 'data' => "text", // Set the default value of status to 0
             ])*/
-            ->add('contenu')
+            ->add('contenu', null, [
+                'constraints' => [
+                    new NotBlank()
+                ],
+                // Add other options if needed
+            ]);
             /*->add('sender', EntityType::class, [
                 'class' => Utilisateur::class,
                 'choice_label' => 'nom', // Assuming you want to display the user's name

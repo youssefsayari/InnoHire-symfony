@@ -1,0 +1,291 @@
+{% extends 'baseFront.html.twig' %}
+
+{% block title %}Messagerie index
+{% endblock %}
+{% block body %}
+
+
+	<!-- Contact Start -->
+	<div class="container-xxl py-5">
+		<div class="container py-5 px-lg-5">
+			<div class="row justify-content-center">
+
+				<div class="flex items-center justify-between">
+					<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+						Messagerie List
+					</h2>
+					<button onclick="window.location.href='{{ path('app_reclamation_indexfront') }}'" class="flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+						<span>
+							<!--&LeftArrow;-->
+							Back to List</span>
+					</button>
+				</div>
+				<div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800" style="width: 62rem;">
+					<br>
+
+					{% for message in messages %}
+						<div class="px-2 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800" style="width: 59rem;">
+							<div class="flex items-center justify-between">
+								<div class="d-grid gap-2 d-md-block">
+									<div class="row">
+										<div class="col-auto">
+											<img src="{{ '/images/' ~ message.sender.getImage() }}" class="card-img-top" style="width: 45px; height: 45px;" alt="...">&nbsp;&nbsp;
+										</div>
+										<div class="col-auto">
+											{% if message.type == 'text' %}
+												<strong class="card-text">{{ message.date|date('Y-m-d H:i:s') }}</strong>
+												{% if message.contenu|length <= 99 %}
+													<p class="card-text">{{ message.contenu }}</p>
+												{% else %}
+													<p class="card-text">{{ message.contenu|slice(0, 99) }}</p>
+													<p class="card-text">{{ message.contenu|slice(99) }}</p><br>
+												{% endif %}
+											{% elseif message.type == 'file' %}
+												<strong class="card-text">{{ message.date|date('Y-m-d H:i:s') }}</strong>
+												<div class="flex items-center justify-between">
+													<img src="{{ asset('/images/pdf.png') }}" class="rounded-circle" style="width: 30px; height: 30px;" alt="...">
+													{{ message.contenu }}
+												</div>
+											{% else %}
+												<strong class="card-text">{{ message.date|date('Y-m-d H:i:s') }}</strong><br><br>
+												<img src="{{ asset('/images/' ~ message.contenu) }}" style="width: 150px; height: 150px;" alt="...">
+											{% endif %}
+
+
+										</div>
+
+
+										<div class="col">
+
+											<div class="d-grid gap-6 d-md-flex justify-content-md-end">
+												<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
+												<!-- Divs are used just to display the examples. Use only the button. -->
+												<div>
+													<button class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-full active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+														{% if message.type == 'text' %}
+									      {#<a href="{{ path('app_messagerie_editfront', {'id': message.id}) }}">
+													<svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20">
+														<path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+													</svg>
+												</a>#}
+														{% elseif message.type == 'file' %}
+															<a href="{{ path('app_download_file', { 'fileName': message.contenu }) }}">
+																<img src="{{ asset('/images/attachment.png') }}" class="rounded-circle" style="width: 22px; height: 22px;" alt="...">
+															</a>
+														{% elseif message.type == 'image' %}
+															<a href="{{ path('app_download_file', { 'fileName': message.contenu }) }}">
+																<img src="{{ asset('/images/attachment.png') }}" class="rounded-circle" style="width: 22px; height: 22px;" alt="...">
+															</a>
+														{% endif %}
+													</button>
+
+												</div>
+
+												<!-- Divs are used just to display the examples. Use only the button. -->
+
+												<div>
+													<button class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-full active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" aria-label="delete" data-bs-toggle="modal" data-bs-target="#exampleModal{{ message.id }}">
+														<svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20">
+															<path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+														</svg>
+													</button>
+												</div>
+											</div>
+
+
+											<!-- Edit -->
+											<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+												<div class="modal-dialog">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h1 class="modal-title fs-5" id="exampleModalLabel">Update Message  !</h1>
+															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+														</div>
+														<div class="modal-body">
+
+															<input class="w-full pl-8 pr-2 text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input" type="text" placeholder="Write a new messagae here" aria-label="Search"/>
+														</div>
+														<div
+															class="modal-footer">
+															<!-- Form for deletion -->
+															<form method="post" action="{{ path('app_messagerie_delete', {'id': message.id}) }}">
+																<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ message.id) }}">
+																<button type="submit" class="btn btn-success">Confirm</button>
+															</form>
+															<button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+														</div>
+													</div>
+												</div>
+											</div>
+											<!-- Modal -->
+											<div class="modal fade" id="exampleModal{{ message.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+												<div class="modal-dialog">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h1 class="modal-title fs-5" id="exampleModalLabel">Delete Warning !</h1>
+															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+														</div>
+														<div class="modal-body">
+															Are you sure you want to delete the message?
+														</div>
+														<div
+															class="modal-footer">
+															<!-- Form for deletion -->
+															<form method="post" action="{{ path('app_messagerie_deletefront', {'id': message.id}) }}">
+																<input type="hidden" name="_token" value="{{ csrf_token('deletefront' ~ message.id) }}">
+																<button type="submit" class="btn btn-success">Confirm</button>
+															</form>
+															<button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+														</div>
+													</div>
+												</div>
+											</div>
+
+										</div>
+									</div>
+
+
+								</div>
+							</div>
+						</div>
+
+					{% endfor %}
+					<br><br><br>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<!-- Contact End -->
+
+
+	{#<div
+						class="fixed top-0 w-full bg-gray-200 p-4">
+						<!-- Your top bar content here -->
+						<div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800" style="width: 59rem;">
+							<div class="flex items-center justify-between">
+				
+								<div class="col-auto">
+									<img src="{{ asset('/images/manh.png') }}" class="rounded-circle" style="width: 50px; height: 50px;" alt="...">
+								</div>
+				
+								<div class="col">
+									<strong>Hachem Dhawadi</strong>
+								</div>
+								<div class="col">
+									<div class="d-grid gap-6 d-md-flex justify-content-md-end">
+										<div>
+											<button class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+												<img src="{{ asset('/images/phone.png') }}" class="rounded-circle" style="width: 25px; height: 25px;" alt="...">
+											</button>
+										</div>
+										<div>
+											<button class="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+												<img src="{{ asset('/images/phone.png') }}" class="rounded-circle" style="width: 25px; height: 25px;" alt="...">
+											</button>
+										</div>
+										<img src="{{ asset('/images/button.png') }}" class="rounded-circle" style="width: 13px; height: 13px;" alt="...">
+									</div>
+				
+								</div>
+				
+							</div>
+						</div>
+					</div>#}
+
+
+	{#<div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800" style="width: 62rem;">
+								<div class="row align-items-center">
+									<div class="col-auto">
+										<img src="{{ asset('/images/manh.png') }}" class="rounded-circle" style="width: 70px; height: 70px;" alt="...">
+									</div>
+						
+									<div class="col">
+										<strong>Hachem Dhawadi</strong>
+									</div>
+									<div class="col">
+										<div class="d-grid gap-6 d-md-flex justify-content-md-end">
+											<img src="{{ asset('/images/phone.png') }}" class="rounded-circle" style="width: 45px; height: 45px;" alt="...">
+											<img src="{{ asset('/images/zoom.png') }}" class="rounded-circle" style="width: 53px; height: 53px;" alt="...">
+											<button class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+												<svg class="w-4 h-4 mr-2 -ml-1" fill="currentColor" aria-hidden="true" viewbox="0 0 20 20">
+													<path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" fill-rule="evenodd"></path>
+												</svg>
+												<span>Video Call</span>
+											</button>
+											<button class="flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+												<span>
+													<!--&LeftArrow;-->
+													Generate QrCode</span>
+											</button>
+											<img src="{{ asset('/images/button.png') }}" class="rounded-circle" style="width: 13px; height: 13px;" alt="...">
+										</div>
+						
+									</div>
+						
+						
+								</div>
+						
+							</div>#}
+
+
+		{% block footer %}{{ form_start(form , {'attr': {'class':'form-horizontal','novalidate':'novalidate', 'enctype': 'multipart/form-data'}}
+		) }}
+			<footer
+			class="fixed bottom-0 w-full bg-gray-200 p-4"> <!-- Your footer content here -->
+			<div class="container-xxl py-5">
+				<div class="container py-5 px-lg-5">
+					<div class="row justify-content-center">
+						<div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800" style="width: 59rem;">
+							<div class="flex items-center justify-between">
+								<div>
+									<br>
+									<input type="file" name="file" id="file" style="display: none;" onchange="updateContenu()">
+									<label for="file">
+										<img src="{{ asset('/images/up.png') }}" class="rounded-circle" style="width: 30px; height: 30px;" alt="...">
+									</label>
+								</div>
+								&nbsp;&nbsp;
+								{% set content_class = 'block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-textarea' %}
+								{% if form.contenu.vars.errors|length > 0 %}
+									{% set content_class = content_class ~ ' border-red-600 focus:border-red-400 focus:shadow-outline-red' %}
+								{% endif %}
+								{{ form_widget(form.contenu, {'attr': {'class': content_class, 'rows': '7', 'cols': '3', 'placeholder': 'Enter your message content here'}}) }}
+								                &nbsp;&nbsp;
+								<button class="flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+									<span>{{ button_label|default('Send') }}</span>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</footer>
+		{{ form_end(form) }}
+
+		<script>
+			function updateContenu() {
+var fileInput = document.getElementById('file');
+var contenuInput = document.getElementById('{{ form.contenu.vars.id }}');
+var typeInput = document.getElementById('{{ form.type.vars.id }}'); // Get the hidden input field for type
+
+if (fileInput.files.length > 0) {
+var file = fileInput.files[0];
+var fileName = file.name;
+var fileType = file.type;
+
+if (fileType.startsWith('image')) { // If the selected file is an image
+contenuInput.value = fileName;
+typeInput.value = 'image'; // Set the value of the hidden type field to "image"
+} else { // If the selected file is not an image
+contenuInput.value = fileName;
+typeInput.value = 'file'; // Set the value of the hidden type field to "file"
+}
+}
+}
+		</script>
+	{% endblock %}
+
+
+{% endblock %}

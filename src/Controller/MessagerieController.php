@@ -77,14 +77,48 @@ class MessagerieController extends AbstractController
     {
         $form = $this->createForm(MessagerieType::class, $messagerie);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
-            return $this->redirectToRoute('app_messagerie_index', [], Response::HTTP_SEE_OTHER);
+    
+            // Assuming $senderId and $reciverId are available
+            $senderId = $messagerie->getSender()->getIdUtilisateur();
+            $reciverId = $messagerie->getReciver()->getIdUtilisateur();
+            //dd($form->getErrors(true));
+    
+            return $this->redirectToRoute('app_messagerie_messages', [
+                'senderId' => $senderId,
+                'reciverId' => $reciverId,
+            ], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->renderForm('messagerie/edit.html.twig', [
+            'messagerie' => $messagerie,
+            'form' => $form,
+        ]);
+    }
+    /////////////////////////////////////////////////////Front ////////////////////////////////////////////////////////////////////////////
+    #[Route('/{id}/editfront', name: 'app_messagerie_editfront', methods: ['GET', 'POST'])]
+    public function editfront(Request $request, Messagerie $messagerie, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(MessagerieType::class, $messagerie);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+    
+            // Assuming $senderId and $reciverId are available
+            $senderId = $messagerie->getSender()->getIdUtilisateur();
+            $reciverId = $messagerie->getReciver()->getIdUtilisateur();
+            //dd($form->getErrors(true));
+    
+            return $this->redirectToRoute('app_messagerie_messagesfront', [
+                'senderId' => $senderId,
+                'reciverId' => $reciverId,
+            ], Response::HTTP_SEE_OTHER);
+        }
+    
+        return $this->renderForm('messagerie/editfront.html.twig', [
             'messagerie' => $messagerie,
             'form' => $form,
         ]);
@@ -103,6 +137,22 @@ class MessagerieController extends AbstractController
 
         return $this->redirectToRoute('app_messagerie_messages', ['senderId' => $senderId, 'reciverId' => $reciverId], Response::HTTP_SEE_OTHER);
     }
+
+    /////////////////////////////////////////////////Front/////////////////////////////////////////////////////////////////////////////////
+    #[Route('/{id}/delete', name: 'app_messagerie_deletefront', methods: ['POST'])]
+    public function deletefront(Request $request, Messagerie $messagerie, EntityManagerInterface $entityManager): Response
+    {
+        $senderId = $messagerie->getSender()->getIdUtilisateur();
+        $reciverId = $messagerie->getReciver()->getIdUtilisateur();
+
+        if ($this->isCsrfTokenValid('deletefront' . $messagerie->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($messagerie);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_messagerie_messagesfront', ['senderId' => $senderId, 'reciverId' => $reciverId], Response::HTTP_SEE_OTHER);
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     #[Route('/messages/{senderId}/{reciverId}', name: 'app_messagerie_messages')]
     public function getMessagesBySenderreciver(int $senderId, int $reciverId, MessagerieRepository $messagerieRepository, Request $request, EntityManagerInterface $entityManager, UtilisateurRepository $utilisateurRepository): Response
@@ -142,6 +192,47 @@ class MessagerieController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+////////////////////////////////////////////////////////////////////Front ////////////////////////////////////////////////////////////////
+#[Route('/messagesfront/{senderId}/{reciverId}', name: 'app_messagerie_messagesfront')]
+public function getMessagesBySenderreciverfront(int $senderId, int $reciverId, MessagerieRepository $messagerieRepository, Request $request, EntityManagerInterface $entityManager, UtilisateurRepository $utilisateurRepository): Response
+{
+    // Fetch sender and reciver entities from the repository
+    $sender = $utilisateurRepository->find($senderId);
+    $reciver = $utilisateurRepository->find($reciverId);
+
+    $messages = $messagerieRepository->findMessagesBySenderreciverOrderedByDateDesc($senderId, $reciverId);
+
+    $messagerie = new Messagerie();
+    
+    // Set the default value for the date field as a DateTime object
+    $messagerie->setDate(new \DateTime());
+    // Set the sender and reciver directly
+    $messagerie->setSender($sender);
+    $messagerie->setReciver($reciver);
+
+    $form = $this->createForm(MessagerieType::class, $messagerie);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        // Handle form submission
+        $entityManager->persist($messagerie);
+        $entityManager->flush();
+        // Redirect after form submission
+        return $this->redirectToRoute('app_messagerie_messagesfront', [
+            'senderId' => $senderId,
+            'reciverId' => $reciverId,
+        ], Response::HTTP_SEE_OTHER);
+        
+    }
+
+    return $this->render('messagerie/messagesfront.html.twig', [
+        'messages' => $messages,
+        'messagerie' => $messagerie,
+        'form' => $form->createView(),
+    ]);
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #[Route('/download/{fileName}', name: 'app_download_file')]
 public function downloadFile(string $fileName): Response
