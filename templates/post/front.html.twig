@@ -35,7 +35,43 @@
 								</div>
 								<div style="float: left;">
 									<h5 style="text-align: left;">{{ postAndComment.post.getUtilisateur().getNom()}}</h5>
-									<span>publié le  {{ postAndComment.post.date ? postAndComment.post.date|date('Y-m-d H:i:s') : ''  }} </span>
+									<span id="datePublication" >{# publié le  {{ postAndComment.post.date ? postAndComment.post.date|date('Y-m-d H:i:s') : ''  }} #}</span>
+								
+								
+								
+								
+								
+								
+
+<script>
+        var datePublication = "{{ postAndComment.post.date ? postAndComment.post.date|date('Y-m-d H:i:s') : ''  }}";
+        var datePublicationObj = new Date(datePublication);
+        var dateActuelle = new Date();
+        var difference = dateActuelle - datePublicationObj;
+        var differenceEnMinutes = Math.floor(difference / 60000);
+        var texteAffiche;
+        if (differenceEnMinutes < 1) {
+            texteAffiche = "publié à l'instant";
+        } else if (differenceEnMinutes < 60) {
+            texteAffiche = "publié il y a " + differenceEnMinutes + " minute(s)";
+        } else if (differenceEnMinutes < 1440) {
+            texteAffiche = "publié il y a " + Math.floor(differenceEnMinutes / 60) + " heure(s)";
+        } else if (differenceEnMinutes < 43200) {
+            texteAffiche = "publié il y a " + Math.floor(differenceEnMinutes / 1440) + " jour(s)";
+        } else if (differenceEnMinutes < 43200 * 30) {
+            texteAffiche = "publié il y a " + Math.floor(differenceEnMinutes / (1440 * 30)) + " mois";
+        } else {
+            texteAffiche = "publié il y a plus d'un mois";
+        }
+        // Update the publication date for this comment
+        document.write('<span class="text-right">' + texteAffiche + '</span>');
+    </script>
+
+								
+								
+								
+								
+								
 								</div>
 
 							</div>
@@ -118,7 +154,56 @@
 		<!-- Espace pour aligner les éléments à droite -->
         
 		<div class="card-body d-flex justify-content-end">
-    <span class="text-right">publié le {{ comment.getDateCo() ? comment.getDateCo()|date('Y-m-d') : '' }}</span>
+    <span  id="dateCommentaire{{ loop.index }}" class="text-right">{#publié le {{ comment.getDateCo() ? comment.getDateCo()|date('Y-m-d') : '' }}#}</span>
+
+ <script>
+        // Récupérer la date de publication depuis le span
+        var datePublication{{ loop.index }} = "{{ comment.getDateCo() ? comment.getDateCo()|date('Y-m-d') : '' }}";
+
+        // Convertir la date de publication en objet Date
+        var datePublicationObj{{ loop.index }} = new Date(datePublication{{ loop.index }});
+
+        // Obtenir la date actuelle
+        var dateActuelle{{ loop.index }} = new Date();
+
+
+        // Calculer la différence en millisecondes entre les deux dates
+        var difference{{ loop.index }} = dateActuelle{{ loop.index }} - datePublicationObj{{ loop.index }};
+
+        // Convertir la différence en jours
+        var differenceEnJours{{ loop.index }} = Math.floor(difference{{ loop.index }} / (1000 * 60 * 60 * 24));
+
+        // Déterminer le texte à afficher en fonction de la différence en jours
+        var texteAffiche{{ loop.index }};
+        if (differenceEnJours{{ loop.index }} < 1) {
+            texteAffiche{{ loop.index }} = "publié aujourd'hui";
+        } else if (differenceEnJours{{ loop.index }} === 1) {
+            texteAffiche{{ loop.index }} = "publié hier";
+        } else if (differenceEnJours{{ loop.index }} < 30) {
+            texteAffiche{{ loop.index }} = "publié il y a " + differenceEnJours{{ loop.index }} + " jour(s)";
+        } else {
+            var differenceEnMois{{ loop.index }} = Math.floor(differenceEnJours{{ loop.index }} / 30);
+            if (differenceEnMois{{ loop.index }} === 1) {
+                texteAffiche{{ loop.index }} = "publié il y a 1 mois";
+            } else {
+                texteAffiche{{ loop.index }} = "publié il y a " + differenceEnMois{{ loop.index }} + " mois";
+            }
+        }
+
+        // Afficher le texte calculé dans le span
+        document.getElementById('dateCommentaire{{ loop.index }}').innerText = texteAffiche{{ loop.index }};
+    </script>
+
+
+
+
+
+
+
+
+
+
+
 </div>
     </div>
     <div class="card-body mt-0 pt-0">
@@ -178,4 +263,6 @@
     /* Ajoutez d'autres styles pour styliser l'image comme une icône */
 }
 </style>
+
+
 {% endblock %}
