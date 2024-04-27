@@ -25,11 +25,14 @@
 		</label>
 
 		<label class="block text-sm">
-			<span class="text-gray-700 dark:text-gray-400">Lieu</span>
+			<span class="text-gray-700 dark:text-gray-400">Lieu</span> 
 			{{ form_widget(form.lieu, {'id': 'lieuInput'})}}
 			<span id="lieuError" class="text-xs text-red-600 dark:text-red-400"></span>
 			<span class="error-message">{{ form_errors(form.lieu) }}</span>
 		</label>
+<a href="{{ path('app_map') }}" class="px-4 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-l-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+  Prendre Coords
+</a>
 
 		<label class="block text-sm">
 			<span class="text-gray-700 dark:text-gray-400">Code</span>

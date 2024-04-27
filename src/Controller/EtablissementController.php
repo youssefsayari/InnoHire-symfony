@@ -25,6 +25,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
+
+
+use App\Entity\GeoCalculator; // Assurez-vous que le chemin d'accès est correct
+
+
 #[Route('/etablissement')]
 class EtablissementController extends AbstractController
 {
@@ -75,28 +80,33 @@ class EtablissementController extends AbstractController
     #[Route('/Map', name: 'app_map', methods: ['GET'])]
     public function Map(EntityManagerInterface $entityManager): Response
     {
-        $events = $entityManager
-            ->getRepository(Event::class)
+        $etablissements = $entityManager
+            ->getRepository(Etablissement::class)
             ->findAll();
-            $gyms = $entityManager
-            ->getRepository(Gym::class)
-            ->findAll();
-            $events = $entityManager
-            ->getRepository(Event::class)
-            ->findAll();
-            $restaurants = $entityManager
-            ->getRepository(Restaurant::class)
-            ->findAll();
+            
 
         return $this->render('etablissement/map.html.twig', [
-            'events' => $events,
-            'gyms' => $gyms,
-            'restaurants' => $restaurants,
+            'etablissements' => $etablissements,
+            
         ]);
     }
 
 
 //------------------front---------------------------------
+
+#[Route('/front/Map', name: 'app_mapFront', methods: ['GET'])]
+public function MapFront(EntityManagerInterface $entityManager): Response
+{
+    $etablissements = $entityManager
+        ->getRepository(Etablissement::class)
+        ->findAll();
+        
+
+    return $this->render('etablissement/mapFront.html.twig', [
+        'etablissements' => $etablissements,
+        
+    ]);
+}
 
 public $idUtilisateurConnecte = 2;//change iciiiiiiiiiiiiiiiiiiiiiiiii
 
@@ -123,6 +133,7 @@ public $idUtilisateurConnecte = 2;//change iciiiiiiiiiiiiiiiiiiiiiiiii
 
         return $this->render('etablissement/front.html.twig', [
             'etablissementsAndWallets' => $etablissementsAndWallets,
+            'etablissementss' => $etablissementRepository->findAll(),//pour le stats au dessous
         ]);
     }
 

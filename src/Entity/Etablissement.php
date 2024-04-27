@@ -26,10 +26,6 @@ class Etablissement
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\Regex(
-        pattern: '/[a-zA-Z]/',
-        message: "Le lieu ne peut pas contenir uniquement des chiffres."
-    )]
     #[Assert\NotBlank(message: "Le lieu ne peut pas être vide.")]
     private ?string $lieu = null;
 
@@ -57,25 +53,6 @@ class Etablissement
     #[Assert\NotBlank(message: "Veuillez sélectionner un utilisateur.")]
     #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
     private ?Utilisateur $utilisateur;
-
-
-
-    #[ORM\Column]
-    private ?int $latitude = null;
-
-    #[ORM\Column]
-    private ?int $longitude = null;
-
-
-    public function getLatitude(): ?int
-    {
-        return $this->latitude;
-    }
-    public function getLongitude(): ?int
-    {
-        return $this->longitude;
-    }
-
 
     public function getId(): ?int
     {

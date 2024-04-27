@@ -21,6 +21,8 @@
 
 						</h1>
 					</div>
+
+
 					<div class="row mt-n2 wow fadeInUp" data-wow-delay="0.3s">
 						<div class="col-12 text-center">
 							<ul class="list-inline mb-5" id="portfolio-flters">
@@ -64,7 +66,37 @@
 </div>
 
                         {% endif %}
+
+
+
+
+ {% set nb_etablissement = 0 %}
+{% set nb_ecole = 0 %}
+{% set nb_college = 0 %}
+{% set nb_lycee = 0 %}
+{% set nb_faculte = 0 %}
+
+{% for etablissement in etablissementss %}
+    {% set nb_etablissement = nb_etablissement + 1 %}
+    {% if etablissement.typeEtablissement|lower == 'ecole' %}
+        {% set nb_ecole = nb_ecole + 1 %}
+    {% elseif etablissement.typeEtablissement|lower == 'college' %}
+        {% set nb_college = nb_college + 1 %}
+    {% elseif etablissement.typeEtablissement|lower == 'lycee' %}
+        {% set nb_lycee = nb_lycee + 1 %}
+    {% elseif etablissement.typeEtablissement|lower == 'faculte' %}
+        {% set nb_faculte = nb_faculte + 1 %}
+    {% endif %}
+{% endfor %}
+
+
+
+
+
+
+
 					{% for etablissementAndWallet in etablissementsAndWallets %}
+
                    
 						<div class="col-lg-4 col-md-6 portfolio-item {{ etablissementAndWallet.etablissement.typeEtablissement|lower }} wow fadeInUp" data-wow-delay="0.1s">
 							
@@ -221,6 +253,92 @@
 			</div>
 			<!-- Projects End -->
 
+
+<!-- About Start -->
+			<div class="container-xxl py-5">
+				<div class="container py-5 px-lg-5">
+					<div class="row g-5 align-items-center">
+						<div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
+							
+							<h2 class="mb-5">
+								#1 Show All Establishments in Maps
+							</h2>
+							<div class="skill mb-4">
+								<div class="d-flex justify-content-between">
+									<p class="mb-2">
+										Ecole
+
+									</p>
+									<p class="mb-2">
+                                 {% set pourcentage_ecoles = (nb_ecole * 100 / nb_etablissement) | round(2) %}
+                                     {{ pourcentage_ecoles }} %
+                                    </p>
+
+								</div>
+								<div class="progress">
+                                    <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="{{ pourcentage_ecoles }}" aria-valuemin="0" aria-valuemax="100"></div>
+								</div>
+							</div>  
+							<div class="skill mb-4">
+								<div class="d-flex justify-content-between">
+									<p class="mb-2">
+										College
+
+									</p>
+									<p class="mb-2">
+										{% set pourcentage_colleges = (nb_college * 100 / nb_etablissement) | round(2) %}
+                                     {{ pourcentage_colleges }} %
+
+									</p>
+								</div>
+								<div class="progress">
+									<div class="progress-bar bg-primary" role="progressbar" aria-valuenow="{{ pourcentage_colleges }}" aria-valuemin="0" aria-valuemax="100"></div>
+								</div>
+							</div>
+							<div class="skill mb-4">
+								<div class="d-flex justify-content-between">
+									<p class="mb-2">
+										Lycee
+
+									</p>
+									<p class="mb-2">
+										{% set pourcentage_lycees = (nb_lycee * 100 / nb_etablissement) | round(2) %}
+                                     {{ pourcentage_lycees }} %
+
+									</p>
+								</div>
+								<div class="progress">
+									<div class="progress-bar bg-secondary" role="progressbar" aria-valuenow="{{ pourcentage_lycees }}" aria-valuemin="0" aria-valuemax="100"></div>
+								</div>
+							</div>
+							<div class="skill mb-4">
+								<div class="d-flex justify-content-between">
+									<p class="mb-2">
+										Faculte
+
+									</p>
+									<p class="mb-2">
+										{% set pourcentage_facultes = (nb_faculte * 100 / nb_etablissement) | round(2) %}
+                                     {{ pourcentage_facultes }} %
+
+									</p>
+								</div>
+								<div class="progress">
+									<div class="progress-bar bg-dark" role="progressbar" aria-valuenow="{{ pourcentage_facultes }}" aria-valuemin="0" aria-valuemax="100"></div>
+								</div>
+							</div>
+							<a href="{{ path('app_mapFront') }}" class="btn btn-primary py-sm-3 px-sm-5 rounded-pill mt-3">
+								Show Map
+
+							</a>
+						</div>
+						<div class="col-lg-6">
+							<img class="img-fluid wow zoomIn" data-wow-delay="0.5s" src="{{ asset('assets/img/about.png')}}">
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- About End -->
 
 
 

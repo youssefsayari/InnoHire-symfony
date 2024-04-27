@@ -66,7 +66,7 @@
 					</button>
 					<div class="collapse navbar-collapse" id="navbarCollapse">
 						<div class="navbar-nav mx-auto py-0">
-							<a href="#" class="nav-item nav-link active">
+							<a href="{{ path('app_etablissement_front') }}" class="nav-item nav-link active">
 								Home
 
 							</a>
@@ -113,11 +113,16 @@
 						</a>
 					</div>
 				</nav>
+				
 				{% block body %}
+				{% block map %}
 				<div class="container-xxl bg-primary hero-header">
+				
 					<div class="container px-lg-5">
+					
 						<div class="row g-5 align-items-end">
 							<div class="col-lg-6 text-center text-lg-start">
+							
 								<h1 class="text-white mb-4 animated slideInDown">
 									A Digital Agency Of Inteligents & Creative People
 
@@ -480,6 +485,7 @@
 			
 			<!-- Projects Start -->
 			{% block etablissement %}{% endblock %}
+			{% endblock %}
 			<!-- Projects End -->
 
 			<!-- Testimonial Start -->
