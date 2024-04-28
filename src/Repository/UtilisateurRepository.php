@@ -44,6 +44,10 @@ class UtilisateurRepository extends ServiceEntityRepository
         // Execute the query and return the results
         return $queryBuilder->getQuery()->getResult();
     }
+    public function findOneByCin(String $cin): ?Utilisateur
+    {
+        return $this->findOneBy(['cin' => $cin]);
+    }
 
 
 //    /**
