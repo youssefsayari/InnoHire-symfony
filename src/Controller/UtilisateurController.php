@@ -10,6 +10,9 @@ use App\Form\UtilisateurType;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\UtilisateurRepository;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -105,42 +108,40 @@ public function login(Request $request, UtilisateurRepository $userRepository): 
 }
 
 #[Route('/forgot_password', name: 'forgot_password')]
-public function forgotPassword(Request $request, UtilisateurRepository $userRepository): Response
-{   if ($request->isMethod('POST')) {
-$cin = $request->request->get('cin');
-if (empty($cin)) {
-    $error = 'CIN is required.';
-    return $this->render('utilisateur/forgot_password.html.twig', ['error' => $error]);
+public function forgotPassword(Request $request, UtilisateurRepository $userRepository, MailerInterface $mailer): Response
+{
+    if ($request->isMethod('POST')) {
+        $cin = $request->request->get('cin');
+        if (empty($cin)) {
+            $error = 'CIN is required.';
+            return $this->render('utilisateur/forgot_password.html.twig', ['error' => $error]);
+        }
+
+        $user = $userRepository->findOneByCin($cin);
+        if ($user) {
+            // Generate four random numbers
+            $verificationCode = mt_rand(1000, 9999);
+
+            // Send email with verification code
+            $email = (new Email())
+                ->from('innohire45@gmail.com')
+                ->to(new Address($user->getAdresse(), $user->getNom())) // Use user's email address and name
+                ->subject('Password Reset Verification Code')
+                ->html('<p>Your verification code is: ' . $verificationCode . '</p>');
+
+            $mailer->send($email);
+
+            // Redirect to a page where the user can enter the verification code
+            return $this->redirectToRoute('login');
+        } else {
+            // Show error message if user with provided CIN is not found
+            $error = 'Invalid CIN. Please try again.';
+            return $this->render('utilisateur/forgot_password.html.twig', ['error' => $error]);
+        }
+    }
+
+    return $this->render('utilisateur/forgot_password.html.twig');
 }
-
-$user = $userRepository->findOneByCin($cin);
-if ($user) {
-    // User found, start session and store user ID
-    $session = $request->getSession();
-    $session->set('id_utilisateur', $user->getIdUtilisateur());
-    $session->set('nom', $user->getNom());
-    $session->set('prenom', $user->getPrenom());
-    $session->set('adresse',$user->getAdresse());
-    $session->set('mdp',$user->getMdp());
-    $session->set('role',$user->getRole());
-
-
-        
-
-    // Redirect to the index page if user is found
-    return $this->redirectToRoute('forgot_password');
-} else {
-    // Show error message if credentials are invalid
-    $error = 'Invalid credentials. Please try again.';
-    return $this->render('utilisateur/forgot_password.html.twig', ['error' => $error]);
-}
-
-    
-
-}
-return $this->render('utilisateur/forgot_password.html.twig');
-}
-
 
 
 
