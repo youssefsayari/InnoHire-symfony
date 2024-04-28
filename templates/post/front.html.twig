@@ -106,9 +106,69 @@
 
 
 						<div class="d-flex justify-content-center border-bottom p-4">
-							<a class="btn btn-square mx-1" href="#">
-								<i class="far fa-thumbs-up"></i>
-							</a>
+
+
+
+{% if postAndComment.isLikedByUser %}
+   <a id="btn" class="btn-square mx-1" href="{{ path('app_post_dislike', {'id_post': postAndComment.post.idPost}) }}">
+                                 <i class="far fa-thumbs-up"></i>
+                            </a>
+                            <style>
+ .btn-square {
+            transition: transform 0.3s ease;
+            color: #fff;
+        }
+
+        .btn-square:hover, .hover-active {
+            transform: scale(1.1);
+            background-color: #8a2be2;
+        }
+
+                            </style>
+                            <script>
+                      window.addEventListener('DOMContentLoaded', (event) => {
+        // Récupération de tous les éléments avec la classe btn-square
+        const btns = document.querySelectorAll('.btn-square');
+        
+        // Boucle à travers tous les éléments et ajouter la classe hover-active
+        btns.forEach(btn => {
+            btn.classList.add('hover-active');
+        });
+    });
+                            </script>
+              
+{% else %}
+   <a id="btn" class=" btn btn-square mx-1" href="{{ path('app_post_like', {'id_post': postAndComment.post.idPost}) }}">
+                                 <i class="far fa-thumbs-up"></i>
+                            </a>
+                            <style>
+ .btn-square {
+            transition: transform 0.3s ease;
+            color: #fff;
+        }
+
+        .btn-square:hover, .hover-active {
+            transform: scale(1.1);
+            background-color: #8a2be2;
+        }
+
+                            </style>
+                            <script>
+                      window.addEventListener('DOMContentLoaded', (event) => {
+        // Récupération de tous les éléments avec la classe btn-square
+        const btns = document.querySelectorAll('.btn-square');
+        
+        // Boucle à travers tous les éléments et ajouter la classe hover-active
+        btns.forEach(btn => {
+            btn.classList.add('hover-active');
+        });
+    });
+                            </script>
+              
+{% endif %}
+    
+			
+                            
 							{% if postAndComment.post.getUtilisateur().getIdUtilisateur() == idUtilisateurConnecte %}
 							
 							<a class="btn btn-square mx-1"  href="{{ path('app_post_editfront', {'id_post': postAndComment.post.idPost}) }}">
@@ -144,7 +204,7 @@
 <h5 class="d-flex justify-content-center" >Commentaires:</h5>
 
  {% if postAndComment.comments %}
- {% for comment in postAndComment.comments %}
+ {% for commentIndex, comment in postAndComment.comments %}
   <div class="card mb-3">
     <div class="card-body d-flex align-items-center">
         <!-- Ajoutez l'image de l'utilisateur ici avec une classe pour la styliser -->
@@ -154,46 +214,46 @@
 		<!-- Espace pour aligner les éléments à droite -->
         
 		<div class="card-body d-flex justify-content-end">
-    <span  id="dateCommentaire{{ loop.index }}" class="text-right">{#publié le {{ comment.getDateCo() ? comment.getDateCo()|date('Y-m-d') : '' }}#}</span>
+                        <span id="dateCommentaire_{{ postAndComment.post.idPost }}_{{ commentIndex }}" class="text-right">
+{#publié le {{ comment.getDateCo() ? comment.getDateCo()|date('Y-m-d') : '' }}#}
+</span>
 
- <script>
-        // Récupérer la date de publication depuis le span
-        var datePublication{{ loop.index }} = "{{ comment.getDateCo() ? comment.getDateCo()|date('Y-m-d') : '' }}";
+  <script>
+            // Récupérer la date de publication du commentaire
+            var datePublication{{ postAndComment.post.idPost }}_{{ commentIndex }} = "{{ comment.getDateCo() ? comment.getDateCo()|date('Y-m-d H:i:s') : '' }}";
 
-        // Convertir la date de publication en objet Date
-        var datePublicationObj{{ loop.index }} = new Date(datePublication{{ loop.index }});
+            // Convertir la date de publication en objet Date
+            var datePublicationObj{{ postAndComment.post.idPost }}_{{ commentIndex }} = new Date(datePublication{{ postAndComment.post.idPost }}_{{ commentIndex }});
 
-        // Obtenir la date actuelle
-        var dateActuelle{{ loop.index }} = new Date();
+            // Obtenir la date actuelle
+            var dateActuelle{{ postAndComment.post.idPost }}_{{ commentIndex }} = new Date();
 
+            // Calculer la différence en millisecondes entre les deux dates
+            var difference{{ postAndComment.post.idPost }}_{{ commentIndex }} = dateActuelle{{ postAndComment.post.idPost }}_{{ commentIndex }} - datePublicationObj{{ postAndComment.post.idPost }}_{{ commentIndex }};
 
-        // Calculer la différence en millisecondes entre les deux dates
-        var difference{{ loop.index }} = dateActuelle{{ loop.index }} - datePublicationObj{{ loop.index }};
+            // Convertir la différence en jours
+            var differenceEnJours{{ postAndComment.post.idPost }}_{{ commentIndex }} = Math.floor(difference{{ postAndComment.post.idPost }}_{{ commentIndex }} / (1000 * 60 * 60 * 24));
 
-        // Convertir la différence en jours
-        var differenceEnJours{{ loop.index }} = Math.floor(difference{{ loop.index }} / (1000 * 60 * 60 * 24));
-
-        // Déterminer le texte à afficher en fonction de la différence en jours
-        var texteAffiche{{ loop.index }};
-        if (differenceEnJours{{ loop.index }} < 1) {
-            texteAffiche{{ loop.index }} = "publié aujourd'hui";
-        } else if (differenceEnJours{{ loop.index }} === 1) {
-            texteAffiche{{ loop.index }} = "publié hier";
-        } else if (differenceEnJours{{ loop.index }} < 30) {
-            texteAffiche{{ loop.index }} = "publié il y a " + differenceEnJours{{ loop.index }} + " jour(s)";
-        } else {
-            var differenceEnMois{{ loop.index }} = Math.floor(differenceEnJours{{ loop.index }} / 30);
-            if (differenceEnMois{{ loop.index }} === 1) {
-                texteAffiche{{ loop.index }} = "publié il y a 1 mois";
+            // Déterminer le texte à afficher en fonction de la différence en jours
+            var texteAffiche{{ postAndComment.post.idPost }}_{{ commentIndex }};
+            if (differenceEnJours{{ postAndComment.post.idPost }}_{{ commentIndex }} < 1) {
+                texteAffiche{{ postAndComment.post.idPost }}_{{ commentIndex }} = "publié aujourd'hui";
+            } else if (differenceEnJours{{ postAndComment.post.idPost }}_{{ commentIndex }} === 1) {
+                texteAffiche{{ postAndComment.post.idPost }}_{{ commentIndex }} = "publié hier";
+            } else if (differenceEnJours{{ postAndComment.post.idPost }}_{{ commentIndex }} < 30) {
+                texteAffiche{{ postAndComment.post.idPost }}_{{ commentIndex }} = "publié il y a " + differenceEnJours{{ postAndComment.post.idPost }}_{{ commentIndex }} + " jour(s)";
             } else {
-                texteAffiche{{ loop.index }} = "publié il y a " + differenceEnMois{{ loop.index }} + " mois";
+                var differenceEnMois{{ postAndComment.post.idPost }}_{{ commentIndex }} = Math.floor(differenceEnJours{{ postAndComment.post.idPost }}_{{ commentIndex }} / 30);
+                if (differenceEnMois{{ postAndComment.post.idPost }}_{{ commentIndex }} === 1) {
+                    texteAffiche{{ postAndComment.post.idPost }}_{{ commentIndex }} = "publié il y a 1 mois";
+                } else {
+                    texteAffiche{{ postAndComment.post.idPost }}_{{ commentIndex }} = "publié il y a " + differenceEnMois{{ postAndComment.post.idPost }}_{{ commentIndex }} + " mois";
+                }
             }
-        }
 
-        // Afficher le texte calculé dans le span
-        document.getElementById('dateCommentaire{{ loop.index }}').innerText = texteAffiche{{ loop.index }};
-    </script>
-
+            // Afficher le texte calculé dans le span
+            document.getElementById('dateCommentaire_{{ postAndComment.post.idPost }}_{{ commentIndex }}').innerText = texteAffiche{{ postAndComment.post.idPost }}_{{ commentIndex }};
+        </script>
 
 
 

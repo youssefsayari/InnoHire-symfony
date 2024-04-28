@@ -146,6 +146,9 @@ class CommentaireController extends AbstractController
     public function deleteFront(Request $request, Commentaire $commentaire, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$commentaire->getIdcommentaire(), $request->request->get('_token'))) {
+            $post = $commentaire->getPost();
+            $post->setNbComments($post->getNbComments() - 1);
+            $entityManager->persist($post);
             $entityManager->remove($commentaire);
             $entityManager->flush();
         }

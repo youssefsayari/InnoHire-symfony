@@ -6,6 +6,8 @@ use App\Entity\Post;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+
+
 /**
  * @extends ServiceEntityRepository<Post>
  *
@@ -31,6 +33,16 @@ class PostRepository extends ServiceEntityRepository
         
         return intval($count) > 0; // Retourne true si le compte est supérieur à 0, sinon false
     }
+    
+   
+
+
+
+
+
+
+
+     
     
   
 
