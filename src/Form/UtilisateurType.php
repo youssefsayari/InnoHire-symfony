@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Utilisateur;
 use Symfony\Component\Form\AbstractType;
+use Karser\Recaptcha3Bundle\Form\Recaptcha3Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Email;
@@ -15,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 class UtilisateurType extends AbstractType
@@ -84,7 +86,13 @@ class UtilisateurType extends AbstractType
                         'mimeTypesMessage' => 'Please upload a valid image file (jpeg, png, gif)',
                     ]),
                 ],
-            ]);
+            ])
+           ->add('captcha', Recaptcha3Type::class, [
+                'constraints' => new Recaptcha3(),
+                'action_name' => 'homepage',
+                
+            ])
+            ;
             
         
     }
