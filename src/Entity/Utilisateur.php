@@ -41,6 +41,16 @@ class Utilisateur
     #[Vich\UploadableField(mapping: "user_images", fileNameProperty: "image")]
     private ?File $imageFile = null;
 
+    private ?int $OTP ;
+    public function getOTP()
+    {
+        return $this->OTP;
+    }
+    public function setOTP($OTP)
+    {
+        $this->OTP=$OTP;
+    }
+
     public function getIdUtilisateur(): ?int
     {
         return $this->id_utilisateur;

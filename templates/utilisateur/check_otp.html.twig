@@ -73,10 +73,10 @@
     <div class="container">
         <img class="welcome-image" src="../../img/382876686_2550356941793712_7809494747563560197_n.gif" alt="Welcome Image">
         <div class="login-section">
-            <div class="welcome-text">Enter your cin to receive a code</div>
-            <form action="/utilisateur/forgot_password" method="post">
-                <input type="text" class="input-field" name="cin" placeholder="Cin" required>
-                <button type="submit" class="sign-in-button">Send Code</button>
+            <div class="welcome-text">Enter the code you recieved</div>
+            <form action="/utilisateur/check_otp" method="post">
+                <input type="text" class="input-field" name="otp" placeholder="Otp" required>
+                <button type="submit" class="sign-in-button">verifyOTP</button>
             </form>
             
            

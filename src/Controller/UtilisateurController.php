@@ -17,6 +17,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport; // Corrected namespace
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
 
 #[Route('/utilisateur')]
 class UtilisateurController extends AbstractController
@@ -64,6 +69,9 @@ public function index(Request $request, UtilisateurRepository $utilisateurReposi
 }
 
 
+
+
+
     
 #[Route('/login', name: 'login', methods: ['GET', 'POST'])]
 public function login(Request $request, UtilisateurRepository $userRepository): Response
@@ -107,6 +115,10 @@ public function login(Request $request, UtilisateurRepository $userRepository): 
     return $this->render('utilisateur/login.html.twig');
 }
 
+
+
+
+
 #[Route('/forgot_password', name: 'forgot_password')]
 public function forgotPassword(Request $request, UtilisateurRepository $userRepository, MailerInterface $mailer): Response
 {
@@ -123,16 +135,48 @@ public function forgotPassword(Request $request, UtilisateurRepository $userRepo
             $verificationCode = mt_rand(1000, 9999);
 
             // Send email with verification code
-            $email = (new Email())
-                ->from('innohire45@gmail.com')
-                ->to(new Address($user->getAdresse(), $user->getNom())) // Use user's email address and name
-                ->subject('Password Reset Verification Code')
-                ->html('<p>Your verification code is: ' . $verificationCode . '</p>');
+           // Load MAILER_DSN from environment variables
+        $mailerDsn = $_ENV['MAILER_DSN'] ?? null;
 
-            $mailer->send($email);
+        $email = (new Email())
+            ->from('vitalisyncapp@gmail.com')
+            ->to($user->getAdresse())
+            ->subject('Code')
+            ->text('code= '.$verificationCode);
+
+        try {
+            // Check if MAILER_DSN is set
+            if (!$mailerDsn) {
+                throw new \InvalidArgumentException("MAILER_DSN is not configured.");
+            }
+
+            // Create a new mailer instance with the provided DSN
+            $transport = Transport::fromDsn($mailerDsn);
+            $customMailer = new Mailer($transport);
+
+            // Send the email
+            $customMailer->send($email);
+            $session = $request->getSession();
+            $session->set('id_utilisateur', $user->getIdUtilisateur());
+            $session->set('nom', $user->getNom());
+            $session->set('prenom', $user->getPrenom());
+            $session->set('adresse',$user->getAdresse());
+            $session->set('mdp',$user->getMdp());
+            $session->set('role',$user->getRole());
+            $session->set('OTP', $verificationCode);
+
+            $responseMessage = 'Email sent successfully!';
+        } catch (TransportExceptionInterface $e) {
+            $responseMessage = 'Failed to send email: ' . $e->getMessage();
+        } catch (\InvalidArgumentException $e) {
+            $responseMessage = $e->getMessage();
+        }
+
+        //return new Response($responseMessage);
+    
 
             // Redirect to a page where the user can enter the verification code
-            return $this->redirectToRoute('login');
+            return $this->render('utilisateur/check_otp.html.twig');
         } else {
             // Show error message if user with provided CIN is not found
             $error = 'Invalid CIN. Please try again.';
@@ -142,6 +186,85 @@ public function forgotPassword(Request $request, UtilisateurRepository $userRepo
 
     return $this->render('utilisateur/forgot_password.html.twig');
 }
+
+
+#[Route('/check_otp', name: 'check_otp')]
+public function checkOtp(Request $request, UtilisateurRepository $userRepository): Response
+{
+    if ($request->isMethod('POST')) {
+        $otp = $request->request->get('otp');
+        if (empty($otp)) {
+            $error = 'OTP is required.';
+            return $this->render('utilisateur/check_otp.html.twig', ['error' => $error]);
+        }
+        
+        $session = $request->getSession();
+        $mailOTP = $session->get('OTP');
+        
+        if ($otp != $mailOTP) {
+            $error = 'Invalid OTP.';
+            return $this->render('utilisateur/check_otp.html.twig', ['error' => $error]);
+        }
+
+        // OTP is correct, proceed with further actions
+        return $this->render('utilisateur/change_mdp.html.twig');
+
+        // For example, you can clear the OTP from the session
+       // $session->remove('OTP');
+
+        // Redirect the user to a success page or perform other actions
+    }
+
+    return $this->render('utilisateur/check_otp.html.twig');
+}
+
+
+#[Route('/change_mdp', name: 'change_mdp')]
+public function changeMdp(Request $request, UtilisateurRepository $userRepository, EntityManagerInterface $entityManager): Response
+{
+    if ($request->isMethod('POST')) {
+        $mdp = $request->request->get('mdp');
+        $mdpVerif = $request->request->get('mdp_verif');
+
+        if (empty($mdp) || empty($mdpVerif)) {
+            $error = 'Both password fields are required.';
+            return $this->render('utilisateur/change_mdp.html.twig', ['error' => $error]);
+        }
+        
+        if ($mdp !== $mdpVerif) {
+            $error = 'Passwords do not match.';
+            return $this->render('utilisateur/change_mdp.html.twig', ['error' => $error]);
+        }
+        
+        // Retrieve the idUtilisateur from the session
+        $session = $request->getSession();
+        $idUtilisateur = $session->get('id_utilisateur');
+        
+        // Fetch the user entity from the database using idUtilisateur
+        $user = $userRepository->find($idUtilisateur);
+        
+        if (!$user) {
+            $error = 'User not found.';
+            return $this->render('utilisateur/change_mdp.html.twig', ['error' => $error]);
+        }
+        
+        // Set the new password for the user entity
+        $user->setMdp($mdp);
+        
+        // Persist the changes to the database
+        $entityManager->flush();
+
+        // Redirect the user to a success page or perform other actions
+        return $this->render('utilisateur/login.html.twig');
+    }
+
+    return $this->render('utilisateur/change_mdp.html.twig');
+}
+
+
+
+
+
 
 
 

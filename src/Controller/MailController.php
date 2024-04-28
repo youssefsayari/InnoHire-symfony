@@ -21,10 +21,10 @@ class MailController extends AbstractController
         $mailerDsn = $_ENV['MAILER_DSN'] ?? null;
 
         $email = (new Email())
-            ->from('innohire45@gmail.com')
+            ->from('vitalisyncapp@gmail.com')
             ->to('kthiri.amenallah02@gmail.com')
             ->subject('Test Email')
-            ->text('This is a test email sent from Symfony.');
+            ->text('KHIDMET.');
 
         try {
             // Check if MAILER_DSN is set

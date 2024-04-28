@@ -48,6 +48,13 @@ class UtilisateurRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['cin' => $cin]);
     }
+    public function updateOTP(Utilisateur $user, $otp)
+    {
+        $entityManager = $this->getEntityManager();
+        $user->setOTP($otp);
+        $entityManager->persist($user);
+        $entityManager->flush();
+    }
 
 
 //    /**
