@@ -95,15 +95,18 @@ class EtablissementController extends AbstractController
 //------------------front---------------------------------
 
 #[Route('/front/Map', name: 'app_mapFront', methods: ['GET'])]
-public function MapFront(EntityManagerInterface $entityManager): Response
+public function MapFront(EtablissementRepository $etablissementRepository,EntityManagerInterface $entityManager): Response
 {
     $etablissements = $entityManager
         ->getRepository(Etablissement::class)
         ->findAll();
+
+        $idUtilisateurConnecte = $this->idUtilisateurConnecte;
         
 
     return $this->render('etablissement/mapFront.html.twig', [
         'etablissements' => $etablissements,
+        'idUtilisateurConnecte' => $idUtilisateurConnecte,
         
     ]);
 }
