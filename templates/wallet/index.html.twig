@@ -19,17 +19,47 @@
 					<a href="{{ path('app_wallet_new') }}">Create new +</a>
 				</div>
 			</h4>
-			<div class="w-full overflow-hidden rounded-lg shadow-xs">
+			<div id="tableContainer" class="w-full overflow-hidden rounded-lg shadow-xs">
 				<div class="w-full overflow-x-auto">
 					<table class="w-full whitespace-no-wrap">
 						<thead>
 							<tr class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
 
 
-								<th class="px-4 py-3">Balance</th>
-								<th class="px-4 py-3">Status</th>
-								<th class="px-4 py-3">Date Creation</th>
-								<th class="px-4 py-3">Etablissement</th>
+
+
+
+
+
+
+<th class="px-4 py-3" data-column="Balance" onclick="sortTable('Balance')">
+  Balance
+  <i id="BalanceIcon" class="fas fa-sort hidden ml-1"></i>
+</th>
+
+<th class="px-4 py-3" data-column="Status" onclick="sortTable('Status')">
+  Status
+  <i id="StatusIcon" class="fas fa-sort hidden ml-1"></i>
+</th>
+
+<th class="px-4 py-3" data-column="Date Creation" onclick="sortTable('Date Creation')">
+  Date Creation
+  <i id="Date CreationIcon" class="fas fa-sort hidden ml-1"></i>
+</th>
+
+<th class="px-4 py-3" data-column="Etablissement" onclick="sortTable('Etablissement')">
+  Etablissement
+  <i id="EtablissementIcon" class="fas fa-sort hidden ml-1"></i>
+</th>
+
+
+
+
+
+
+
+
+
 								<th class="px-4 py-3">Actions</th>
 							</tr>
 						</thead>
@@ -234,5 +264,88 @@
 			</div>
 		</div>
 	</main>
+
+
+
+
+
+
+
+
+
+
+<style>
+/* Cacher toutes les icônes de tri par défaut */
+/* Masquer toutes les icônes de tri par défaut */
+.fas.fa-sort {
+  display: none;
+}
+
+/* Afficher l'icône de tri de la colonne sélectionnée */
+.fas.fa-sort.active {
+  display: inline-block;
+}
+
+</style>
+<script>
+// Variable pour suivre la colonne actuellement triée
+var currentSortedColumn = null;
+
+function sortTable(columnName) {
+  var table, rows, switching, i, x, y, shouldSwitch;
+  table = document.getElementById("tableContainer").getElementsByTagName('table')[0];
+  switching = true;
+  /*Make a loop that will continue until no switching has been done:*/
+  while (switching) {
+    //start by saying: no switching is done:
+    switching = false;
+    rows = table.rows;
+    /*Loop through all table rows (except the first, which contains table headers):*/
+    for (i = 1; i < (rows.length - 1); i++) {
+      //start by saying there should be no switching:
+      shouldSwitch = false;
+      /*Get the two elements you want to compare, one from current row and one from the next:*/
+      x = parseInt(rows[i].getElementsByTagName("td")[getColumnIndex(columnName)].innerHTML);
+      y = parseInt(rows[i + 1].getElementsByTagName("td")[getColumnIndex(columnName)].innerHTML);
+      /*check if the two rows should switch place, based on the direction, asc or desc:*/
+      if (x < y) {
+        //if so, mark as a switch and break the loop:
+        shouldSwitch = true;
+        break;
+      }
+    }
+    if (shouldSwitch) {
+      /*If a switch has been marked, make the switch and mark that a switch has been done:*/
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+    }
+  }
+  // Masquer toutes les icônes de tri
+  resetSortIcons();
+  // Afficher l'icône de tri de la colonne sélectionnée
+  document.getElementById(columnName + 'Icon').classList.add('active');
+  // Mettre à jour la colonne actuellement triée
+  currentSortedColumn = columnName;
+}
+
+function resetSortIcons() {
+  // Masquer toutes les icônes de tri
+  document.querySelectorAll('.fas.fa-sort').forEach(icon => {
+    icon.classList.remove('active');
+  });
+}
+
+function getColumnIndex(columnName) {
+  var headers = document.getElementById("tableContainer").getElementsByTagName('th');
+  for (var i = 0; i < headers.length; i++) {
+    if (headers[i].getAttribute('data-column') === columnName) {
+      return i;
+    }
+  }
+  return -1; // Retourne -1 si la colonne n'est pas trouvée
+}
+
+</script>
+
 
 {% endblock %}
