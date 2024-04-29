@@ -324,5 +324,11 @@
 }
 </style>
 
+{% for message in app.flashes('error') %}
+		<script>
+			 alert("{{ message }}");
+		</script>
+	{% endfor %}
+
 
 {% endblock %}

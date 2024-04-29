@@ -23,7 +23,7 @@ class SmsController extends AbstractController
     public function sendSms(Request $request, SmsGenerator $smsGenerator): Response
     {
        
-        $number=$request->request->get('number');
+        
 
         $name=$request->request->get('name');
 

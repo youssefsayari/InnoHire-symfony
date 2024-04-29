@@ -13,6 +13,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
+
+use App\Service\SmsGenerator;
+
 #[Route('/commentaire')]
 class CommentaireController extends AbstractController
 {
@@ -55,7 +59,7 @@ class CommentaireController extends AbstractController
     
     
     #[Route('/{id_post}/newFront', name: 'app_commentaire_newFront', methods: ['GET', 'POST'])]
-    public function newFront(Request $request, EntityManagerInterface $entityManager,Post $post,UtilisateurRepository $userRepository): Response
+    public function newFront(Request $request, EntityManagerInterface $entityManager,Post $post,UtilisateurRepository $userRepository,SmsGenerator $smsGenerator): Response
     {
          // Créez une instance du PostController pour accéder à la propriété $idUtilisateurConnecte
          $postController = new PostController();
@@ -72,6 +76,40 @@ class CommentaireController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+
+
+
+            $badWords = ['mot1', 'mot2', 'mot3']; // Ajoutez ici vos mots interdits
+            $commentContent = $commentaire->getDescriptionCo();
+            foreach ($badWords as $badWord) {
+                if (stripos($commentContent, $badWord) !== false) {
+                    // Le commentaire contient un mot interdit
+                    // Vous pouvez choisir ici comment vous souhaitez gérer ce cas
+                    // Par exemple, vous pouvez ignorer le commentaire ou le signaler
+                    // Ici, je vais simplement retourner un message d'erreur
+                    // Afficher l'alerte et bloquer l'exécution jusqu'à ce que l'utilisateur appuie sur OK
+                     
+                    
+                    $name=$commentaire->getUtilisateur()->getNom();
+
+                    $text=$commentaire->getDescriptionCo();
+            
+                    $number_test=$_ENV['twilio_to_number'];// Numéro vérifier par twilio. Un seul numéro autorisé pour la version de test.
+            
+                    //Appel du service
+                    $smsGenerator->sendSms($number_test ,$name,$text);
+
+
+                    $this->addFlash('Erreur !', ' Consultez votre SMS pour plus d\'informations.'); //lappel teeha fel fichier twig melekher
+                
+
+                    return $this->redirectToRoute('app_post_front');
+                }
+            }
+
+
+
             // Ensuite, mettez à jour le nombre de commentaires dans l'entité Post
             $post = $commentaire->getPost();
             $post->setNbComments($post->getNbComments() + 1);
