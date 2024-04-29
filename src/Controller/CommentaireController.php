@@ -101,7 +101,7 @@ class CommentaireController extends AbstractController
                     $smsGenerator->sendSms($number_test ,$name,$text);
 
 
-                    $this->addFlash('Erreur !', ' Consultez votre SMS pour plus d\'informations.'); //lappel teeha fel fichier twig melekher
+                    $this->addFlash('error', ' Warning ! Consultez votre SMS pour plus information.'); //lappel teeha fel fichier twig melekher
                 
 
                     return $this->redirectToRoute('app_post_front');
@@ -142,8 +142,11 @@ class CommentaireController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
 
+
+
+            
+            $entityManager->flush();
             return $this->redirectToRoute('app_commentaire_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -153,12 +156,51 @@ class CommentaireController extends AbstractController
         ]);
     }
     #[Route('/{id_commentaire}/editFront', name: 'app_commentaire_editFront', methods: ['GET', 'POST'])]
-    public function editFront(Request $request, Commentaire $commentaire, EntityManagerInterface $entityManager): Response
+    public function editFront(Request $request, Commentaire $commentaire, EntityManagerInterface $entityManager,SmsGenerator $smsGenerator): Response
     {
         $form = $this->createForm(CommentaireType::class, $commentaire);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+
+
+
+
+            $badWords = ['mot1', 'mot2', 'mot3']; // Ajoutez ici vos mots interdits
+            $commentContent = $commentaire->getDescriptionCo();
+            foreach ($badWords as $badWord) {
+                if (stripos($commentContent, $badWord) !== false) {
+                    // Le commentaire contient un mot interdit
+                    // Vous pouvez choisir ici comment vous souhaitez gérer ce cas
+                    // Par exemple, vous pouvez ignorer le commentaire ou le signaler
+                    // Ici, je vais simplement retourner un message d'erreur
+                    // Afficher l'alerte et bloquer l'exécution jusqu'à ce que l'utilisateur appuie sur OK
+                     
+                    
+                    $name=$commentaire->getUtilisateur()->getNom();
+
+                    $text=$commentaire->getDescriptionCo();
+            
+                    $number_test=$_ENV['twilio_to_number'];// Numéro vérifier par twilio. Un seul numéro autorisé pour la version de test.
+            
+                    //Appel du service
+                    $smsGenerator->sendSms($number_test ,$name,$text);
+
+
+                    $this->addFlash('error', ' Warning ! Consultez votre SMS pour plus information.'); //lappel teeha fel fichier twig melekher
+                
+
+                    return $this->redirectToRoute('app_post_front');
+                }
+            }
+
+
+
+
+
+
+
             $entityManager->flush();
 
             return $this->redirectToRoute('app_post_front', [], Response::HTTP_SEE_OTHER);
