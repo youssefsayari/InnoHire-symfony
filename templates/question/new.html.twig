@@ -1,0 +1,159 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Question{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Styles CSS */
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .form-container {
+            background-color: #f9f9f9;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-title {
+            font-size: 28px;
+            color: #6a1b9a;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-size: 18px;
+            color: #6a1b9a;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+            background-color: #fff;
+        }
+
+        .form-control:focus {
+            border-color: #6a1b9a;
+            outline: none;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background-color: #6a1b9a;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #4a148c;
+        }
+
+        .btn-back {
+            background-color: #1976d2;
+        }
+
+        .btn-back:hover {
+            background-color: #1565c0;
+        }
+
+        /* Styles pour les messages d'erreur */
+        .error-message {
+            color: red;
+            font-size: 14px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="form-container">
+            <h1 class="form-title">Create new Question</h1>
+
+            <form id="create-question-form" action="{{ path('app_question_new') }}" method="post" novalidate>
+                {{ form_start(form) }}
+                {# Affichage des erreurs globales #}
+                {% if form_errors(form) %}
+                    <div class="error-message">
+                        Veuillez remplir tous les champs correctement.
+                    </div>
+                {% endif %}
+
+                <div class="form-group">
+                    {{ form_label(form.question, 'Question', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.question, {'attr': {'class': 'form-control'}}) }}
+                    {# Affichage des erreurs spécifiques #}
+                    {% if form_errors(form.question) %}
+                        <div class="error-message">
+                            {{ form_errors(form.question) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.choix, 'Choix', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.choix, {'attr': {'class': 'form-control'}}) }}
+                    {# Affichage des erreurs spécifiques #}
+                    {% if form_errors(form.choix) %}
+                        <div class="error-message">
+                            {{ form_errors(form.choix) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.reponse_correcte, 'Réponse Correcte', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.reponse_correcte, {'attr': {'class': 'form-control'}}) }}
+                    {# Affichage des erreurs spécifiques #}
+                    {% if form_errors(form.reponse_correcte) %}
+                        <div class="error-message">
+                            {{ form_errors(form.reponse_correcte) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.id_quiz, 'Code Quiz', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.id_quiz, {'attr': {'class': 'form-control'}}) }}
+                    {# Affichage des erreurs spécifiques #}
+                    {% if form_errors(form.id_quiz) %}
+                        <div class="error-message">
+                            {{ form_errors(form.id_quiz) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="btn-container">
+                    <button type="submit" class="btn">Enregistrer</button>
+                    <a href="{{ path('app_question_index') }}" class="btn btn-back">Back to list</a>
+                </div>
+                {{ form_end(form) }}
+            </form>
+        </div>
+    </div>
+{% endblock %}

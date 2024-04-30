@@ -20,6 +20,16 @@ class WalletRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Wallet::class);
     }
+    public function findById(int $id): ?Wallet
+    {
+        return $this->createQueryBuilder('w')
+            ->andWhere('w.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+    
+  
 
 //    /**
 //     * @return Wallet[] Returns an array of Wallet objects

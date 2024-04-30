@@ -11,15 +11,15 @@ class Wallet
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column (name: "id_wallet", type: "integer")]
     private ?int $id = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $balance = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Etablissement $id_etablissement = null;
+    #[ORM\JoinColumn(name: 'id_etablissement', referencedColumnName: 'id',nullable:false)]
+    private ?Etablissement $id_etablissement= null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date_c = null;

@@ -97,49 +97,106 @@
             color: #fff;
             border-color: #4a148c;
         }
+
+        /* Styles pour les cartes de quiz */
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ajout d'une ombre douce */
+            transition: transform 0.3s ease; /* Transition fluide lors du survol */
+            margin-bottom: 20px; /* Espace entre les cartes */
+        }
+
+        .card:hover {
+            transform: translateY(-5px); /* Légère élévation lors du survol */
+        }
+
+        .card-title {
+            font-size: 20px; /* Augmentation de la taille du titre */
+            margin-bottom: 10px; /* Espace après le titre */
+            color: #333; /* Couleur du titre */
+        }
+
+        .card-text {
+            font-size: 16px; /* Taille de police pour le texte */
+            margin-bottom: 5px; /* Espace après chaque paragraphe */
+            color: #555; /* Couleur du texte */
+        }
+
+        .card-price {
+            font-size: 18px; /* Augmentation de la taille du prix */
+            font-weight: bold; /* Texte en gras pour le prix */
+            color: #4caf50; /* Couleur verte pour le prix */
+        }
+
+        .actions-btns {
+            margin-top: 10px; /* Espace au-dessus des boutons */
+        }
+
+        .btn {
+            padding: 8px 16px; /* Espace intérieur des boutons */
+            font-size: 14px; /* Taille de police des boutons */
+            text-transform: uppercase; /* Texte en majuscules */
+        }
+
+        .btn-info {
+            background-color: #1976d2; /* Couleur de fond pour le bouton Show */
+            border-color: #1976d2; /* Couleur de la bordure pour le bouton Show */
+        }
+
+        .btn-warning {
+            background-color: #ffa000; /* Couleur de fond pour le bouton Edit */
+            border-color: #ffa000; /* Couleur de la bordure pour le bouton Edit */
+        }
+
+        .btn:hover {
+            opacity: 0.9; /* Légère diminution de l'opacité lors du survol */
+        }
     </style>
 {% endblock %}
 
 {% block body %}
     <div class="container mt-5">
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Code</th>
-                        <th>Nom</th>
-                        <th>Description</th>
-                        <th>Prix</th>
-                        <th>Image</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for quiz in quizzes %}
-                        <tr>
-                            <td>{{ quiz.getId() }}</td>
-                            <td>{{ quiz.getCodeQuiz() }}</td>
-                            <td>{{ quiz.getNomQuiz() }}</td>
-                            <td>{{ quiz.getDescription() }}</td>
-                            <td>{{ quiz.getPrixQuiz() }}</td>
-                            <td>{{ quiz.getImageQuiz() }}</td>
-                            <td class="actions-btns">
-                                <a href="{{ path('app_quiz_show', {'id_quiz': quiz.getId()}) }}" class="btn btn-info btn-sm">Show</a>
-                                <a href="{{ path('app_quiz_edit', {'id_quiz': quiz.getId()}) }}" class="btn btn-warning btn-sm">Edit</a>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="7">No records found</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+        <form action="{{ path('app_quiz_index') }}" method="GET" class="mb-3" id="filterForm">
+            <div class="input-group">
+                <select name="difficulty" class="form-control" onchange="submitForm()">
+                    <option value="" {% if not selectedDifficulty %} selected {% endif %}>Tous</option>
+                    <option value="Facile" {% if selectedDifficulty == 'Facile' %} selected {% endif %}>Facile</option>
+                    <option value="Moyen" {% if selectedDifficulty == 'Moyen' %} selected {% endif %}>Moyen</option>
+                    <option value="Difficile" {% if selectedDifficulty == 'Difficile' %} selected {% endif %}>Difficile</option>
+                </select>
+            </div>
+        </form>
 
-        <div class="text-center mt-3">
-            <a href="{{ path('app_quiz_new') }}" class="btn btn-create-new">Create New Quiz</a>
+        <div class="row">
+            {% for quiz in quizzes %}
+                <div class="col-md-6">
+                    <div class="card">
+                        <img src="{{ asset('images/' ~ quiz.getImageQuiz()) }}" class="card-img-top img-fluid" style="height: 300px; width: 300px;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ quiz.getCodeQuiz() }}</h5>
+                            <p class="card-text">{{ quiz.getNomQuiz() }}</p>
+                            <p class="card-text">{{ quiz.getDescription() }}</p>
+                            <p class="card-price">{{ quiz.getPrixQuiz() }}</p>
+                            <div class="actions-btns">
+                                <a href="{{ path('app_quiz_show', {'id': quiz.id}) }}" class="btn btn-info btn-sm">Show</a>
+                                <a href="{{ path('app_quiz_edit', {'id': quiz.id}) }}" class="btn btn-warning btn-sm">Edit</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col">
+                    <p>No records found</p>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="d-flex justify-content-center mt-3">
+            {{ knp_pagination_render(quizzes) }}
         </div>
     </div>
+
+    <script>
+        function submitForm() {
+            document.getElementById("filterForm").submit();
+        }
+    </script>
 {% endblock %}

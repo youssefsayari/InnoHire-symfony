@@ -1,48 +1,294 @@
 <?php
 
 namespace App\Controller;
+use App\Entity\QuizUtilisateur;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Twig\Environment;
+use Twig\TwigFunction;
+
+
+
 
 use App\Entity\Quiz;
+use App\Entity\WalletQuiz;
+
+use Twig\Extension\AbstractExtension;
+
+
 use App\Form\QuizType;
 use App\Repository\QuizRepository;
+use App\Repository\QuizUtilisateurRepository;
+
+use App\Repository\QuestionRepository;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
+
+use App\Repository\WalletQuizRepository;
+
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Knp\Component\Pager\PaginatorInterface;
+use App\Repository\WalletRepository;
 
-#[Route('/quiz')]
+use Symfony\Component\HttpFoundation\JsonResponse;
+
+
+
 class QuizController extends AbstractController
 {
-    #[Route('/', name: 'app_quiz_index', methods: ['GET'])]
-    public function index(QuizRepository $quizRepository): Response
+    private $twig;
+
+    public function __construct(Environment $twig)
     {
+        $this->twig = $twig;
+        $this->twig->addFunction(new TwigFunction('quizIsPassed', [$this, 'quizIsPassed']));
+    }
+
+   
+    #[Route('/quiz', name: 'app_quiz_index', methods: ['GET'])]
+    public function index(QuizRepository $quizRepository, PaginatorInterface $paginator, Request $request): Response
+    {
+        $queryBuilder = $quizRepository->createQueryBuilder('q');
+        
+        // Récupérer la difficulté sélectionnée dans la liste déroulante
+        $selectedDifficulty = $request->query->get('difficulty');
+        
+        // Récupérer la liste des quiz filtrés ou non
+        if ($selectedDifficulty) {
+            $queryBuilder->andWhere('q.description LIKE :keyword')
+                         ->setParameter('keyword', '%'.$selectedDifficulty.'%');
+        }
+        
+        // Exécuter la requête avec les filtres
+        $allQuizzes = $queryBuilder->getQuery()->getResult();
+        
+        // Paginer les résultats
+        $quizzes = $paginator->paginate(
+            $allQuizzes, // Les données à paginer
+            $request->query->getInt('page', 1), // Le numéro de la page, par défaut 1
+            4// Le nombre d'éléments par page
+        );
+        
         return $this->render('quiz/index.html.twig', [
-            'quizzes' => $quizRepository->findAll(),
+            'quizzes' => $quizzes,
+            'selectedDifficulty' => $selectedDifficulty, // Passer la variable selectedDifficulty au template
         ]);
     }
 
-    #[Route('/new', name: 'app_quiz_new', methods: ['GET', 'POST'])]
+   
+    #[Route('/quizAchete', name: 'app_quiz_achete')]
+    public function quizAchete(WalletQuizRepository $walletQuizRepository , QuizRepository $quizRepository ,QuizUtilisateurRepository $quizUtilisateurRepository): Response
+    {
+        $walletId = 97;
+        $walletQuizzes = $walletQuizRepository->findBy(['id_wallet' => $walletId]);
+
+        $quizzes = [];
+        foreach ($walletQuizzes as $walletQuiz) {
+            // Récupérer l'objet Quiz associé à chaque WalletQuiz
+            $quiz = $walletQuiz->getQuiz($quizRepository);
+            if ($quiz) {
+                $quizzes[] = $quiz;
+            }
+        }
+
+
+        return $this->render('quiz/quizAchete.html.twig', [
+            'quizzes' => $quizzes,
+            'walletQuizzes' => $walletQuizzes,
+            'quizRepository'=>$quizRepository,
+            'quizUtilisateurRepository' => $quizUtilisateurRepository,
+
+
+        ]);
+    }
+    
+    #[Route('/quiz/passer/{id}', name: 'app_passer_quiz', methods: ['GET', 'POST'])]
+public function passerQuiz(Quiz $quiz, QuestionRepository $questionRepository, Request $request, EntityManagerInterface $entityManager, QuizUtilisateurRepository $quizUtilisateurRepository): Response
+{
+    $utilisateurId = 2217;
+    $tempsRestant = 20;
+
+    // Vérifier si l'utilisateur a déjà passé le quiz
+    $quizUtilisateur = $quizUtilisateurRepository->findOneBy([
+        'utilisateurId' => $utilisateurId,
+        'id_quiz' => $quiz->getId(),
+    ]);
+
+    if ($quizUtilisateur) {
+        return $this->redirectToRoute('app_quiz_achete');
+    }
+
+    $questions = $questionRepository->findBy(['id_quiz' => $quiz->getId()]);
+
+    // Vérifier si le formulaire a été soumis
+    if ($request->isMethod('POST')) {
+        // Vérifier si le temps est écoulé
+        if ($request->request->get('tempsRestant') <= 0) {
+            // Enregistrer le score comme 0 dans la base de données
+            $quizUtilisateur = new QuizUtilisateur();
+            $quizUtilisateur->setUtilisateurId($utilisateurId);
+            $quizUtilisateur->setid_quiz($quiz->getId());
+            $quizUtilisateur->setScore(0);
+
+            $entityManager->persist($quizUtilisateur);
+            $entityManager->flush();
+
+            // Rediriger vers la page app_quiz_achete après un court délai
+            return $this->redirectToRoute('app_quiz_achete'); // Redirection après 5 secondes
+        }
+
+        // Calculer le score
+        $score = $this->calculerScore($questions, $request->request->all());
+
+        // Enregistrer le score dans la base de données
+        $quizUtilisateur = new QuizUtilisateur();
+        $quizUtilisateur->setUtilisateurId($utilisateurId);
+        $quizUtilisateur->setid_quiz($quiz->getId());
+        $quizUtilisateur->setScore($score);
+
+        $entityManager->persist($quizUtilisateur);
+        $entityManager->flush();
+
+        // Rediriger vers la page app_quiz_achete après un court délai
+        return $this->redirectToRoute('app_quiz_achete'); // Redirection après 5 secondes
+    }
+
+    return $this->render('quiz/passerQuiz.html.twig', [
+        'quiz' => $quiz,
+        'questions' => $questions,
+        'utilisateurId' => $utilisateurId,
+        'tempsRestant' => $tempsRestant,
+    ]);
+}
+
+    protected function redirectToRouteAfterDelay(string $route, array $parameters = [], int $delay = 0): RedirectResponse
+{
+    $response = new RedirectResponse($this->generateUrl($route, $parameters));
+    $response->headers->set('Refresh', $delay);
+    return $response;
+}
+private function calculerScore(array $questions, array $reponses): int
+{
+    // Implémentez votre logique de calcul du score ici
+    // Comparez les réponses fournies par l'utilisateur avec les réponses correctes
+    // Incrémentez le score pour chaque réponse correcte
+
+    // Exemple de calcul de score basé sur une comparaison simple
+    $score = 0;
+    foreach ($questions as $question) {
+        $questionId = $question->getId();
+        if (isset($reponses["reponse_$questionId"]) && strtolower($reponses["reponse_$questionId"]) === strtolower($question->getReponseCorrecte())) {
+            $score++;
+        }
+    }
+
+    return $score;
+}
+   
+    
+    #[Route('/quizDispo', name: 'quiz_dispo')]
+    public function quizDispo(QuizRepository $quizRepository , Environment $twig , WalletQuizRepository $walletQuizRepository): Response
+    {
+        
+        $quizDisponibles = $quizRepository->findAll();
+        $twig->addFunction(new TwigFunction('quizDejaAchete', [$this, 'quizDejaAchete']));
+
+
+        
+        return $this->render('quiz/quizDispo.html.twig', [
+            'quizzes' => $quizDisponibles,
+            'walletQuizRepository' => $walletQuizRepository, // Passer le repository au modèle Twig
+
+        ]);
+    }
+    public function quizDejaAchete(Request $request, $quizId, $walletQuizRepository)
+    {
+        // Récupérer l'id du portefeuille associé à l'utilisateur (à remplacer par la méthode appropriée pour récupérer l'ID du portefeuille de l'utilisateur connecté)
+        $walletId = 97;
+
+        // Vérifier si l'association quiz-wallet existe déjà dans la table wallet_quiz
+        $existingAssociation = $walletQuizRepository->findOneBy(['id_quiz' => $quizId, 'id_wallet' => $walletId]);
+
+        // Si l'association existe déjà, retourner true, sinon retourner false
+        return $existingAssociation ? true : false;
+    }
+
+    #[Route('/quiz/achat/{id}', name: 'app_quiz_achat', methods: ['GET'])]
+public function acheterQuiz(
+    Request $request,
+    Quiz $quiz,
+    WalletRepository $walletRepository,
+    EntityManagerInterface $entityManager,
+    WalletQuizRepository $walletQuizRepository
+): Response {
+    // Récupérer l'id du portefeuille associé à l'utilisateur (à remplacer par la méthode appropriée pour récupérer l'ID du portefeuille de l'utilisateur connecté)
+    $walletId = 97;
+    
+    // Récupérer le portefeuille associé à l'utilisateur
+    $wallet = $walletRepository->find($walletId);
+
+    // Vérifier si le portefeuille existe
+    if (!$wallet) {
+        $this->addFlash('error', 'Portefeuille non trouvé');
+        return $this->redirectToRoute('quiz_dispo');
+    }
+
+    // Vérifier si le solde est suffisant pour l'achat
+    if ($wallet->getBalance() < $quiz->getPrixQuiz()) {
+        $this->addFlash('error_' . $quiz->getId(), 'solde insuffisant');
+
+        return $this->redirectToRoute('quiz_dispo');
+    }
+
+    // Vérifier si l'association quiz-wallet existe déjà dans la table wallet_quiz
+    $existingAssociation = $walletQuizRepository->findOneBy(['id_quiz' => $quiz->getId(), 'id_wallet' => $walletId]);
+
+    // Si l'association existe déjà, retourner un message d'erreur
+    if ($existingAssociation) {
+        $this->addFlash('error', 'Quiz déjà acheté');
+        return $this->redirectToRoute('quiz_dispo');
+    }
+
+    // Déduire le prix du quiz du solde du portefeuille
+    $newBalance = $wallet->getBalance() - $quiz->getPrixQuiz();
+    $wallet->setBalance($newBalance);
+    $entityManager->flush();
+
+    // Créer une nouvelle entrée dans la table wallet_quiz pour enregistrer l'association quiz-wallet
+    $walletQuiz = new WalletQuiz();
+    $walletQuiz->setIdQuiz($quiz->getId());
+    $walletQuiz->setIdWallet($walletId);
+    $entityManager->persist($walletQuiz);
+    $entityManager->flush();
+
+    $this->addFlash('success', 'Quiz acheté avec succès');
+    // Rediriger vers la même page pour afficher les messages
+    return $this->redirectToRoute('quiz_dispo');
+}
+    #[Route('/quiz/new', name: 'app_quiz_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $quiz = new Quiz();
         $form = $this->createForm(QuizType::class, $quiz);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($quiz);
             $entityManager->flush();
-
+    
             return $this->redirectToRoute('app_quiz_index', [], Response::HTTP_SEE_OTHER);
         }
-
-        return $this->renderForm('quiz/new.html.twig', [
+    
+        return $this->render('quiz/new.html.twig', [
             'quiz' => $quiz,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
-
-    #[Route('/{id_quiz}', name: 'app_quiz_show', methods: ['GET'])]
+    
+    #[Route('/quiz/{id}', name: 'app_quiz_show', methods: ['GET'])]
     public function show(Quiz $quiz): Response
     {
         return $this->render('quiz/show.html.twig', [
@@ -50,7 +296,7 @@ class QuizController extends AbstractController
         ]);
     }
 
-    #[Route('/{id_quiz}/edit', name: 'app_quiz_edit', methods: ['GET', 'POST'])]
+    #[Route('/quiz/{id}/edit', name: 'app_quiz_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Quiz $quiz, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(QuizType::class, $quiz);
@@ -58,21 +304,25 @@ class QuizController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
+            $this->addFlash('success', 'Le quiz a été mis à jour avec succès.');
             return $this->redirectToRoute('app_quiz_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('quiz/edit.html.twig', [
+        // Si le formulaire est soumis mais invalide, il affiche des erreurs de validation
+        if ($form->isSubmitted() && !$form->isValid()) {
+            $this->addFlash('error', 'Veuillez corriger les erreurs dans le formulaire.');
+        }
+
+        return $this->render('quiz/edit.html.twig', [
             'quiz' => $quiz,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
-
-    #[Route('/{id_quiz}', name: 'app_quiz_delete', methods: ['POST'])]
+   
+    #[Route('/quiz/{id}', name: 'app_quiz_delete', methods: ['POST'])]
     public function delete(Request $request, Quiz $quiz, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$quiz->getId(), $request->request->get('_token'))) {
-
             $entityManager->remove($quiz);
             $entityManager->flush();
         }

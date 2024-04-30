@@ -1,0 +1,44 @@
+{% extends 'baseFront.html.twig' %}
+
+{% block title %}Passer le Quiz : {{ quiz.getNomQuiz() }}{% endblock %}
+
+{% block etablissement %}
+    <div class="container mt-5">
+        <h1>Passer le Quiz : {{ quiz.getNomQuiz() }}</h1>
+        <div id="countdown">Temps restant : <span id="timer">{{ tempsRestant }}</span> secondes</div>
+        <form id="quizForm" action="{{ path('app_passer_quiz', {'id': quiz.getId()}) }}" method="post">
+            {% for question in questions %}
+                <h3>{{ question.question }}</h3>
+                <ul>
+                    {% for choix in question.choix|split(',') %}
+                        <li>{{ choix }}</li>
+                    {% endfor %}
+                </ul>
+                <label for="reponse_{{ question.getId() }}">Votre réponse :</label>
+                <input type="text" id="reponse_{{ question.getId() }}" name="reponse_{{ question.getId() }}" required><br><br>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Envoyer</button>
+            <input type="hidden" name="tempsRestant" value="{{ tempsRestant }}">
+        </form>
+    </div>
+
+    <script>
+        var timeLeft = {{ tempsRestant }};
+        var timerElement = document.getElementById('timer');
+        var form = document.getElementById('quizForm');
+
+        function countdown() {
+            if (timeLeft === 0) {
+                clearInterval(timer);
+                // Mettre à jour la valeur de tempsRestant dans le formulaire
+                document.querySelector('input[name="tempsRestant"]').value = 0;
+                form.submit();
+            } else {
+                timerElement.textContent = timeLeft;
+                timeLeft--;
+            }
+        }
+
+        var timer = setInterval(countdown, 1000);
+    </script>
+{% endblock %}

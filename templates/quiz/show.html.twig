@@ -77,10 +77,7 @@
 
         <table class="table">
             <tbody>
-                <tr>
-                    <th>Id Quiz</th>
-                    <td>{{ quiz.getId() }}</td>
-                </tr>
+               
                 <tr>
                     <th>Code Quiz</th>
                     <td>{{ quiz.getCodeQuiz() }}</td>
@@ -106,8 +103,9 @@
 
         <a href="{{ path('app_quiz_index') }}" class="btn btn-back">Retour à la liste</a>
 
-        <a href="{{ path('app_quiz_edit', {'id_quiz': quiz.getId()}) }}" class="btn btn-edit">Modifier</a>
+        <a href="{{ path('app_quiz_edit', {'id': quiz.id}) }}" class="btn btn-edit">Modifier</a>
+                {{ include('quiz/_delete_form.html.twig') }}
 
-        {{ include('quiz/_delete_form.html.twig') }}
+
     </div>
 {% endblock %}
