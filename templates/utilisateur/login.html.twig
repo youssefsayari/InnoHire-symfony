@@ -75,8 +75,10 @@
         <div class="login-section">
             <div class="welcome-text">Welcome Back</div>
             <form action="/utilisateur/login" method="post">
-                <input type="text" class="input-field" name="cin" placeholder="Cin" required>
-                <input type="password" class="input-field" name="password" placeholder="Password" required>
+               <input type="text" class="input-field" name="cin" placeholder="Cin" value="{{ app.session.get('last_cin') }}" required>
+<input type="password" class="input-field" name="password" placeholder="Password" value="{{ app.session.get('last_password') }}" required>
+<label><input type="checkbox" id="remember-me" name="remember_me"> Remember Me</label>
+
                 <button type="submit" class="sign-in-button">Sign In</button>
             </form>
             <div>
@@ -90,15 +92,17 @@
             <!-- Add your content here -->
         </div>
     </div>
-   <script>
-document.addEventListener('DOMContentLoaded', function() {
-    var lastCin = '{{ app.session.get('cin') }}'; 
-    var lastmdp = '{{ app.session.get('mdp') }}';
+    <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    var rememberMeCheckbox = document.getElementById('remember-me');
+    var lastCin = '{{ app.session.get('last_cin') }}'; 
+    var lastmdp = '{{ app.session.get('last_password') }}';
 
     var cinInput = document.querySelector('input[name="cin"]');
     var mdpInput = document.querySelector('input[name="password"]');
     
-    if (lastCin) {
+    // Check if "Remember Me" checkbox is checked and last username and password exist
+    if (rememberMeCheckbox.checked && lastCin && lastmdp) {
         cinInput.value = lastCin; 
         mdpInput.value = lastmdp; 
 
