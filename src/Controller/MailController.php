@@ -21,7 +21,7 @@ class MailController extends AbstractController
         $mailerDsn = $_ENV['MAILER_DSN'] ?? null;
 
         $email = (new Email())
-            ->from('vitalisyncapp@gmail.com')
+            ->from('innohire45@gmail.com')
             ->to('kthiri.amenallah02@gmail.com')
             ->subject('Test Email')
             ->text('KHIDMET.');

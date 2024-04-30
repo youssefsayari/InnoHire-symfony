@@ -139,7 +139,7 @@ public function forgotPassword(Request $request, UtilisateurRepository $userRepo
         $mailerDsn = $_ENV['MAILER_DSN'] ?? null;
 
         $email = (new Email())
-            ->from('vitalisyncapp@gmail.com')
+            ->from('innohire45@gmail.com')
             ->to($user->getAdresse())
             ->subject('Code')
             ->text('code= '.$verificationCode);
