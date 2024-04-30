@@ -91,7 +91,6 @@ public function login(Request $request, UtilisateurRepository $userRepository, S
         $user = $userRepository->findUserByCredentials($cin, $mdp);
 
         if ($user) {
-            // User found, start session and store user ID
             $session->set('id_utilisateur', $user->getIdUtilisateur());
             $session->set('cin',$user->getCin());
             $session->set('nom', $user->getNom());
@@ -103,18 +102,19 @@ public function login(Request $request, UtilisateurRepository $userRepository, S
             if ($rememberMe) {
                 $session->set('last_cin', $cin);
                 $session->set('last_password', $mdp);
-            }
+            }/*else {
+                // Clear last username and password if "Remember Me" is not checked
+                $session->remove('last_cin');
+                $session->remove('last_password');
+            }*/
 
-            // Redirect to the index page if user is found
             return $this->redirectToRoute('app_utilisateur_index');
         } else {
-            // Show error message if credentials are invalid
             $error = 'Invalid credentials. Please try again.';
             return $this->render('utilisateur/login.html.twig', ['error' => $error]);
         }
     }
 
-    // If it's a GET request, simply show the login form
     return $this->render('utilisateur/login.html.twig');
 }
 
