@@ -93,6 +93,7 @@ public function login(Request $request, UtilisateurRepository $userRepository): 
             // User found, start session and store user ID
             $session = $request->getSession();
             $session->set('id_utilisateur', $user->getIdUtilisateur());
+            $session->set('cin',$user->getCin());
             $session->set('nom', $user->getNom());
             $session->set('prenom', $user->getPrenom());
             $session->set('adresse',$user->getAdresse());
@@ -158,6 +159,7 @@ public function forgotPassword(Request $request, UtilisateurRepository $userRepo
             $customMailer->send($email);
             $session = $request->getSession();
             $session->set('id_utilisateur', $user->getIdUtilisateur());
+            $session->set('cin',$user->getCin());
             $session->set('nom', $user->getNom());
             $session->set('prenom', $user->getPrenom());
             $session->set('adresse',$user->getAdresse());

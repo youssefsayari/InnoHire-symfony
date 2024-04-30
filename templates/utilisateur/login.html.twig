@@ -90,5 +90,23 @@
             <!-- Add your content here -->
         </div>
     </div>
+   <script>
+document.addEventListener('DOMContentLoaded', function() {
+    var lastCin = '{{ app.session.get('cin') }}'; 
+    var lastmdp = '{{ app.session.get('mdp') }}';
+
+    var cinInput = document.querySelector('input[name="cin"]');
+    var mdpInput = document.querySelector('input[name="password"]');
+    
+    if (lastCin) {
+        cinInput.value = lastCin; 
+        mdpInput.value = lastmdp; 
+
+        cinInput.style.backgroundColor = 'yellow'; 
+        mdpInput.style.backgroundColor = 'yellow'; 
+    }
+});
+</script>
+
 </body>
 </html>
