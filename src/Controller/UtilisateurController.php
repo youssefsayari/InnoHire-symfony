@@ -32,44 +32,46 @@ class UtilisateurController extends AbstractController
         $this->utilisateurRepository = $utilisateurRepository;
     }
     #[Route('/', name: 'app_utilisateur_index', methods: ['GET'])]
-public function index(Request $request, UtilisateurRepository $utilisateurRepository): Response
-{       /* $user = $this->getUser();
+    public function index(Request $request, UtilisateurRepository $utilisateurRepository): Response
+    {
+        $userId = $request->getSession()->get('id_utilisateur');
+        $userName = $request->getSession()->get('nom');
+    
+        if (!$userId) {
+            return $this->redirectToRoute('login');
+        }
+    
+        $searchQuery = $request->query->get('search');
+        $sortOrder = $request->query->get('sort');
+    
+        $utilisateurs = $utilisateurRepository->findBySearchAndSort($searchQuery, $sortOrder);
+        $utilisateursByRole = $utilisateurRepository->countUsersByRole();
+        $utilisateursByRole = $utilisateurRepository->countUsersByRole();
 
-    // Check if a user is authenticated
-    //if ($user) {
-        // Get the user ID
-      //  $userId = $user->getIdUtilisateur();
-    } else {
-        // Handle the case where no user is authenticated
-        // You can redirect the user to the login page or perform any other action
-        // For example:
-        return $this->redirectToRoute('login');
-    }*/
-    // Retrieve the search query from the request
-    $userId = $request->getSession()->get('id_utilisateur');
-    $userName = $request->getSession()->get('nom');
-    if (!$userId) {
-        // If no user ID is found in the session, redirect to the login page
-        return $this->redirectToRoute('login');
+        // Calculate total users
+        $totalUsers = $utilisateurRepository->countTotalUsers();
+    
+        // Initialize an array to store percentages
+        $percentages = [];
+    
+        // Calculate percentages for each role
+        foreach ($utilisateursByRole as $userData) {
+            $role = $userData['role'];
+            $userCount = $userData['userCount'];
+            $percentage = ($userCount / $totalUsers) * 100;
+            $percentages[$role] = $percentage;
+        }
+        
+        
+    
+        return $this->render('utilisateur/index.html.twig', [
+            'utilisateurs' => $utilisateurs,
+            'searchQuery' => $searchQuery,
+            'sortOrder' => $sortOrder,
+            'percentages' => $percentages,
+        ]);
     }
-
-    $searchQuery = $request->query->get('search');
-
-    // Retrieve the sort order from the request
-    $sortOrder = $request->query->get('sort');
-
-    // Fetch utilisateurs based on search query and sorting order
-    $utilisateurs = $utilisateurRepository->findBySearchAndSort($searchQuery, $sortOrder);
-
-    return $this->render('utilisateur/index.html.twig', [
-        'utilisateurs' => $utilisateurs,
-        'searchQuery' => $searchQuery, // Pass searchQuery to the template
-        'sortOrder' => $sortOrder, // Pass sortOrder to the template
-    ]);
-}
-
-
-
+    
 
 
     

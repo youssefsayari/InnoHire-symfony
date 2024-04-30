@@ -55,6 +55,21 @@ class UtilisateurRepository extends ServiceEntityRepository
         $entityManager->persist($user);
         $entityManager->flush();
     }
+    public function countUsersByRole()
+    {
+        return $this->createQueryBuilder('u')
+            ->select('COUNT(u.id_utilisateur) as userCount, u.role')
+            ->groupBy('u.role')
+            ->getQuery()
+            ->getResult();
+    }
+    public function countTotalUsers(): int
+    {
+        return $this->createQueryBuilder('u')
+            ->select('COUNT(u.id_utilisateur) as totalUsers')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 
 
 //    /**
