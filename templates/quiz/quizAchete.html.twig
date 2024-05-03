@@ -33,6 +33,12 @@
                     <p>Aucun quiz acheté</p>
                 </div>
             {% endfor %}
+             {% if message %}
+                                        <div class="alert alert-success" role="alert">
+                                            {{ message }}
+                                        </div>
+                                    {% endif %}
+                            
         </div>
     </div>
 {% endblock %}

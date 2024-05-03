@@ -5,6 +5,13 @@ use App\Entity\QuizUtilisateur;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Twig\Environment;
 use Twig\TwigFunction;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+
+
+
+
+
 
 
 
@@ -39,13 +46,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class QuizController extends AbstractController
 {
+   
     private $twig;
 
-    public function __construct(Environment $twig)
-    {
-        $this->twig = $twig;
-        $this->twig->addFunction(new TwigFunction('quizIsPassed', [$this, 'quizIsPassed']));
-    }
+  
 
    
     #[Route('/quiz', name: 'app_quiz_index', methods: ['GET'])]
@@ -80,65 +84,78 @@ class QuizController extends AbstractController
 
    
     #[Route('/quizAchete', name: 'app_quiz_achete')]
-    public function quizAchete(WalletQuizRepository $walletQuizRepository , QuizRepository $quizRepository ,QuizUtilisateurRepository $quizUtilisateurRepository): Response
-    {
-        $walletId = 97;
-        $walletQuizzes = $walletQuizRepository->findBy(['id_wallet' => $walletId]);
+public function quizAchete(WalletQuizRepository $walletQuizRepository, QuizRepository $quizRepository, QuizUtilisateurRepository $quizUtilisateurRepository, SessionInterface $session): Response
+{
+    $walletId = 97;
+    $walletQuizzes = $walletQuizRepository->findBy(['id_wallet' => $walletId]);
 
-        $quizzes = [];
-        foreach ($walletQuizzes as $walletQuiz) {
-            // Récupérer l'objet Quiz associé à chaque WalletQuiz
-            $quiz = $walletQuiz->getQuiz($quizRepository);
-            if ($quiz) {
-                $quizzes[] = $quiz;
-            }
+    $quizzes = [];
+    foreach ($walletQuizzes as $walletQuiz) {
+        // Récupérer l'objet Quiz associé à chaque WalletQuiz
+        $quiz = $walletQuiz->getQuiz($quizRepository);
+        if ($quiz) {
+            $quizzes[] = $quiz;
         }
-
-
-        return $this->render('quiz/quizAchete.html.twig', [
-            'quizzes' => $quizzes,
-            'walletQuizzes' => $walletQuizzes,
-            'quizRepository'=>$quizRepository,
-            'quizUtilisateurRepository' => $quizUtilisateurRepository,
-
-
-        ]);
     }
-    
-    #[Route('/quiz/passer/{id}', name: 'app_passer_quiz', methods: ['GET', 'POST'])]
-public function passerQuiz(Quiz $quiz, QuestionRepository $questionRepository, Request $request, EntityManagerInterface $entityManager, QuizUtilisateurRepository $quizUtilisateurRepository): Response
+
+    // Récupérer le message de la variable de session
+    $message = $session->get('message');
+    // Effacer le message de la variable de session pour qu'il ne s'affiche pas à nouveau lors du rechargement de la page
+    $session->remove('message');
+
+    return $this->render('quiz/quizAchete.html.twig', [
+        'quizzes' => $quizzes,
+        'walletQuizzes' => $walletQuizzes,
+        'quizRepository' => $quizRepository,
+        'quizUtilisateurRepository' => $quizUtilisateurRepository,
+        'message' => $message, // Passer le message à la vue
+    ]);
+}
+
+#[Route('/quiz/passer/{id}', name: 'app_passer_quiz', methods: ['GET', 'POST'])]
+public function passerQuiz(Quiz $quiz, QuestionRepository $questionRepository, Request $request, EntityManagerInterface $entityManager, QuizUtilisateurRepository $quizUtilisateurRepository, SessionInterface $session): Response
 {
     $utilisateurId = 2217;
     $tempsRestant = 20;
+
+    // Vérifier si le formulaire a été soumis
+    if ($request->isMethod('POST')) {
+        // Vérifier si le temps est écoulé
+        if ($request->request->get('tempsRestant') <= 0) {
+            // Vérifier si l'utilisateur a déjà passé le quiz
+            $quizUtilisateur = $quizUtilisateurRepository->findOneBy([
+                'utilisateurId' => $utilisateurId,
+                'id_quiz' => $quiz->getId(),
+            ]);
+            // Si l'utilisateur a déjà passé le quiz, rediriger vers la page d'accueil
+            if ($quizUtilisateur) {
+                // Définir le message de la variable de session pour indiquer que le temps est écoulé
+                $session->set('message', 'Temps écoulé.');
+                return $this->redirectToRoute('app_quiz_achete');
+            } else {
+                // Enregistrer le score comme 0 dans la base de données
+                $quizUtilisateur = new QuizUtilisateur();
+                $quizUtilisateur->setUtilisateurId($utilisateurId);
+                $quizUtilisateur->setid_quiz($quiz->getId());
+                $quizUtilisateur->setScore(0);
+    
+                $entityManager->persist($quizUtilisateur);
+                $entityManager->flush();
+    
+                // Définir le message de la variable de session pour indiquer que le temps est écoulé
+                $session->set('message', 'Temps écoulé.');
+    
+                // Rediriger vers la page app_quiz_achete après un court délai
+                return $this->redirectToRoute('app_quiz_achete'); // Redirection après 5 secondes
+            }
+        }
+        $questions = $questionRepository->findBy(['id_quiz' => $quiz->getId()]);
 
     // Vérifier si l'utilisateur a déjà passé le quiz
     $quizUtilisateur = $quizUtilisateurRepository->findOneBy([
         'utilisateurId' => $utilisateurId,
         'id_quiz' => $quiz->getId(),
     ]);
-
-    if ($quizUtilisateur) {
-        return $this->redirectToRoute('app_quiz_achete');
-    }
-
-    $questions = $questionRepository->findBy(['id_quiz' => $quiz->getId()]);
-
-    // Vérifier si le formulaire a été soumis
-    if ($request->isMethod('POST')) {
-        // Vérifier si le temps est écoulé
-        if ($request->request->get('tempsRestant') <= 0) {
-            // Enregistrer le score comme 0 dans la base de données
-            $quizUtilisateur = new QuizUtilisateur();
-            $quizUtilisateur->setUtilisateurId($utilisateurId);
-            $quizUtilisateur->setid_quiz($quiz->getId());
-            $quizUtilisateur->setScore(0);
-
-            $entityManager->persist($quizUtilisateur);
-            $entityManager->flush();
-
-            // Rediriger vers la page app_quiz_achete après un court délai
-            return $this->redirectToRoute('app_quiz_achete'); // Redirection après 5 secondes
-        }
 
         // Calculer le score
         $score = $this->calculerScore($questions, $request->request->all());
@@ -152,24 +169,93 @@ public function passerQuiz(Quiz $quiz, QuestionRepository $questionRepository, R
         $entityManager->persist($quizUtilisateur);
         $entityManager->flush();
 
-        // Rediriger vers la page app_quiz_achete après un court délai
-        return $this->redirectToRoute('app_quiz_achete'); // Redirection après 5 secondes
+        if ($tempsRestant === 10) {
+            $this->notificationService->sendNotification($utilisateurId, 'Dépêchez-vous, il vous reste 10 secondes.');
+        }
+
+        // Générer le PDF avec le bilan du quiz
+        $appreciation = $this->determinerAppreciation($score);
+        $pdfContent = $this->genererPdf($quiz, $questions, $score, $appreciation);
+
+        // Enregistrer le PDF sur le bureau
+        $outputFilePath = 'C:/projet/quiz_bilan.pdf';
+        file_put_contents($outputFilePath, $pdfContent);
+
+        // Définir le message de la variable de session pour indiquer que le quiz a été passé avec succès
+        $session->set('message', 'Quiz passé avec succès.');
+
+        return $this->redirectToRoute('app_quiz_achete');
     }
+
+    $questions = $questionRepository->findBy(['id_quiz' => $quiz->getId()]);
+
+    // Vérifier si l'utilisateur a déjà passé le quiz
+    $quizUtilisateur = $quizUtilisateurRepository->findOneBy([
+        'utilisateurId' => $utilisateurId,
+        'id_quiz' => $quiz->getId(),
+    ]);
 
     return $this->render('quiz/passerQuiz.html.twig', [
         'quiz' => $quiz,
         'questions' => $questions,
         'utilisateurId' => $utilisateurId,
         'tempsRestant' => $tempsRestant,
+        'quizUtilisateur' => $quizUtilisateur,
     ]);
 }
-
-    protected function redirectToRouteAfterDelay(string $route, array $parameters = [], int $delay = 0): RedirectResponse
-{
-    $response = new RedirectResponse($this->generateUrl($route, $parameters));
-    $response->headers->set('Refresh', $delay);
-    return $response;
-}
+    private function genererPdf(Quiz $quiz, array $questions, int $score, string $appreciation): string
+    {
+        // Créer le contenu HTML du PDF
+        $htmlContent = '<h1>Récapitulatif du Quiz</h1>';
+        $htmlContent .= '<p>Score : ' . $score . '</p>';
+        $htmlContent .= '<p>Appréciation : ' . $appreciation . '</p>';
+        $htmlContent .= '<h2>Questions et Réponses Correctes</h2>';
+        foreach ($questions as $question) {
+            // Afficher la question
+            $htmlContent .= "<li>{$question->getQuestion()}</li>";
+        
+            // Afficher les choix (qui est une chaîne de caractères)
+            $htmlContent .= "<ul>";
+            // Séparer les choix par une virgule
+            $choixArray = explode(',', $question->getChoix());
+            foreach ($choixArray as $choix) {
+                $htmlContent .= "<li>{$choix}</li>";
+            }
+            $htmlContent .= "</ul>";
+        
+            // Afficher la réponse correcte
+            $htmlContent .= "<p>Réponse correcte : {$question->getReponseCorrecte()}</p>";
+        }
+    
+        // Créer une instance de Dompdf
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+        $dompdf = new Dompdf($options);
+    
+        // Charger le contenu HTML dans Dompdf
+        $dompdf->loadHtml($htmlContent);
+    
+        // Rendre le PDF
+        $dompdf->render();
+    
+        // Retourner le contenu du PDF en tant que chaîne de caractères
+        return $dompdf->output();
+    }
+    
+    private function determinerAppreciation(int $score): string
+    {
+        if ($score >= 0 && $score <= 3) {
+            return 'Mal';
+        } elseif ($score >= 4 && $score <= 6) {
+            return 'Pas Mal';
+        } elseif ($score >= 7 && $score <= 9) {
+            return 'Bien';
+        } elseif ($score === 10) {
+            return 'Excellent';
+        } else {
+            return 'Appréciation indéterminée';
+        }
+    }
 private function calculerScore(array $questions, array $reponses): int
 {
     // Implémentez votre logique de calcul du score ici
