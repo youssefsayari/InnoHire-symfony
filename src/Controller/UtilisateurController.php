@@ -145,7 +145,6 @@ public function login(Request $request, UtilisateurRepository $userRepository, S
             $session->set('adresse',$user->getAdresse());
             $session->set('role',$user->getRole());
 
-            // Store last username and password if "Remember Me" is checked
             if ($rememberMe) {
                 $session->set('last_cin', $cin);
                 $session->set('last_password', $mdp);
@@ -178,11 +177,9 @@ public function forgotPassword(Request $request, UtilisateurRepository $userRepo
 
         $user = $userRepository->findOneByCin($cin);
         if ($user) {
-            // Generate four random numbers
             $verificationCode = mt_rand(1000, 9999);
 
-            // Send email with verification code
-           // Load MAILER_DSN from environment variables
+            
         $mailerDsn = $_ENV['MAILER_DSN'] ?? null;
 
         $email = (new Email())
@@ -223,10 +220,8 @@ public function forgotPassword(Request $request, UtilisateurRepository $userRepo
         //return new Response($responseMessage);
     
 
-            // Redirect to a page where the user can enter the verification code
             return $this->render('utilisateur/check_otp.html.twig');
         } else {
-            // Show error message if user with provided CIN is not found
             $error = 'Invalid CIN. Please try again.';
             return $this->render('utilisateur/forgot_password.html.twig', ['error' => $error]);
         }
