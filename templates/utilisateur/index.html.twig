@@ -137,8 +137,12 @@
     </table>
 
     <a href="{{ path('app_utilisateur_new') }}" class="btn-purple">Create new</a> <!-- Add btn-purple class -->
+<!-- Add this button to trigger PDF generation -->
+<a href="{{ path('generate_pdf') }}" class="btn-purple">Generate PDF</a>
+
 
     <a href="{{ path('login') }}" class="btn-logout">Logout</a> <!-- Logout button -->
+
 
     <!-- Add My Profile button -->
     <a href="{{ path('app_utilisateur_my_profile') }}" class="btn-my-profile btn-purple">My Profile</a>

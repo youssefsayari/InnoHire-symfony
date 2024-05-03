@@ -21,6 +21,8 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport; // Corrected namespace
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 
 #[Route('/utilisateur')]
@@ -71,10 +73,54 @@ class UtilisateurController extends AbstractController
             'percentages' => $percentages,
         ]);
     }
+  
+
+    #[Route('/generate-pdf', name: 'generate_pdf')]
+    public function generatePdfAction(UtilisateurRepository $utilisateurRepository): Response
+    {
+        // Call the generatePdf function
+        $pdfResponse = $this->generatePdf($utilisateurRepository);
+    
+        return $pdfResponse;
+    }
     
 
+    #[Route('/generate-pdf', name: 'generate_pdf')]
+public function generatePdf(UtilisateurRepository $utilisateurRepository): Response
+{
+    // Fetch the list of users from the repository
+    $utilisateurs = $utilisateurRepository->findAll();
 
+    // Render the list of users as HTML
+    $html = '<h1>User List</h1><table><thead><tr><th>Cin</th><th>Nom</th><th>Prenom</th><th>Adresse</th><th>Role</th></tr></thead><tbody>';
+    foreach ($utilisateurs as $utilisateur) {
+        $html .= '<tr><td>' . $utilisateur->getCin() . '</td><td>' . $utilisateur->getNom() . '</td><td>' . $utilisateur->getPrenom() . '</td><td>' . $utilisateur->getAdresse() . '</td><td>' . $utilisateur->getRole() . '</td></tr>';
+    }
+    $html .= '</tbody></table>';
+
+    // Configure Dompdf options
+    $options = new Options();
+    $options->set('isHtml5ParserEnabled', true);
+
+    // Instantiate Dompdf with the configured options
+    $dompdf = new Dompdf($options);
+
+    // Load HTML content into Dompdf
+    $dompdf->loadHtml($html);
+
+    // Set paper size and orientation (optional)
+    $dompdf->setPaper('A4', 'portrait');
+
+    // Render PDF (optional)
+    $dompdf->render();
+
+    // Output PDF to the browser
+    $response = new Response($dompdf->output());
+    $response->headers->set('Content-Type', 'application/pdf');
+    $response->headers->set('Content-Disposition', 'attachment; filename="user_list.pdf"');
     
+    return $response;
+}
 #[Route('/login', name: 'login', methods: ['GET', 'POST'])]
 public function login(Request $request, UtilisateurRepository $userRepository, SessionInterface $session): Response
 {
