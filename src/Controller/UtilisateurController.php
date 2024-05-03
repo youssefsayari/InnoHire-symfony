@@ -50,7 +50,6 @@ class UtilisateurController extends AbstractController
         $utilisateursByRole = $utilisateurRepository->countUsersByRole();
         $utilisateursByRole = $utilisateurRepository->countUsersByRole();
 
-        // Calculate total users
         $totalUsers = $utilisateurRepository->countTotalUsers();
     
         // Initialize an array to store percentages
