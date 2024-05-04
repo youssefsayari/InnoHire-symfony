@@ -49,7 +49,7 @@
 				</tr>
                <tr>
                     <th>User Details </th>
-                    <td>
+                     <td id="qr-code-cell" style="display: none;">
                         {% if qrCodePath is defined %}
                             <img src="{{ asset(qrCodePath) }}" alt="QR Code">
                         {% else %}
@@ -65,9 +65,9 @@
 		<div class="flex items-center justify-between">
 			<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
 			<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-				{#<button id="generate-qrcode-button" data-reclamation-id="{{ reclamation.id }}" class="flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+				<button id="show-QRcode"class="flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
 					Generate QRCode
-				</button>#}
+				</button>
 
 				<a href="{{ path('download_reclamation_pdf', {'id': reclamation.id}) }}" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
 					Download PDF
@@ -76,6 +76,7 @@
 
 		</div>
 	</div>
+	
 
 {#}	<script>
 		document.addEventListener('DOMContentLoaded', function () {
@@ -90,6 +91,12 @@ console.error('Error fetching QR code:', error);
 });
 });
 	</script>#}
+<script>
+document.getElementById('show-QRcode').addEventListener('click', function () {
+    var tdElement = document.getElementById('qr-code-cell');
+    tdElement.style.display = 'block'; // Show the <td> element
+});
 
+</script>
 
 {% endblock %}

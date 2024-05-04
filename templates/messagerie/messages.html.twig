@@ -9,6 +9,8 @@
 		<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
 			Messagerie List
 		</h2>
+
+
 		<button onclick="window.location.href='{{ path('app_reclamation_index') }}'" class="flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
 			<span>
 				<!--&LeftArrow;-->
@@ -249,6 +251,14 @@
 		{{ form_end(form) }}
 
 		<script>
+		$(document).ready(function() {
+    $('#whatsapp-call-btn').click(function() {
+        $.get('/WhatsApp', function(response) {
+            alert(response); // Display response message (e.g., success or error message)
+        });
+    });
+});
+
 			function updateContenu() {
 var fileInput = document.getElementById('file');
 var contenuInput = document.getElementById('{{ form.contenu.vars.id }}');

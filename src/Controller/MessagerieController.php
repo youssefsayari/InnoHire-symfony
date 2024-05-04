@@ -8,6 +8,7 @@ use App\Repository\MessagerieRepository;
 use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -248,6 +249,52 @@ public function downloadFile(string $fileName): Response
     
     // Return a response with the file contents and specify the download location
     return $this->file($file, $fileName, ResponseHeaderBag::DISPOSITION_ATTACHMENT, null, true);
+}
+
+
+
+#[Route('/sendmessage', name: 'send_message', methods: ['POST'])]
+public function sendMessage(): Response
+{
+    // WhatsApp Business Management API endpoint
+    $apiUrl = 'https://graph.facebook.com/v19.0/248063518400933/messages';
+
+    // Access token for authorization
+    $accessToken = 'EAAP8XTZAu1t0BO5voIdSC5s2pr2bqqGXMA1v7wRBOAkyZBnZBv9LkNohDfgau5oPWXZBBIpHjG2W7ZCDR8OmXcHG5Ie6OHEjsxSCXy2PYhI5M8nserMfrKuZCqYRTGnMPQlZBFmnV8IYTrikorZBnVTJDApR1gn33ZBjJITZCy4fAUxO3Xi0W781ZCiIq7ZCEZCf9EOpvrZCbQzscvZC3VjgMsiQzaPXUtnI78F4pEZD';
+
+    // Prepare the message payload
+    $messagePayload = [
+        'messaging_product' => 'whatsapp',
+        'to' => '21626212515', // Replace with the recipient's phone number
+        'type' => 'template',
+        'template' => [
+            'name' => 'hello_world',
+            'language' => [
+                'code' => 'en_US'
+            ]
+        ]
+    ];
+
+    // Create the HttpClient instance
+    $httpClient = HttpClient::create();
+
+    try {
+        // Send the POST request to the API endpoint
+        $response = $httpClient->request('POST', $apiUrl, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $accessToken,
+                'Content-Type' => 'application/json'
+            ],
+            'json' => $messagePayload // Convert the array to JSON format
+        ]);
+
+        // Handle the API response (e.g., check status code, parse JSON response)
+
+        return new Response('Message sent successfully.', Response::HTTP_OK);
+    } catch (\Exception $e) {
+        // Handle any exceptions (e.g., network errors, API errors)
+        return new Response('Error sending message: ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
 }
 
     

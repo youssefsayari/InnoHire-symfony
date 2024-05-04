@@ -248,7 +248,7 @@ public function generateQRCode(Reclamation $reclamation): Response
 {
     // Generate the QR code content (you can customize this according to your needs)
     $qrCodeContent = $reclamation->getId(); // For example, you can use the ID of the reclamation
-    dd( $qrCodeContent);
+    //dd( $qrCodeContent);
 
     // Create the QR code instance
     $qrCode = Builder::create()
