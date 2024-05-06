@@ -12,9 +12,9 @@ class Messagerie
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(name: "id_message")]
-    private ?int $id = null;
+    private ?int $id_message = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE , name:"date")]
     private ?\DateTimeInterface $datetime = null;
 
     #[ORM\Column(length: 255)]
@@ -24,16 +24,16 @@ class Messagerie
     private ?string $contenu = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $sender_id = null;
+    #[ORM\JoinColumn(nullable: false, referencedColumnName:"id_utilisateur")]
+    private ?Utilisateur $sender;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $reciver_id = null;
+    #[ORM\JoinColumn(name:"reciver_id",nullable: false, referencedColumnName:"id_utilisateur")]
+    private ?Utilisateur $receiver;
 
     public function getId(): ?int
     {
-        return $this->id;
+        return $this->id_message;
     }
 
     public function getDatetime(): ?\DateTimeInterface

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Merci pour votre commande !</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f0f4f8;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+    section {
+      background-color: #ffffff;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 450px;
+      animation: slideIn 0.5s ease-out forwards;
+    }
+    @keyframes slideIn {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 24px;
+    }
+    p {
+      color: #666;
+      line-height: 1.6;
+    }
+    a {
+      display: inline-block;
+      padding: 12px 24px;
+      margin-top: 24px;
+      border-radius: 5px;
+      background-color: #5cb85c;
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    a:hover {
+      background-color: #4cae4c;
+    }
+    .icon {
+      font-size: 48px;
+      color: #5cb85c;
+      margin-bottom: 24px;
+    }
+  </style>
+</head>
+<body>
+  <section>
+    <div class="icon">✔️</div>
+    <h1>Merci pour votre commande !</h1>
+    <p>Nous apprécions votre entreprise ! Si vous avez des questions, veuillez envoyer un email à <a href="mailto:innohire@esprit.tn">innohire@esprit.tn</a>.</p>
+    <p>Montant rechargé : {{ montant }} DT</p>
+    <a href="{{ path('app_etablissement_front') }}">Retour à l'accueil</a>
+  </section>
+</body>
+</html>

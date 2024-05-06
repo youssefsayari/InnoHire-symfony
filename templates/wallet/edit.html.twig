@@ -1,0 +1,138 @@
+ {% extends 'base.html.twig' %} 
+
+{% block title %}Edit Wallet{% endblock %}
+
+{% block body %}
+    
+
+<div class="flex items-center justify-between">
+    <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+        Update Wallet
+    </h2>
+    <button onclick="window.location.href='{{ path('app_wallet_index') }}'"
+            class="flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+        <span><!--&LeftArrow;--> Back to List</span>
+    </button>
+</div>
+
+
+	<div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+		{{ form_start(form , {'attr': {'class':'form-horizontal','novalidate':'novalidate'}}
+		) }}
+		
+<label class="block text-sm">
+    <span class="text-gray-700 dark:text-gray-400">Date</span>
+    {{ form_widget(form.date_c) }}
+</label>
+
+
+
+        <label class="block text-sm">
+			<span class="text-gray-700 dark:text-gray-400">Balance</span>
+                {{ form_widget(form.balance,{'id': 'balanceInput'})}}
+                    <span id="balanceError" class="text-xs text-red-600 dark:text-red-400"></span>
+                        <span class="error-message">{{ form_errors(form.balance) }}</span>
+
+
+        </label>
+
+
+<label  class="block mt-4 text-sm">
+			<span class="text-gray-700 dark:text-gray-400">Etablissement</span>
+			{{ form_widget(form.etablissement) }}
+		</label>
+
+
+
+<div class="flex mt-6 text-sm">
+<label class="flex items-center dark:text-gray-400">
+			<span class="text-gray-700 dark:text-gray-400"></span>
+                {{ form_widget(form.status) }}		
+        <span class="ml-2">
+            Status :
+            <span class="underline">Verified / Not Verified</span>
+        </span>
+        </label>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</div>
+
+
+	<button id="submitButton" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" >
+		{{ button_label|default('Update') }}
+	</button>
+	<br>
+
+
+	{{ form_end(form) }}
+    
+
+{#}
+ <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var balanceInput = document.getElementById('balanceInput');
+        var balanceError = document.getElementById('balanceError');
+        var submitButton = document.getElementById('submitButton');
+
+        // Fonction de validation de la balance
+        function validateBalance() {
+            var balanceValue = parseFloat(balanceInput.value);
+            if (balanceInput.value === '' || isNaN(balanceValue) || balanceValue < 0) {
+                // Vérifier si le champ de balance est vide ou si la valeur n'est pas numérique ou positive
+                balanceError.textContent = 'Veuillez saisir une valeur numérique positive.';
+                balanceInput.classList.remove('border-green-600');
+                balanceInput.classList.add('border-red-500');
+                balanceError.classList.remove('text-green-600');
+                balanceError.classList.add('text-red-500');
+                submitButton.disabled = true;
+            } else {
+                // Si le champ de balance n'est pas vide et que la valeur est numérique et positive
+                balanceError.textContent = 'Nombre valide';
+                balanceInput.classList.remove('border-red-500');
+                balanceInput.classList.add('border-green-600');
+                balanceError.classList.remove('text-red-500');
+                balanceError.classList.add('text-green-600');
+                submitButton.disabled = false;
+            }
+        }
+
+        // Appeler la fonction de validation de la balance au chargement de la page
+        validateBalance();
+
+        // Ajouter un écouteur d'événements pour le champ de balance
+        balanceInput.addEventListener('input', validateBalance);
+    });
+</script>
+
+#}
+
+
+<style>
+.error-message {
+    color: red;
+}
+</style>
+
+
+  
+{% endblock %}
+

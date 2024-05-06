@@ -1,0 +1,351 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}Wallet index
+{% endblock %}
+
+{% block body %}
+
+	<main class="h-full pb-16 overflow-y-auto">
+		<div class="container grid px-6 mx-auto">
+			<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+				Tables
+			</h2>
+
+
+			<!-- With actions -->
+			<h4 class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300">
+				<div style="display: flex; justify-content: flex-end;">
+					<a href="{{ path('app_wallet_new') }}">Create new +</a>
+				</div>
+			</h4>
+			<div id="tableContainer" class="w-full overflow-hidden rounded-lg shadow-xs">
+				<div class="w-full overflow-x-auto">
+					<table class="w-full whitespace-no-wrap">
+						<thead>
+							<tr class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
+
+
+
+
+
+
+
+
+<th class="px-4 py-3" data-column="Balance" onclick="sortTable('Balance')">
+  Balance
+  <i id="BalanceIcon" class="fas fa-sort hidden ml-1"></i>
+</th>
+
+<th class="px-4 py-3" data-column="Status" onclick="sortTable('Status')">
+  Status
+  <i id="StatusIcon" class="fas fa-sort hidden ml-1"></i>
+</th>
+
+<th class="px-4 py-3" data-column="Date Creation" onclick="sortTable('Date Creation')">
+  Date Creation
+  <i id="Date CreationIcon" class="fas fa-sort hidden ml-1"></i>
+</th>
+
+<th class="px-4 py-3" data-column="Etablissement" onclick="sortTable('Etablissement')">
+  Etablissement
+  <i id="EtablissementIcon" class="fas fa-sort hidden ml-1"></i>
+</th>
+
+
+
+
+
+
+
+
+
+								<th class="px-4 py-3">Actions</th>
+							</tr>
+						</thead>
+						<tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+							{% for wallet in wallets %}
+
+								<tr class="text-gray-700 dark:text-gray-400">
+
+									<td class="px-4 py-3 text-sm">
+										{{ wallet.balance }}
+										DT
+									</td>
+									<td class="px-4 py-3 text-xs">
+										{% if wallet.status == 1 %}
+											<span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
+												Verified
+											</span>
+										{% elseif wallet.status == 0 %}
+											<span class="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-full dark:bg-red-700 dark:text-red-100">
+												Not-Verified
+											</span>
+										{% endif %}
+									</td>
+
+									<td class="px-4 py-3 text-sm">
+										{{ wallet.dateC ? wallet.dateC|date('Y-m-d H:i:s') : '' }}
+									</td>
+
+
+									<td class="px-4 py-3">
+										<div
+											class="flex items-center text-sm">
+											<!-- Avatar with inset shadow -->
+
+											<div>
+											<img class="img-fluid" src="{{ asset('imagesEtablissements/' ~ wallet.getEtablissement().getImage()) }}" alt="Profile Picture" style="width: 70px; height: 70px; border-radius: 50%; display: inline-block; margin-bottom: 10px;">
+												<p class="font-semibold">{{ wallet.getEtablissement().getNom()}}</p><p class="font-semibold" style="color: blue;">Code : {{ wallet.getEtablissement().getCodeEtablissement()}}</p>
+
+											</div>
+										</div>
+									</td>
+
+
+									<td class="px-4 py-3">
+										<div class="flex items-center space-x-4 text-sm">
+
+											{#
+											<button @click="openModal" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray" aria-label="Show">
+												<svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20">
+													<path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1h2a1 1 0 011 1v1h1a1 1 0 011 1v11a1 1 0 01-1 1H3a1 1 0 01-1-1V7a1 1 0 011-1h1V5a1 1 0 011-1h2V3a1 1 0 011-1h4zm-1 7a1 1 0 100 2h2a1 1 0 100-2h-2z" clip-rule="evenodd"></path>
+												</svg>
+											</button>
+											
+																						<div
+																							x-show="isModalOpen" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 z-30 flex items-center justify-center bg-black bg-opacity-50">
+																							<!-- Modal -->
+																							<div
+																								x-show="isModalOpen" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 transform translate-y-1/2" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0 transform translate-y-1/2" @click.away="closeModal" @keydown.escape="closeModal" class="w-full max-w-xl px-6 py-4 overflow-hidden bg-white rounded-lg dark:bg-gray-800" role="dialog" id="modal" style="margin: auto">
+											
+																								<!-- Modal description -->
+																								<div
+																									class="mt-4 mb-6 flex flex-col items-center justify-center text-center">
+																									<!-- Modal title -->
+																									<p class="mb-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
+																										Wallet
+																									</p>
+																									<!-- Modal body -->
+																									<div
+																										class="flex items-center justify-center">
+																										<!-- Ajout de ces classes pour centrer verticalement et horizontalement -->
+																										<table class="table">
+																											<tbody>
+																												<tr>
+																													<th>Id</th>
+																													<td>{{ wallet.id }}</td>
+																												</tr>
+																												<tr>
+																													<th>Balance</th>
+																													<td>{{ wallet.balance }}</td>
+																												</tr>
+																												<tr>
+																													<th>Date</th>
+																													<td>{{ wallet.dateC ? wallet.dateC|date('Y-m-d H:i:s') : '' }}</td>
+																												</tr>
+																												<tr>
+																													<th>Status</th>
+																													<td class="px-4 py-3 text-xs">
+																														{% if wallet.status == 1 %}
+																															<span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
+																																Verified
+																															</span>
+																														{% elseif wallet.status == 0 %}
+																															<span class="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-full dark:bg-red-700 dark:text-red-100">
+																																Not-Verified
+																															</span>
+																														{% endif %}
+																													</td>
+																												</tr>
+																											</tbody>
+																										</table>
+																									</div>
+																								</div>
+											
+											
+																								<!-- Footer -->
+																								<footer class="flex justify-center mt-6">
+																									<!-- Modification de la classe pour centrer horizontalement -->
+																									<!-- Accept button -->
+																										<button @click="closeModal" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg sm:px-4 sm:py-2 active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"> Close
+																									</button>
+																								</footer>
+																							</div>
+																						</div>
+																						#}
+
+
+											<a href="{{ path('app_wallet_edit', {'id': wallet.id}) }}">
+												<button class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray" aria-label="Edit">
+													<svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20">
+														<path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+													</svg>
+												</button>
+											</a>
+
+											{{ include('wallet/_delete_form.html.twig', {'wallet': wallet}) }}
+
+
+										</div>
+									</td>
+								</tr>
+
+
+							{% else %}
+								<tr>
+									<td colspan="5">no records found</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+				<div class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
+					<span class="flex items-center col-span-3">
+						Showing 21-30 of 100
+					</span>
+					<span class="col-span-2"></span>
+					<!-- Pagination -->
+					<span class="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
+						<nav aria-label="Table navigation">
+							<ul class="inline-flex items-center">
+								<li>
+									<button class="px-3 py-1 rounded-md rounded-l-lg focus:outline-none focus:shadow-outline-purple" aria-label="Previous">
+										<svg class="w-4 h-4 fill-current" aria-hidden="true" viewbox="0 0 20 20">
+											<path d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" fill-rule="evenodd"></path>
+										</svg>
+									</button>
+								</li>
+								<li>
+									<button class="px-3 py-1 text-white transition-colors duration-150 bg-purple-600 border border-r-0 border-purple-600 rounded-md focus:outline-none focus:shadow-outline-purple">
+									
+										1
+									</button>
+								</li>
+								<li>
+									<button class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
+										2
+									</button>
+								</li>
+								<li>
+									<button class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
+										3
+									</button>
+								</li>
+								<li>
+									<button class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
+										4
+									</button>
+								</li>
+								<li>
+									<span class="px-3 py-1">...</span>
+								</li>
+								<li>
+									<button class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
+										8
+									</button>
+								</li>
+								<li>
+									<button class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple">
+										9
+									</button>
+								</li>
+								<li>
+									<button class="px-3 py-1 rounded-md rounded-r-lg focus:outline-none focus:shadow-outline-purple" aria-label="Next">
+										<svg class="w-4 h-4 fill-current" aria-hidden="true" viewbox="0 0 20 20">
+											<path d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" fill-rule="evenodd"></path>
+										</svg>
+									</button>
+								</li>
+							</ul>
+						</nav>
+					</span>
+				</div>
+			</div>
+		</div>
+	</main>
+
+
+
+
+
+
+
+
+
+
+<style>
+/* Cacher toutes les icônes de tri par défaut */
+/* Masquer toutes les icônes de tri par défaut */
+.fas.fa-sort {
+  display: none;
+}
+
+/* Afficher l'icône de tri de la colonne sélectionnée */
+.fas.fa-sort.active {
+  display: inline-block;
+}
+
+</style>
+<script>
+// Variable pour suivre la colonne actuellement triée
+var currentSortedColumn = null;
+
+function sortTable(columnName) {
+  var table, rows, switching, i, x, y, shouldSwitch;
+  table = document.getElementById("tableContainer").getElementsByTagName('table')[0];
+  switching = true;
+  /*Make a loop that will continue until no switching has been done:*/
+  while (switching) {
+    //start by saying: no switching is done:
+    switching = false;
+    rows = table.rows;
+    /*Loop through all table rows (except the first, which contains table headers):*/
+    for (i = 1; i < (rows.length - 1); i++) {
+      //start by saying there should be no switching:
+      shouldSwitch = false;
+      /*Get the two elements you want to compare, one from current row and one from the next:*/
+      x = parseInt(rows[i].getElementsByTagName("td")[getColumnIndex(columnName)].innerHTML);
+      y = parseInt(rows[i + 1].getElementsByTagName("td")[getColumnIndex(columnName)].innerHTML);
+      /*check if the two rows should switch place, based on the direction, asc or desc:*/
+      if (x < y) {
+        //if so, mark as a switch and break the loop:
+        shouldSwitch = true;
+        break;
+      }
+    }
+    if (shouldSwitch) {
+      /*If a switch has been marked, make the switch and mark that a switch has been done:*/
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+    }
+  }
+  // Masquer toutes les icônes de tri
+  resetSortIcons();
+  // Afficher l'icône de tri de la colonne sélectionnée
+  document.getElementById(columnName + 'Icon').classList.add('active');
+  // Mettre à jour la colonne actuellement triée
+  currentSortedColumn = columnName;
+}
+
+function resetSortIcons() {
+  // Masquer toutes les icônes de tri
+  document.querySelectorAll('.fas.fa-sort').forEach(icon => {
+    icon.classList.remove('active');
+  });
+}
+
+function getColumnIndex(columnName) {
+  var headers = document.getElementById("tableContainer").getElementsByTagName('th');
+  for (var i = 0; i < headers.length; i++) {
+    if (headers[i].getAttribute('data-column') === columnName) {
+      return i;
+    }
+  }
+  return -1; // Retourne -1 si la colonne n'est pas trouvée
+}
+
+</script>
+
+
+{% endblock %}

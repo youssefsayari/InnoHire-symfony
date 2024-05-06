@@ -14,9 +14,16 @@ class Post
     #[ORM\Column(name: "id_post", type: "integer")]
     private ?int $id_post = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $id_utilisateur = null;
+    #[ORM\ManyToOne(targetEntity:"Utilisateur")]
+    #[ORM\JoinColumn(name:"id_utilisateur",nullable: false, referencedColumnName: "id_utilisateur")]
+    private ?Utilisateur $utilisateur;
+
+
+
+
+
+
+
 
     #[ORM\Column(length: 255)]
     private ?string $audience = null;
@@ -41,14 +48,14 @@ class Post
         return $this->id_post;
     }
 
-    public function getIdUtilisateur(): ?Utilisateur
+    public function getUtilisateur(): ?Utilisateur
     {
-        return $this->id_utilisateur;
+        return $this->utilisateur;
     }
 
-    public function setIdUtilisateur(?Utilisateur $id_utilisateur): static
+    public function setUtilisateur(?Utilisateur $utilisateur): self
     {
-        $this->id_utilisateur = $id_utilisateur;
+        $this->utilisateur = $utilisateur;
 
         return $this;
     }
@@ -124,4 +131,15 @@ class Post
 
         return $this;
     }
+
+
+
+
+
+   
+
+
+
+
+
 }

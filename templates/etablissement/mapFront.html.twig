@@ -1,0 +1,158 @@
+{% extends 'baseFront.html.twig' %}
+
+{% block title %}Map{% endblock %}
+
+{% block map %}
+
+<div class="container-xxl bg-primary hero-header">
+    <div class="container px-lg-5">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-12 text-center">
+                <h1 class="text-white mb-4 animated slideInDown">Our Map</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="art-main-container">
+    <div class="art-headline">
+        <div class="art-headline__outer art-container">
+            <div class="art-headline__inner ">
+
+            </div>
+        </div>
+    </div>
+    <div>
+        <br>
+        <br>
+        <div id="map" style="height: 600px;"></div>
+        <p id="coordinates"></p>
+    </div>
+</div>
+
+<div class="text-center">
+    <button class="btn btn-primary mt-3" onclick="centerCameraToLocale()">Center Camera to Locale</button>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+<script>
+    // Initialize the map with the first etablissement's coordinates
+    var firstEtablissementCoords = "{{ etablissements[0].lieu }}".split("-");
+    var firstEtablissementLatitude = parseFloat(firstEtablissementCoords[0]);
+    var firstEtablissementLongitude = parseFloat(firstEtablissementCoords[1]);
+    var map = L.map('map').setView([firstEtablissementLatitude, firstEtablissementLongitude], 10);
+
+    // Add tile layer to the map (OpenStreetMap tiles)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Add default marker for default establishment
+    var defaultIcon = L.icon({
+        iconUrl: '{{asset('imagesEtablissements/etablissement.png')}}',
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32]
+    });
+
+    var defaultCoords = [36.89896, 10.18980]; // Default coordinates (Paris coordinates for example)
+    L.marker(defaultCoords, {icon: defaultIcon}).addTo(map)
+        .bindPopup('<b>Notre Locale </b><br>Coordinates: ' + defaultCoords[0] + ', ' + defaultCoords[1]);
+
+    // Add circle with local as center
+    var localCircle = L.circle(defaultCoords, {
+        color: 'blue',
+        fillColor: '#3388ff',
+        fillOpacity: 0.5,
+        radius: 1000 // Radius in meters
+    }).addTo(map);
+
+    // Function to check if coordinates are inside the circle
+    function isInCircle(latlng) {
+        return localCircle.getBounds().contains(latlng);
+    }
+
+    // Function to display coordinates when map is clicked
+    function onMapClick(e) {
+        var clickedCoordinates = e.latlng;
+        document.getElementById("coordinates").innerHTML = "Clicked coordinates: " + clickedCoordinates.lat.toFixed(5) + ", " + clickedCoordinates.lng.toFixed(5);
+        // Remove previous temporary marker if exists
+        if (tempMarker) {
+            map.removeLayer(tempMarker);
+        }
+        // Add temporary marker
+        tempMarker = L.marker(clickedCoordinates).addTo(map);
+    }
+
+    map.on('click', onMapClick);
+
+    // Variable to store temporary marker
+    var tempMarker;
+
+    // Add markers for events
+    {% for etablissement in etablissements %}
+    // Extract latitude and longitude from lieu attribute
+    var coords = "{{ etablissement.lieu }}".split("-");
+    var latitude = parseFloat(coords[0]);
+    var longitude = parseFloat(coords[1]);
+    var MonEtablissementPopupContent = '<div style="text-align: center;">' +
+                   '<img src="{{asset('imagesEtablissements/' ~ etablissement.image)}}" alt="{{ etablissement.nom }}" style="max-width: 100px; max-height: 100px;"/><br>' +
+                   '<b style="color: blue;">Ceci est Votre Etablissement</b><br>' +
+                   'Nom: {{ etablissement.nom }}</div>';
+
+    // Check if the etablissement is inside the circle
+    {#         if (isInCircle([latitude, longitude])) {              #}
+    // Define custom icons for different types of places
+    var etablissementIcon = L.icon({
+        iconUrl: '{{asset('imagesEtablissements/' ~ etablissement.image)}}',
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32]
+    });
+    var MonEtablissementIcon = L.icon({
+    
+        iconUrl: '{{asset('imagesEtablissements/maison.png')}}',
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32]
+});
+        
+
+
+    // Add marker to the map
+    {#         if (isInCircle([latitude, longitude])) {              #}
+
+
+
+           {%  if (etablissement.getUtilisateur().getIdUtilisateur() == idUtilisateurConnecte)  %}            
+    L.marker([latitude, longitude], {icon: MonEtablissementIcon}).addTo(map)
+        .bindPopup(MonEtablissementPopupContent);
+
+    {% else %}
+    L.marker([latitude, longitude], {icon: etablissementIcon}).addTo(map)
+        .bindPopup('<b>{{ etablissement.nom }}</b><br>Coords: {{ etablissement.lieu }}');
+    
+
+
+
+            {% endif %}
+                     
+
+
+    {#           }             #}
+    {% endfor %}
+
+    // Fonction pour centrer la caméra à la position de votre locale
+    function centerCameraToLocale() {
+        // Récupérer les coordonnées de votre locale
+        var localeCoords = [36.89896, 10.18980]; // Coordonnées par défaut (à remplacer par les coordonnées de votre locale)
+
+        // Centrer la caméra à la position de votre locale
+        map.setView(localeCoords, 15); // 15 est le niveau de zoom, vous pouvez ajuster selon vos besoins
+    }
+</script>
+
+{% endblock %}

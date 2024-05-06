@@ -1,0 +1,475 @@
+{% extends 'baseFront.html.twig' %}
+{% block title %}Etablissement index
+{% endblock %}
+
+
+{% block etablissement %}
+	<!-- Projects Start -->
+			<div class="container-xxl py-5">
+				<div class="container py-5 px-lg-5">
+					<div class="wow fadeInUp" data-wow-delay="0.1s">
+						<p class="section-title text-secondary justify-content-center">
+							<span></span>
+							Nos Etablissement
+
+							<span></span>
+						</p>
+
+
+						<h1 class="text-center mb-5">
+							Recently Added Establishment
+
+						</h1>
+					</div>
+
+
+					<div class="row mt-n2 wow fadeInUp" data-wow-delay="0.3s">
+						<div class="col-12 text-center">
+							<ul class="list-inline mb-5" id="portfolio-flters">
+								<li class="mx-2 active" data-filter="*">
+									All
+
+								</li>
+								<li class="mx-2" data-filter=".ecole">
+									Ecole
+
+								</li>
+								<li class="mx-2" data-filter=".college">
+									College
+
+								</li>
+								<li class="mx-2" data-filter=".lycee">
+									Lycee
+
+								</li>
+								<li class="mx-2" data-filter=".faculte">
+									Faculte
+
+								</li>
+								<a href="{{ path('app_etablissement_newFront') }}" class="btn btn-secondary py-sm-3 px-sm-5 rounded-pill me-3 animated slideInLeft">
+    + Add New
+</a> 
+
+							</ul>
+						</div>
+					</div>
+
+
+					
+					<div class="row g-4 portfolio-container">
+                        {% if etablissementsAndWallets is null or etablissementsAndWallets == {} %}
+                             <div class="container d-flex justify-content-center align-items-center" >
+    <div class="alert alert-warning text-center" role="alert" style="max-width: 400px;">
+        <p>Vous n'avez pas encore d'établissement.</p>
+        <p>Essayez d'en créer un !</p>
+    </div>
+</div>
+
+                        {% endif %}
+
+
+
+
+ {% set nb_etablissement = 0 %}
+{% set nb_ecole = 0 %}
+{% set nb_college = 0 %}
+{% set nb_lycee = 0 %}
+{% set nb_faculte = 0 %}
+
+{% for etablissement in etablissementss %}
+    {% set nb_etablissement = nb_etablissement + 1 %}
+    {% if etablissement.typeEtablissement|lower == 'ecole' %}
+        {% set nb_ecole = nb_ecole + 1 %}
+    {% elseif etablissement.typeEtablissement|lower == 'college' %}
+        {% set nb_college = nb_college + 1 %}
+    {% elseif etablissement.typeEtablissement|lower == 'lycee' %}
+        {% set nb_lycee = nb_lycee + 1 %}
+    {% elseif etablissement.typeEtablissement|lower == 'faculte' %}
+        {% set nb_faculte = nb_faculte + 1 %}
+    {% endif %}
+{% endfor %}
+
+
+
+
+
+
+
+					{% for etablissementAndWallet in etablissementsAndWallets %}
+
+                   
+						<div class="col-lg-4 col-md-6 portfolio-item {{ etablissementAndWallet.etablissement.typeEtablissement|lower }} wow fadeInUp" data-wow-delay="0.1s">
+							
+                             
+
+                            <div class="rounded overflow-hidden">
+								<div class="position-relative overflow-hidden" style="width: 400px; height: 250px;">
+                                
+									<img class="img-fluid w-100" src="{{ asset('imagesEtablissements/' ~ etablissementAndWallet.etablissement.image) }}" alt="">
+									<div class="portfolio-overlay">
+										<a class="btn btn-square btn-outline-light mx-1" href="{{ asset('imagesEtablissements/' ~ etablissementAndWallet.etablissement.image) }}" data-lightbox="portfolio">
+											<i class="fa fa-eye"></i>
+										</a>
+										<a class="btn btn-square btn-outline-light mx-1" href="{{ path('app_etablissement_editFront', {'id': etablissementAndWallet.etablissement.id}) }}">
+											<i class="fa fa-edit"></i>
+										</a>
+										
+										
+										 <form action="{{ path('app_etablissement_deleteFront', {'id': etablissementAndWallet.etablissement.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet établissement ?')">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ etablissementAndWallet.etablissement.id) }}">
+                        <button type="submit" class="btn btn-square btn-outline-light mx-1">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </form>
+
+  									 	
+        									
+    {% if etablissementAndWallet.wallets %}
+		{% for wallet in etablissementAndWallet.wallets %}
+        
+								<table>
+    									<tr>
+											<td>
+                                            {% if wallet.getStatus() == 1 %}							
+                                                
+                                                 <a href="{{ path('app_wallet_recharger', {'id': wallet.id}) }}">
+
+   												 <button class="btn btn-square btn-outline-light mx-1" {#onclick="openModal('{{ wallet.getBalance()}}')"#}>
+                   									 <i class="fa fa-wallet"></i>
+               									 </button>
+                                                 </a>
+											
+                                 {% else %}
+      
+   												 <button class="btn btn-square btn-outline-light mx-1" {#onclick="openModal('{{ wallet.getBalance()}}')"#}>
+                   									 <i class="fa fa-wallet"></i>
+               									 </button>
+                                                
+
+                                {% endif %}
+                                               	 
+       										</td>
+											<td>
+        
+				{% if wallet.getStatus() == 1 %}							
+            <div>
+                <div><span style="font-weight: bold; color: white;">Balance :</span></div>
+                <div><span style="font-weight: bold; font-size: smaller; color: white;">{{ wallet.getBalance() }} DT</span></div>
+											
+            </div>
+											
+                                 {% else %}
+                                 
+    <div>
+        <i class="fas fa-exclamation-triangle" style="color: yellow; font-size: 16px; vertical-align: middle;"></i>
+        <span style="font-weight: bold; color: yellow;">Wallet</span>
+       <div> <span style="font-weight: bold; font-size: smaller; color: yellow;">Not Verified</span></div>
+    </div>
+
+
+
+                                {% endif %}
+        {% endfor %}
+                                            </td>
+										</tr>
+								</table>
+       
+											
+    {% else %}
+
+									<table>
+    									<tr>
+											<td>
+   												 <a href="{{ path('app_wallet_newFront', {'id': etablissementAndWallet.etablissement.id}) }}" class="btn btn-square btn-outline-light mx-1">
+                                                     <i class="fa fa-wallet"></i>
+                                                </a>
+
+       										</td>
+											<td>
+
+        <div style="text-align: center;">
+    <i class="fas fa-exclamation-circle" style="color: red; font-size: 24px; vertical-align: middle;"></i>
+    <span style="font-weight: bold; color: red; vertical-align: middle;">No Wallet</span>
+    		<div><span style="font-weight: bold; color: red; font-size: smaller;">associated </span></div>
+
+</div>
+											</td>
+										</tr>
+									</table>
+    {% endif %}
+
+					
+	
+
+									</div>
+								</div>
+
+
+
+
+
+
+						<style>
+.label {
+    color: #555; /* Couleur du texte pour les labels */
+    font-weight: bold; /* Gras pour les labels */
+}
+
+.variable {
+    color: #000000; /* Couleur du texte pour les variables */
+    font-weight: bold;
+    font-style: italic bold; /* Italique pour les variables */
+}
+</style>
+
+<div class="bg-light p-4 border rounded">
+    <p class="label mb-2">
+        <i class="bi bi-upc-scan"></i> Code : <span style="color: #007bff;">{{ etablissementAndWallet.etablissement.codeEtablissement }}</span>
+    </p>
+    <h5 class="label mb-1">
+        <i class="bi bi-building"></i> Nom : <span class="variable">{{ etablissementAndWallet.etablissement.nom }}</span>
+    </h5>
+    
+    <h5 class="label mb-1">
+        <i class="bi bi-geo-alt"></i> Lieu : <span class="variable">{{ etablissementAndWallet.etablissement.lieu }}</span>
+    </h5>
+    <h5 class="label mb-1">
+        <i class="bi bi-list-nested"></i> Type : <span class="variable">{{ etablissementAndWallet.etablissement.typeEtablissement }}</span>
+    </h5>
+    <h5 class="label mb-1">
+        <i class="bi bi-person-circle"></i> User : <img class="img-fluid" src="{{ asset('images/' ~ etablissementAndWallet.etablissement.utilisateur.image) }}" alt="Profile Picture" style="width: 50px; height: 50px; border-radius: 50%; display: inline-block; margin-bottom: 10px;"><span class="variable"> {{ etablissementAndWallet.etablissement.getUtilisateur().getNom() }} </span><span class="variable">{{ etablissementAndWallet.etablissement.getUtilisateur().getPrenom() }} </span>
+
+    </h5>
+</div>
+
+
+							</div>
+						</div>
+					{% endfor %}
+					</div>
+					
+				</div>
+			</div>
+			<!-- Projects End -->
+
+
+<!-- About Start -->
+			<div class="container-xxl py-5">
+				<div class="container py-5 px-lg-5">
+					<div class="row g-5 align-items-center">
+						<div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
+							
+							<h2 class="mb-5">
+								#1 Show All Establishments in Maps
+							</h2>
+							<div class="skill mb-4">
+								<div class="d-flex justify-content-between">
+									<p class="mb-2">
+										Ecole
+
+									</p>
+									<p class="mb-2">
+                                 {% set pourcentage_ecoles = (nb_ecole * 100 / nb_etablissement) | round(2) %}
+                                     {{ pourcentage_ecoles }} %
+                                    </p>
+
+								</div>
+								<div class="progress">
+                                    <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="{{ pourcentage_ecoles }}" aria-valuemin="0" aria-valuemax="100"></div>
+								</div>
+							</div>  
+							<div class="skill mb-4">
+								<div class="d-flex justify-content-between">
+									<p class="mb-2">
+										College
+
+									</p>
+									<p class="mb-2">
+										{% set pourcentage_colleges = (nb_college * 100 / nb_etablissement) | round(2) %}
+                                     {{ pourcentage_colleges }} %
+
+									</p>
+								</div>
+								<div class="progress">
+									<div class="progress-bar bg-primary" role="progressbar" aria-valuenow="{{ pourcentage_colleges }}" aria-valuemin="0" aria-valuemax="100"></div>
+								</div>
+							</div>
+							<div class="skill mb-4">
+								<div class="d-flex justify-content-between">
+									<p class="mb-2">
+										Lycee
+
+									</p>
+									<p class="mb-2">
+										{% set pourcentage_lycees = (nb_lycee * 100 / nb_etablissement) | round(2) %}
+                                     {{ pourcentage_lycees }} %
+
+									</p>
+								</div>
+								<div class="progress">
+									<div class="progress-bar bg-secondary" role="progressbar" aria-valuenow="{{ pourcentage_lycees }}" aria-valuemin="0" aria-valuemax="100"></div>
+								</div>
+							</div>
+							<div class="skill mb-4">
+								<div class="d-flex justify-content-between">
+									<p class="mb-2">
+										Faculte
+
+									</p>
+									<p class="mb-2">
+										{% set pourcentage_facultes = (nb_faculte * 100 / nb_etablissement) | round(2) %}
+                                     {{ pourcentage_facultes }} %
+
+									</p>
+								</div>
+								<div class="progress">
+									<div class="progress-bar bg-dark" role="progressbar" aria-valuenow="{{ pourcentage_facultes }}" aria-valuemin="0" aria-valuemax="100"></div>
+								</div>
+							</div>
+							<a href="{{ path('app_mapFront') }}" class="btn btn-primary py-sm-3 px-sm-5 rounded-pill mt-3">
+								Show Map
+
+							</a>
+						</div>
+						<div class="col-lg-6">
+							<img class="img-fluid wow zoomIn" data-wow-delay="0.5s" src="{{ asset('assets/img/about.png')}}">
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- About End -->
+
+
+
+
+
+
+<script>
+        // Fonction pour filtrer les établissements en fonction du type sélectionné
+        function filterEtablissements(type) {
+            // Récupérer tous les éléments de la classe 'portfolio-item'
+            var items = document.querySelectorAll('.portfolio-item');
+
+            // Parcourir tous les éléments
+            items.forEach(function(item) {
+                // Vérifier si l'élément a la classe correspondant au type sélectionné
+                if (type === '*' || item.classList.contains(type)) {
+                    // Afficher l'élément s'il correspond au type sélectionné
+                    item.style.display = 'block';
+                } else {
+                    // Masquer l'élément s'il ne correspond pas au type sélectionné
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Écouter les clics sur les éléments du filtre
+        document.querySelectorAll('#portfolio-flters li').forEach(function(filter) {
+            filter.addEventListener('click', function() {
+                // Supprimer la classe active de tous les filtres
+                document.querySelectorAll('#portfolio-flters li').forEach(function(item) {
+                    item.classList.remove('active');
+                });
+
+                // Ajouter la classe active au filtre cliqué
+                filter.classList.add('active');
+
+                // Récupérer le type correspondant au filtre cliqué
+                var type = filter.getAttribute('data-filter');
+
+                // Filtrer les établissements en fonction du type sélectionné
+                filterEtablissements(type);
+            });
+        });
+    </script>
+
+
+
+
+
+
+{#-------------------START MODAL WALLET--------------------------#}
+
+			<!-- Modal -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+         <!-- Balise span pour afficher la balance -->
+        <span id="modalBalance" style="font-weight: bold; font-size: smaller; color: black;"></span>
+    </div>
+</div>
+
+
+
+<style>
+    /* Style pour centrer le modal */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    /* Style pour le bouton de fermeture */
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    // Fonction pour ouvrir le modal
+    function openModal(balance) {
+        var modal = document.getElementById("myModal");
+        var modalBalance = document.getElementById("modalBalance");
+        modalBalance.textContent = balance + " DT"; // Affiche la balance dans le modal
+        modal.style.display = "block";
+    }
+	
+     // Fonction pour fermer le modal
+    function closeModal() {
+        var modal = document.getElementById("myModal");
+        modal.style.display = "none";
+    }
+
+      // Fermer le modal lorsque l'utilisateur clique en dehors de celui-ci
+    window.onclick = function(event) {
+        var modal = document.getElementById("myModal");
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
+{#-------------------END MODAL WALLET--------------------------#}
+
+
+
+
+
+
+
+{% endblock %}

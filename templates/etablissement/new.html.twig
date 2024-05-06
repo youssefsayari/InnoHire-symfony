@@ -1,0 +1,211 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Etablissement
+{% endblock %}
+
+{% block body %}
+	<div class="flex items-center justify-between">
+		<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+			Make a New Etablissement
+		</h2>
+		<button onclick="window.location.href='{{ path('app_etablissement_index') }}'" class="flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+			<span>
+				<!--&LeftArrow;-->
+				Back to List</span>
+		</button>
+	</div>
+
+	<div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+		{{ form_start(form, {'attr': {'class': 'form-horizontal', 'novalidate': 'novalidate', 'id': 'etablissementForm'}}) }}
+		<label class="block text-sm">
+			<span class="text-gray-700 dark:text-gray-400">Nom</span>
+			{{ form_widget(form.nom, {'id': 'nomInput'})}}
+			<span id="nomError" class="text-xs text-red-600 dark:text-red-400"></span>
+			<span class="error-message">{{ form_errors(form.nom) }}</span>
+		</label>
+
+		<label class="block text-sm">
+			<span class="text-gray-700 dark:text-gray-400">Lieu</span> 
+			{{ form_widget(form.lieu, {'id': 'lieuInput'})}}
+			<span id="lieuError" class="text-xs text-red-600 dark:text-red-400"></span>
+			<span class="error-message">{{ form_errors(form.lieu) }}</span>
+		</label>
+<a href="{{ path('app_map') }}" class="px-4 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-l-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+  Prendre Coords
+</a>
+
+		<label class="block text-sm">
+			<span class="text-gray-700 dark:text-gray-400">Code</span>
+			{{ form_widget(form.code_etablissement, {'id': 'code_etablissementInput'})}}
+			<span id="code_etablissementError" class="text-xs text-red-600 dark:text-red-400"></span>
+			<span class="error-message">{{ form_errors(form.code_etablissement) }}</span>
+		</label>
+
+		<label class="block text-sm">
+			<span class="text-gray-700 dark:text-gray-400">Type</span>
+			{{ form_widget(form.type_etablissement, {'id': 'type_etablissementInput'})}}
+			<span id="type_etablissementError" class="text-xs text-red-600 dark:text-red-400"></span>
+			<span class="error-message">{{ form_errors(form.type_etablissement) }}</span>
+		</label>
+
+		<div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+			<label class="block text-sm">
+				<span class="text-gray-700 dark:text-gray-400">Image</span>
+				<div class="relative flex items-center">
+					<button type="button" class="px-4 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-l-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray" onclick="document.getElementById('fileInput').click();">
+						Import
+					</button>
+					{{ form_widget(form.image, {'id': 'fileNameInput', 'attr': {'class': 'w-full pl-2 py-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-input'}}) }}
+					<input type="file" id="fileInput" class="hidden" onchange="updateFileName(event)"/>
+
+					<script>
+						function updateFileName(event) {
+const input = document.getElementById('fileNameInput');
+input.value = event.target.files[0].name;
+input.placeholder = '';
+}
+					</script>
+
+				</div>
+				<span id="imageError" class="text-xs text-red-600 dark:text-red-400"></span>
+				<span class="error-message">{{ form_errors(form.image) }}</span>
+			</label>
+
+		</div>
+
+
+		<label class="block text-sm">
+			<span class="text-gray-700 dark:text-gray-400">Choose a User :
+			</span>
+			{{ form_widget(form.utilisateur,{'id': 'utilisateurInput'}) }}
+			<span id="utilisateurError" class="text-xs text-red-600 dark:text-red-400"></span>
+			<span class="error-message">{{ form_errors(form.utilisateur) }}</span>
+		</label>
+
+		<br>
+		<button id="submitButton" type="submit" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+			{{ button_label|default(' + Add') }}
+		</button>
+		<br>
+		{{ form_end(form) }}
+	</div>
+{#
+	<script>
+		// Fonction de validation du formulaire
+function validateForm() {
+let nom = document.getElementById('nomInput').value.trim();
+let lieu = document.getElementById('lieuInput').value.trim();
+let codeEtablissement = document.getElementById('code_etablissementInput').value.trim();
+
+let typeEtablissementInput = document.getElementById('type_etablissementInput');
+let typeEtablissementRadios = typeEtablissementInput.querySelectorAll('input[type="radio"]');
+
+let image = document.getElementById('fileNameInput').value.trim();
+let utilisateur = document.getElementById('utilisateurInput').value;
+
+let nomError = document.getElementById('nomError');
+let lieuError = document.getElementById('lieuError');
+let codeEtablissementError = document.getElementById('code_etablissementError');
+let typeEtablissementError = document.getElementById('type_etablissementError');
+let imageError = document.getElementById('imageError');
+let utilisateurError = document.getElementById('utilisateurError');
+
+// Expression régulière pour valider que le champ ne contient que des lettres et des espaces
+let letterOnlyRegex = /^[A-Za-z\s]+$/;
+
+// Validation du champ nom
+if (nom === '') {
+nomError.textContent = 'Nom is required';
+return false;
+} else if (! letterOnlyRegex.test(nom)) {
+nomError.textContent = 'Nom doit contenir uniquement des lettres';
+return false;
+} else {
+nomError.textContent = '';
+}
+
+// Validation du champ lieu
+if (lieu === '') {
+lieuError.textContent = 'Lieu is required';
+return false;
+} else if (! letterOnlyRegex.test(lieu)) {
+lieuError.textContent = 'Lieu doit contenir uniquement des lettres';
+return false;
+} else {
+lieuError.textContent = '';
+}
+
+if (codeEtablissement === '') {
+codeEtablissementError.textContent = 'Code is required';
+return false;
+} else {
+if (!/^\d{4}$/.test(codeEtablissement)) {
+codeEtablissementError.textContent = 'Code Etablissement doit contenir exactement quatre chiffres';
+return false;
+} else {
+codeEtablissementError.textContent = '';
+}
+}
+
+let typeEtablissementSelected = false;
+for (let i = 0; i < typeEtablissementRadios.length; i++) {
+if (typeEtablissementRadios[i].checked) {
+typeEtablissementSelected = true;
+break;
+}
+}
+
+if (! typeEtablissementSelected) {
+typeEtablissementError.textContent = 'Type is required';
+return false;
+} else {
+typeEtablissementError.textContent = '';
+}
+
+
+if (image === '') {
+imageError.textContent = 'Nom is required';
+return false;
+} else {
+imageError.textContent = '';
+}
+
+
+if (utilisateur === '') {
+utilisateurError.textContent = 'Utilisateur is required';
+return false;
+} else {
+utilisateurError.textContent = '';
+}
+
+
+// Si toutes les validations passent, retourne true pour soumettre le formulaire
+return true;
+}
+
+// Attachez l'événement de soumission du formulaire à la fonction de validation
+document.getElementById('etablissementForm').addEventListener('submit', function (event) {
+if (! validateForm()) { // Empêche la soumission du formulaire si la validation échoue
+event.preventDefault();
+}
+}); 
+	</script> 
+	#}
+
+
+	{% for message in app.flashes('error') %}
+		<script>
+			// alert("{{ message }}");
+let codeEtablissementError = document.getElementById('code_etablissementError');
+codeEtablissementError.textContent = 'This Code is Already Taken';
+		</script>
+	{% endfor %}
+	<style>
+	.error-message {
+    color: red;
+}
+</style>
+
+
+
+{% endblock %}

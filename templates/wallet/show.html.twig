@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Wallet{% endblock %}
+
+{% block body %}
+    
+
+
+
+
+
+    <main class="h-full pb-16 overflow-y-auto">
+          <div class="container grid px-6 mx-auto">
+            
+
+            <div>
+              <button
+                @click="openModal"
+                class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+              >
+                Open Modal
+              </button>
+            </div>
+          </div>
+        </main>
+        <!-- Modal backdrop. This what you want to place close to the closing body tag -->
+    <div
+  x-show="isModalOpen"
+  x-transition:enter="transition ease-out duration-150"
+  x-transition:enter-start="opacity-0"
+  x-transition:enter-end="opacity-100"
+  x-transition:leave="transition ease-in duration-150"
+  x-transition:leave-start="opacity-100"
+  x-transition:leave-end="opacity-0"
+  class="fixed inset-0 z-30 flex items-center justify-center bg-black bg-opacity-50"
+>
+  <!-- Modal -->
+  <div
+    x-show="isModalOpen"
+    x-transition:enter="transition ease-out duration-150"
+    x-transition:enter-start="opacity-0 transform translate-y-1/2"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0 transform translate-y-1/2"
+    @click.away="closeModal"
+    @keydown.escape="closeModal"
+    class="w-full max-w-xl px-6 py-4 overflow-hidden bg-white rounded-lg dark:bg-gray-800"
+    role="dialog"
+    id="modal"
+    style="margin: auto"
+  >
+    
+<!-- Modal description -->
+<div class="mt-4 mb-6 flex flex-col items-center justify-center text-center">
+  <!-- Modal title -->
+  <p class="mb-2 text-lg font-semibold text-gray-700 dark:text-gray-300">
+    Wallet
+  </p>
+  <!-- Modal body -->
+  <div class="flex items-center justify-center"> <!-- Ajout de ces classes pour centrer verticalement et horizontalement -->
+    <table class="table">
+      <tbody>
+        <tr>
+          <th>Id</th>
+          <td>{{ wallet.id }}</td>
+        </tr>
+        <tr>
+          <th>Balance</th>
+          <td>{{ wallet.balance }}</td>
+        </tr>
+        <tr>
+          <th>Date_c</th>
+          <td>{{ wallet.dateC ? wallet.dateC|date('Y-m-d H:i:s') : '' }}</td>
+        </tr>
+        <tr>
+          <th>Status</th>
+          <td>{{ wallet.status }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+    <!-- Footer -->
+   <footer class="flex justify-center mt-6"> <!-- Modification de la classe pour centrer horizontalement -->
+  <!-- Accept button -->
+  <button
+  @click="closeModal"
+    class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg sm:px-4 sm:py-2 active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+  >
+    Close
+  </button>
+</footer>
+  </div>
+</div>
+
+{% endblock %}

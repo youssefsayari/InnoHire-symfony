@@ -6,30 +6,36 @@ use App\Repository\WalletRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
+
 #[ORM\Entity(repositoryClass: WalletRepository::class)]
 class Wallet
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Column(name: "id_wallet")]
+    private ?int $id_wallet = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\Type(type: 'integer', message: 'La balance doit être un nombre entier.')]
+    #[Assert\NotBlank(message: 'Le balance ne peut pas être vide.')]
     private ?int $balance = null;
-
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Etablissement $id_etablissement = null;
-
+    
+    #[ORM\OneToOne(targetEntity: Etablissement::class)]
+    #[ORM\JoinColumn(name: "id_etablissement", referencedColumnName: "id_etablissement",nullable: false)]
+    #[Assert\NotBlank(message: 'L\'établissement ne peut pas être vide.')]
+    private ?Etablissement $etablissement = null; 
+    
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotNull(message: 'La date de création ne peut pas être vide.')]
     private ?\DateTimeInterface $date_c = null;
-
     #[ORM\Column]
     private ?int $status = null;
 
     public function getId(): ?int
     {
-        return $this->id;
+        return $this->id_wallet;
     }
 
     public function getBalance(): ?int
@@ -44,17 +50,19 @@ class Wallet
         return $this;
     }
 
-    public function getIdEtablissement(): ?Etablissement
+    public function getEtablissement(): ?Etablissement
     {
-        return $this->id_etablissement;
+        return $this->etablissement;
     }
 
-    public function setIdEtablissement(Etablissement $id_etablissement): static
+    public function setEtablissement(Etablissement $etablissement): self
     {
-        $this->id_etablissement = $id_etablissement;
+        $this->etablissement = $etablissement;
 
         return $this;
     }
+
+   
 
     public function getDateC(): ?\DateTimeInterface
     {

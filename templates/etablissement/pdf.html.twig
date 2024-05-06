@@ -1,0 +1,143 @@
+
+
+{% block title %}Les etablissements{% endblock %}
+
+{% block stylesheets %}
+    
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin-bottom: 20px;
+        }
+
+        .table th,
+        .table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table th {
+            background-color: #6a1b9a;
+            color: #fff;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .btn-primary,
+        .btn-info,
+        .btn-warning {
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 16px;
+            text-transform: uppercase;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary:hover {
+            background-color: #4a148c;
+            border-color: #4a148c;
+        }
+
+        .btn-info {
+            background-color: #1976d2;
+            border-color: #1976d2;
+        }
+
+        .btn-info:hover {
+            background-color: #1565c0;
+            border-color: #1565c0;
+        }
+
+        .btn-warning {
+            background-color: #ffa000;
+            border-color: #ffa000;
+        }
+
+        .btn-warning:hover {
+            background-color: #ff8f00;
+            border-color: #ff8f00;
+        }
+
+        .actions-btns {
+            display: flex;
+        }
+
+        .actions-btns a {
+            margin-right: 10px;
+        }
+
+        .btn-create-new {
+            background-color: #6a1b9a;
+            color: #fff;
+            border: 2px solid #6a1b9a;
+            font-size: 18px;
+            padding: 12px 24px;
+            border-radius: 50px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .btn-create-new:hover {
+            background-color: #4a148c;
+            color: #fff;
+            border-color: #4a148c;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Code</th>
+                        <th>Lieu</th>
+                        <th>Type</th>
+                        <th>Utilisateur</th>
+                        <th>Image</th>
+                        
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for etablissement in etablissements %}
+                        <tr>
+                            <td>{{ etablissement.getNom() }}</td>
+                            <td>{{ etablissement.getCodeEtablissement() }}</td>
+                            <td>{{ etablissement.getLieu() }}</td>
+                            <td>{{ etablissement.getTypeEtablissement() }}</td>
+                           <td>{{ etablissement.getUtilisateur().getNom() }}</td> 
+                            <td>
+                            <img  src="{{ asset('imagesEtablissements/' ~ etablissement.image) }}" alt="" loading="lazy"/>
+                            </td>
+                               
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7">No records found</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        
+    </div>
+{% endblock %}

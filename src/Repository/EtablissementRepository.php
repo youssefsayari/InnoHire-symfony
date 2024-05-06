@@ -21,6 +21,29 @@ class EtablissementRepository extends ServiceEntityRepository
         parent::__construct($registry, Etablissement::class);
     }
 
+    public function isCodeEtablissementUnique(int $codeEtablissement, ?Etablissement $currentEtablissement = null): bool
+{
+    $existingEtablissement = $this->findOneBy(['code_etablissement' => $codeEtablissement]);
+
+    // Si aucun établissement existant n'est trouvé, ou si l'établissement trouvé est le même que l'établissement actuel en cours de modification, le code est unique
+    if ($existingEtablissement === null || ($currentEtablissement !== null && $existingEtablissement === $currentEtablissement)) {
+        return true;
+    }
+
+    return false;
+}
+
+public function findByUserId(int $userId): array
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.utilisateur = :userId')//jointure m3a lvariable utilisateur fi lentity etablissement
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->getResult();
+    }
+ 
+
+
 //    /**
 //     * @return Etablissement[] Returns an array of Etablissement objects
 //     */

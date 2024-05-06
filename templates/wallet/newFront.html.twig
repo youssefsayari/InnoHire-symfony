@@ -1,0 +1,184 @@
+{% extends 'baseFront.html.twig' %}
+
+{% block body %}
+
+
+<!-- Navbar & Hero Start -->
+			
+				
+				
+<div class="container-xxl bg-primary hero-header" ></div>
+	
+				
+			
+			<!-- Navbar & Hero End -->
+
+        <!-- Contact Start -->
+        <div class="container-xxl py-5">
+            <div class="container py-5 px-lg-5">
+
+                <div class="wow fadeInUp" data-wow-delay="0.1s">
+                    <p class="section-title text-secondary justify-content-center"><span></span>Wallet<span></span></p>
+                    <h1 class="text-center mb-5">Ajouter Wallet</h1>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-lg-7">
+                        <div class="wow fadeInUp" data-wow-delay="0.3s">
+                            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row g-3">
+            {{ form_start(form, {'attr': {'class': 'form-horizontal', 'novalidate': 'novalidate', 'id': 'walletForm'}}) }}
+
+
+
+
+
+
+                                        
+     <div class="row">
+    <div class="col-md-6">
+        <div class="form-floating mb-3">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Date</span>
+                </div>
+                {{ form_widget(form.date_c) }}
+            </div>
+                
+        </div>
+    </div>
+
+ 
+
+<div class="col-md-6 flex  text-sm">
+    <label class="flex items-center dark:text-gray-400">
+        {{ form_widget(form.status, {attr: {style: 'display: none;'}}) }}
+        <span class="input-group-text">Status: Non Verifié</span><span class="underline">Une verification doit etre assuré par un admin !</span>
+            
+            
+            
+        
+    </label>
+</div>
+
+
+    <div class="col-md-6">
+    <div class="form-floating mb-3">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Balance</span>
+            </div>
+            {{ form_widget(form.balance, {'id': 'balanceInput', 'value': '0', 'readonly': 'readonly'}) }}
+        </div>
+        <span id="balanceError" class="text-xs text-red" style="red;"></span>
+    </div>
+</div>
+
+<script>
+// Désactiver le champ balance lors du chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
+    var balanceInput = document.getElementById('balanceInput');
+    balanceInput.setAttribute('readonly', 'readonly');
+    balanceInput.style.pointerEvents = 'none';
+});
+</script>
+</div>
+                               
+
+
+
+ <div class="col-12" style="display: none;">
+    <div class="form-floating">
+        <label for="utilisateurInput" class="block text-sm"></label>
+        {{ form_widget(form.etablissement, {'attr': {'class': 'form-select', 'style': 'background-color: #f8f9fa; color: #6c757d; pointer-events: none'}}) }}
+        <span id="utilisateurError" class="text-xs" style="color: red;"></span>
+    </div>
+</div>
+
+  <input type="checkbox" id="mon_checkbox" name="mon_checkbox" value="valeur_checkbox">
+<a href="https://www.lumni.fr/cgu#at_medium=1&at_platform=3&at_offre=8&at_campaign=DSA_All_Educ&at_adgroup=DSA_Tout_le_site&at_adgroupid=1141293790213988&at_adid=71330958912270&at_term=lumni.fr" style="color: blue; text-decoration: underline;" target="_blank">J'accepte les conditions générales d'utilisation</a>
+
+
+
+<br>
+<br>
+
+
+
+
+
+
+<div class="col-12">
+                                        <button id="submitButton" type="submit" class="btn btn-primary w-100 py-3" disabled>
+			{{ button_label|default(' + Add') }}
+		</button>
+ 		<br>
+		{{ form_end(form) }}
+	</div>
+    </div>
+
+	
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Contact End -->
+        
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var balanceInput = document.getElementById('balanceInput');
+        var balanceError = document.getElementById('balanceError');
+        var submitButton = document.getElementById('submitButton');
+        var checkbox = document.getElementById('mon_checkbox');
+
+        // Fonction de validation de la balance
+        function validateBalance() {
+            var balanceValue = parseFloat(balanceInput.value);
+            if (balanceInput.value === '' || isNaN(balanceValue) || balanceValue < 0) {
+                // Vérifier si le champ de balance est vide ou si la valeur n'est pas numérique ou positive
+                balanceError.textContent = 'Veuillez saisir une valeur numérique positive.';
+                balanceInput.style.borderColor = 'red';
+                balanceError.style.color = 'red';
+                submitButton.disabled = true;
+            } else {
+                // Si le champ de balance n'est pas vide et que la valeur est numérique et positive
+                balanceError.textContent = 'Votre Wallet est prêt à être rechargé';
+                balanceInput.style.borderColor = 'green';
+                balanceError.style.color = 'green';
+                // Activer ou désactiver le bouton en fonction de l'état de la case à cocher
+                submitButton.disabled = !checkbox.checked;
+            }
+        }
+
+        // Appeler la fonction de validation de la balance au chargement de la page
+        validateBalance();
+
+        // Ajouter un écouteur d'événements pour le champ de balance
+        balanceInput.addEventListener('input', validateBalance);
+
+        // Ajouter un gestionnaire d'événements pour le changement d'état de la case à cocher
+        checkbox.addEventListener('change', validateBalance);
+    });
+</script>
+
+
+{% endblock %}
