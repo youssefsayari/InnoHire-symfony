@@ -6,6 +6,8 @@ use App\Entity\Post;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+
+
 /**
  * @extends ServiceEntityRepository<Post>
  *
@@ -20,6 +22,29 @@ class PostRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Post::class);
     }
+    public function UserExists($idUtilisateur): bool
+    {
+        $qb = $this->createQueryBuilder('w');
+        $qb->select('COUNT(post.id_post)');
+        $qb->andWhere('post.utilisateur = :id_Utilisateur');
+        $qb->setParameter('id_Utilisateur', $idUtilisateur);
+        
+        $count = $qb->getQuery()->getSingleScalarResult();
+        
+        return intval($count) > 0; // Retourne true si le compte est supérieur à 0, sinon false
+    }
+    
+   
+
+
+
+
+
+
+
+     
+    
+  
 
 //    /**
 //     * @return Post[] Returns an array of Post objects

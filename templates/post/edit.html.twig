@@ -1,0 +1,193 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Post{% endblock %}
+
+{% block body %}
+<div class="flex items-center justify-between">
+    <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+        Edit Post
+    </h2>
+
+    <button onclick="window.location.href='{{ path('app_post_index') }}'"
+            class="flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+        <span> Back to List</span>
+    </button>
+</div>
+
+<div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+    {{ form_start(form , {'attr': {'class':'form-horizontal','novalidate':'novalidate','id': 'Form'}}) }}
+    
+
+<label class="block mt-4 text-sm">
+        <span class="text-gray-700 dark:text-gray-400">Audience</span>
+        {{ form_widget(form.audience, {'attr': {'class': 'block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray', 'rows': '7'}}) }}
+        <span id="audienceError" class="text-xs text-red-600 dark:text-red-400"></span>
+        <span class="error-message">{{ form_errors(form.audience) }}</span>
+
+    </label>
+
+       
+    <label class="block text-sm">
+			<span class="text-gray-700 dark:text-gray-400">Caption</span>
+			{{ form_widget(form.caption, {'id': 'captionInput', 'attr': {'class': 'block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray'}}) }}
+			<span id="captionError" class="text-xs text-red-600 dark:text-red-400"></span>
+            <span class="error-message">{{ form_errors(form.caption) }}</span>
+
+		</label>
+
+  <label class="block text-sm">
+    <span class="text-gray-700 dark:text-gray-400">Date</span>
+    {{ form_widget(form.date, {'id': 'date'}) }}
+</label>
+
+
+
+    <label class="block text-sm">
+        <span class="text-gray-700 dark:text-gray-400">Choose User</span>
+        {{ form_widget(form.utilisateur, {'id': 'utilisateur'}) }}
+        <span id="utilisateurError" class="text-xs text-red-600 dark:text-red-400"></span>
+        <span class="error-message">{{ form_errors(form.utilisateur) }}</span>
+
+    </label>
+    
+  
+    
+    <label class="block mt-4 text-sm">
+        <span class="text-gray-700 dark:text-gray-400">Reactions</span>
+        {{ form_widget(form.totalReactions, {'attr': {'class': 'block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray', 'rows': '7', 'placeholder': 'Enter here'}}) }}
+    			<span class="error-message">{{ form_errors(form.totalReactions) }}</span>
+
+    </label>
+    <label class="block mt-4 text-sm">
+        <span class="text-gray-700 dark:text-gray-400">Comments</span>
+        {{ form_widget(form.nbComments, {'attr': {'class': 'block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray', 'rows': '7', 'placeholder': 'Enter here'}}) }}
+   			<span class="error-message">{{ form_errors(form.nbComments) }}</span>
+
+    </label>
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+        <label class="block text-sm">
+            <span class="text-gray-700 dark:text-gray-400">Image</span>
+            <div class="relative flex items-center">
+                <button
+                    type="button"
+                    class="px-4 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-l-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                    onclick="document.getElementById('fileInput').click();"
+                >
+                    Import
+                </button>
+                {{ form_widget(form.image, {'id': 'fileNameInput', 'attr': {'class': 'w-full pl-2 py-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-input'}}) }}
+                <input
+                    type="file"
+                    id="fileInput"
+                    class="hidden"
+                    onchange="updateFileName(event)"
+                />
+               
+                <script>
+                    function updateFileName(event) {
+                        const input = document.getElementById('fileNameInput');
+                        input.value = event.target.files[0].name;
+                        input.placeholder = '';
+                    }
+                </script>
+                
+            </div>
+              <span id="imageError" class="text-xs text-red-600 dark:text-red-400"></span>
+              			<span class="error-message">{{ form_errors(form.image) }}</span>
+
+        </label>
+       
+    </div>
+ 
+
+
+
+
+
+
+
+
+    <button id="submitButton" type="submit" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+			{{ button_label|default(' + Update') }}
+		</button>
+
+   
+    {{ form_end(form) }}
+ {#   
+<script>
+		// Fonction de validation du formulaire
+function validateForm() {
+
+
+
+let nom = document.getElementById('captionInput').value.trim();
+let nomError = document.getElementById('captionError');
+let image = document.getElementById('fileNameInput').value.trim();
+let imageError = document.getElementById('imageError');
+let utilisateur = document.getElementById('utilisateur').value;
+let utilisateurError = document.getElementById('utilisateurError');
+// Expression régulière pour valider que le champ ne contient que des lettres et des espaces
+let letterOnlyRegex = /^[A-Za-z\s]+$/;
+
+
+if (nom === '') {
+nomError.textContent = 'Description is required';
+return false;
+} else if (! letterOnlyRegex.test(nom)) {
+nomError.textContent = 'Description doit contenir uniquement des lettres';
+return false;
+} else {
+nomError.textContent = '';
+}
+
+
+if (image === '') {
+imageError.textContent = 'Image is required';
+return false;
+} else {
+imageError.textContent = '';
+}
+
+if (utilisateur === '') {
+utilisateurError.textContent = 'Utilisateur is required';
+return false;
+} else {
+utilisateurError.textContent = '';
+}
+
+
+// Si toutes les validations passent, retourne true pour soumettre le formulaire
+return true;
+}
+
+// Attachez l'événement de soumission du formulaire à la fonction de validation
+document.getElementById('Form').addEventListener('submit', function (event) {
+if (! validateForm()) { // Empêche la soumission du formulaire si la validation échoue
+event.preventDefault();
+}
+});
+	</script>
+
+#}
+<style>
+	.error-message {
+    color: red;
+}
+</style>
+
+
+{% endblock %}

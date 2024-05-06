@@ -6,6 +6,9 @@ use App\Repository\CommentaireRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+
+use Symfony\Component\Validator\Constraints as Assert;
+
 #[ORM\Entity(repositoryClass: CommentaireRepository::class)]
 class Commentaire
 {
@@ -14,21 +17,26 @@ class Commentaire
     #[ORM\Column(name: "id_commentaire", type: "integer")]
     private ?int $id_commentaire = null;
 
-    #[ORM\ManyToOne(targetEntity: "Post")]
-    #[ORM\JoinColumn(name: "id_publiclation", nullable: false, referencedColumnName:"id_post")]
+    #[Assert\NotNull(message: "Le champ post ne peut pas être vide.")]
+    #[ORM\ManyToOne(targetEntity: "Post", cascade: ["persist"])]
+    #[ORM\JoinColumn(name: "id_publication", nullable: false, referencedColumnName: "id_post")]
     private ?Post $post;
 
+    #[Assert\NotNull(message: "Le champ utilisateur ne peut pas être vide.")]
     #[ORM\ManyToOne(targetEntity: "Utilisateur")]
-    #[ORM\JoinColumn(name: "id_utilisateur", nullable: false, referencedColumnName:"id_utilisateur")]
+    #[ORM\JoinColumn(name: "id_utilisateur", nullable: false, referencedColumnName: "id_utilisateur")]
     private ?Utilisateur $utilisateur;
 
+    
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le champ description_co ne peut pas être vide.")]
     private ?string $description_co = null;
 
+    
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\NotNull(message: "Le champ date_co ne peut pas être vide.")]
     private ?\DateTimeInterface $date_co = null;
-
-    public function getIdCommentaire(): ?int
+public function getIdCommentaire(): ?int
     {
         return $this->id_commentaire;
     }
