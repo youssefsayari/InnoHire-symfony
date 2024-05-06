@@ -19,6 +19,12 @@ use App\Entity\Etablissement;
 
 
 
+
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
+
+
+
 /*start stripe*/
 use Stripe\Checkout\Session;
 use Stripe\Product;
@@ -35,6 +41,23 @@ class WalletController extends AbstractController
             'wallets' => $walletRepository->findAll(),
         ]);
     }
+
+
+
+
+
+    private $session;
+    public $idUtilisateurConnecte;
+
+    public function __construct(SessionInterface $session)
+    {
+        $this->session = $session;
+        $this->idUtilisateurConnecte = $this->session->get('id_utilisateur');
+    }
+
+
+
+
     /*start stripe */
     
     #[Route('/recharger/{id}', name: 'app_wallet_recharger', methods: ['GET'])]

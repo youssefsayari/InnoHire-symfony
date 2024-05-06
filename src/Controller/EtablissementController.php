@@ -16,6 +16,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
+
+
 use TCPDF;
 
 
@@ -43,7 +47,7 @@ class EtablissementController extends AbstractController
         ]);
     }
 
-    #[Route('/generate-pdf', name: 'generate_pdf')]
+    #[Route('/generateEtab_pdf', name: 'generateEtab_pdf')]
     
         public function generatePdf(): Response
         {
@@ -111,7 +115,16 @@ public function MapFront(EtablissementRepository $etablissementRepository,Entity
     ]);
 }
 
-public $idUtilisateurConnecte = 2;//change iciiiiiiiiiiiiiiiiiiiiiiiii
+
+private $session;
+    public $idUtilisateurConnecte;
+
+    public function __construct(SessionInterface $session)
+    {
+        $this->session = $session;
+        $this->idUtilisateurConnecte = $this->session->get('id_utilisateur');
+    }
+
 
         
     #[Route('/front', name: 'app_etablissement_front', methods: ['GET'])]

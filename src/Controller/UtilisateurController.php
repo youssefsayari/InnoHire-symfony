@@ -137,50 +137,54 @@ class UtilisateurController extends AbstractController
     }
 
     
-
-#[Route('/login', name: 'login', methods: ['GET', 'POST'])]
-public function login(Request $request, UtilisateurRepository $userRepository, SessionInterface $session): Response
-{
-    // Check if the request is a POST to handle form submission
-    if ($request->isMethod('POST')) {
-        $cin = $request->request->get('cin');
-        $mdp = $request->request->get('password');
-        $rememberMe = $request->request->get('remember_me');
-
-        if (empty($cin)) {
-            $error = 'CIN is required.';
-            return $this->render('utilisateur/login.html.twig', ['error' => $error]);
+    #[Route('/login', name: 'login', methods: ['GET', 'POST'])]
+    public function login(Request $request, UtilisateurRepository $userRepository, SessionInterface $session): Response
+    {
+        // Check if the request is a POST to handle form submission
+        if ($request->isMethod('POST')) {
+            $cin = $request->request->get('cin');
+            $mdp = $request->request->get('password');
+            $rememberMe = $request->request->get('remember_me');
+    
+            if (empty($cin)) {
+                $error = 'CIN is required.';
+                return $this->render('utilisateur/login.html.twig', ['error' => $error]);
+            }
+    
+            // Find the user by credentials using the repository method
+            $user = $userRepository->findUserByCredentials($cin, $mdp);
+    
+            if ($user) {
+                $session->set('id_utilisateur', $user->getIdUtilisateur());
+                $session->set('cin', $user->getCin());
+                $session->set('nom', $user->getNom());
+                $session->set('prenom', $user->getPrenom());
+                $session->set('adresse', $user->getAdresse());
+                $session->set('role', $user->getRole());
+    
+                if ($rememberMe) {
+                    $session->set('last_cin', $cin);
+                    $session->set('last_password', $mdp);
+                }
+    
+                // Redirect based on user's role
+                if ($user->getRole() == 0) {
+                    return $this->redirectToRoute('app_utilisateur_index');
+                } elseif ($user->getRole() == 1) {
+                    return $this->redirectToRoute('app_etablissement_front');
+                } elseif ($user->getRole() == 2) {
+                    return $this->redirectToRoute('app_etablissement_front');
+                }
+    
+            } else {
+                $error = 'Invalid credentials. Please try again.';
+                return $this->render('utilisateur/login.html.twig', ['error' => $error]);
+            }
         }
-
-        // Find the user by credentials using the repository method
-        $user = $userRepository->findUserByCredentials($cin, $mdp);
-
-        if ($user) {
-            $session->set('id_utilisateur', $user->getIdUtilisateur());
-            $session->set('cin',$user->getCin());
-            $session->set('nom', $user->getNom());
-            $session->set('prenom', $user->getPrenom());
-            $session->set('adresse',$user->getAdresse());
-            $session->set('role',$user->getRole());
-
-            if ($rememberMe) {
-                $session->set('last_cin', $cin);
-                $session->set('last_password', $mdp);
-            }/*else {
-                // Clear last username and password if "Remember Me" is not checked
-                $session->remove('last_cin');
-                $session->remove('last_password');
-            }*/
-
-            return $this->redirectToRoute('app_utilisateur_index');
-        } else {
-            $error = 'Invalid credentials. Please try again.';
-            return $this->render('utilisateur/login.html.twig', ['error' => $error]);
-        }
+    
+        return $this->render('utilisateur/login.html.twig');
     }
-
-    return $this->render('utilisateur/login.html.twig');
-}
+    
 
 
 #[Route('/forgot_password', name: 'forgot_password')]
