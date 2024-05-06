@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>InnoHire Login</title>
+    <!-- Link to your CSS files here -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #632DE9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: white;
+            border-radius: 30px;
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+        .login-section {
+            padding: 50px;
+            flex-grow: 1;
+        }
+        .welcome-text {
+            color: #5955b3;
+            font-weight: bold;
+            font-size: 35px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .input-field {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+        .sign-in-button {
+            width: 100%;
+            padding: 15px;
+            margin: 20px 0;
+            background-color: #5955b3;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        /* Additional styling goes here */
+        .welcome-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: -1;
+        }
+        .right-content {
+            flex-grow: 1;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding-right: 50px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img class="welcome-image" src="../../img/382876686_2550356941793712_7809494747563560197_n.gif" alt="Welcome Image">
+        <div class="login-section">
+            <div class="welcome-text">Welcome Back</div>
+            <form action="/utilisateur/login" method="post">
+               <input type="text" class="input-field" name="cin" placeholder="Cin" value="{{ app.session.get('last_cin') }}" required>
+<input type="password" class="input-field" name="password" placeholder="Password" value="{{ app.session.get('last_password') }}" required>
+<label><input type="checkbox" id="remember-me" name="remember_me"> Remember Me</label>
+
+                <button type="submit" class="sign-in-button">Sign In</button>
+            </form>
+            <div>
+                <a href="/utilisateur/forgot_password">Forget Password?</a>
+            </div>
+            <div>
+                Don't have an account? <a href="/utilisateur/register">Register Now!!</a>
+            </div>
+        </div>
+        <div class="right-content">
+            <!-- Add your content here -->
+        </div>
+    </div>
+    <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    var rememberMeCheckbox = document.getElementById('remember-me');
+    var lastCin = '{{ app.session.get('last_cin') }}'; 
+    var lastmdp = '{{ app.session.get('last_password') }}';
+
+    var cinInput = document.querySelector('input[name="cin"]');
+    var mdpInput = document.querySelector('input[name="password"]');
+    
+    // Check if "Remember Me" checkbox is checked and last username and password exist
+    if (rememberMeCheckbox.checked && lastCin && lastmdp) {
+        cinInput.value = lastCin; 
+        mdpInput.value = lastmdp; 
+
+        
+    }
+});
+</script>
+
+</body>
+</html>

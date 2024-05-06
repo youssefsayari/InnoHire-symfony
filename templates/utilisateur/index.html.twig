@@ -1,0 +1,204 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Utilisateur List{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Add your custom CSS styles here */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+        .table th,
+        .table td {
+            padding: 10px; /* Increase padding */
+            border-bottom: 1px solid #ddd;
+            text-align: left; /* Align text to the left */
+        }
+        .table th {
+            background-color: #800080; /* Dark purple background */
+            color: #fff; /* White text color */
+            font-weight: bold;
+        }
+        .table tr:nth-child(even) {
+            background-color: #f5e8ff; /* Light purple background for even rows */
+        }
+        .table tr:hover {
+            background-color: #d8a8ff; /* Lighter purple background on hover */
+        }
+        .table td.actions {
+            text-align: center; /* Align actions to the center */
+        }
+        .btn-purple {
+            background-color: #a95fcf; /* Light purple button background */
+            color: #fff; /* White text color */
+            padding: 8px 16px; /* Increase padding */
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .btn-purple:hover {
+            background-color: #934ebf; /* Darker purple on hover */
+        }
+        /* Custom style for logout button */
+        .btn-logout {
+            background-color: #ff0000; /* Red background */
+            color: #fff; /* White text color */
+            padding: 8px 40px; /* Adjust padding */
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px; /* Add top margin for spacing */
+            font-size: 14px; /* Adjust font size */
+            transition: background-color 0.3s;
+        }
+        .btn-logout:hover {
+            background-color: #cc0000; /* Darker red on hover */
+        }
+        /* Custom style for My Profile button */
+        .btn-my-profile {
+            position: fixed; /* Position the button fixed within the viewport */
+            top: 20px; /* Set top distance */
+            right: 20px; /* Set right distance */
+            z-index: 999; /* Ensure the button stays on top of other content */
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <h1>Welcome utilisateur : {{ app.session.get('nom') }}</h1>
+    
+    <h1>Utilisateur List</h1>
+
+    <div>
+        <form id="searchForm" action="{{ path('app_utilisateur_index', {'sort': app.request.query.get('sort', '')}) }}" method="get">
+            <input type="text" id="searchInput" name="search" placeholder="Search by Cin..." value="{{ app.request.query.get('search', '') }}">
+        </form>
+    </div>
+
+    <div>
+        <a href="{{ path('app_utilisateur_index', {'sort': 'asc'}) }}" class="btn-purple">Sort by Cin Asc</a>
+        <a href="{{ path('app_utilisateur_index', {'sort': 'desc'}) }}" class="btn-purple">Sort by Cin Desc</a>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Cin</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Adresse</th>
+                <th>Role</th>
+                <th class="actions">Actions</th> <!-- Add class for actions -->
+            </tr>
+        </thead>
+        <tbody>
+        {% for utilisateur in utilisateurs %}
+            <tr>
+                <td>{{ utilisateur.cin }}</td>
+                <td>{{ utilisateur.nom }}</td>
+                <td>{{ utilisateur.prenom }}</td>
+                <td>{{ utilisateur.adresse }}</td>
+                <td>
+                    {% if utilisateur.role == 0 %}
+                        Admin
+                    {% elseif utilisateur.role == 1 %}
+                        Representant
+                    {% else %}
+                        Candidat
+                    {% endif %}
+                </td>
+                <td class="actions">
+                    <a href="{{ path('app_utilisateur_show', {'id_utilisateur': utilisateur.getIdUtilisateur()}) }}" class="btn-purple">Show</a>
+                    <a href="{{ path('app_utilisateur_edit', {'id_utilisateur': utilisateur.getIdUtilisateur()}) }}" class="btn-purple">Edit</a>
+                    <form action="{{ path('app_utilisateur_delete', {'id_utilisateur': utilisateur.getIdUtilisateur()}) }}" method="post" style="display: inline-block;">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ utilisateur.getIdUtilisateur()) }}">
+                        <button type="submit" class="btn-purple">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">No records found</td> <!-- Adjust colspan -->
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_utilisateur_new') }}" class="btn-purple">Create new</a> <!-- Add btn-purple class -->
+<!-- Add this button to trigger PDF generation -->
+<a href="{{ path('generate_pdf') }}" class="btn-purple">Generate PDF</a>
+
+
+    <a href="{{ path('login') }}" class="btn-logout">Logout</a> <!-- Logout button -->
+
+
+    <!-- Add My Profile button -->
+    <a href="{{ path('app_utilisateur_my_profile') }}" class="btn-my-profile btn-purple">My Profile</a>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+
+            searchInput.addEventListener('input', function() {
+                document.getElementById('searchForm').submit();
+            });
+        });
+    </script>
+
+
+
+
+    
+    <canvas id="myPieChart" width="400" height="400"></canvas>
+    
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var ctx = document.getElementById('myPieChart').getContext('2d');
+        var data = {
+            labels: ["Admin", "Representant", "Candidat"],
+            datasets: [{
+                data: [
+                    {{ percentages[0] ?? 0 }}, // Pourcentage d'administrateurs
+                    {{ percentages[1] ?? 0 }}, // Pourcentage de représentants
+                    {{ percentages[2] ?? 0 }}  // Pourcentage de candidats
+                ],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.5)',
+                    'rgba(54, 162, 235, 0.5)',
+                    'rgba(255, 206, 86, 0.5)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+        var options = {
+            responsive: true,
+            maintainAspectRatio: false // Pour s'assurer que la charte reste un cercle
+        };
+        var myPieChart = new Chart(ctx, {
+            type: 'pie',
+            data: data,
+            options: options
+        });
+    });
+</script>
+
+
+
+{% endblock %}

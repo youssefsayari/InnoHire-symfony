@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Utilisateur{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Add your custom CSS styles here */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+        .table th,
+        .table td {
+            padding: 10px; /* Increase padding */
+            border-bottom: 1px solid #ddd;
+            text-align: left; /* Align text to the left */
+        }
+        .table th {
+            background-color: #800080; /* Dark purple background */
+            color: #fff; /* White text color */
+            font-weight: bold;
+        }
+        .table tr:nth-child(even) {
+            background-color: #f5e8ff; /* Light purple background for even rows */
+        }
+        .table tr:hover {
+            background-color: #d8a8ff; /* Lighter purple background on hover */
+        }
+        .edit-link {
+            color: #fff; /* White text color */
+            background-color: #7b3d9e; /* Darker purple background */
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            margin-right: 10px; /* Add right margin */
+        }
+        .edit-link:hover {
+            background-color: #5a2970; /* Even darker purple on hover */
+        }
+        .btn-purple {
+            background-color: #7b3d9e; /* Darker purple background for button */
+            color: #fff; /* White text color */
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .btn-purple:hover {
+            background-color: #5a2970; /* Even darker purple on hover */
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <h1>Utilisateur</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Cin:           </th>
+                <td>{{ utilisateur.cin }}</td>
+            </tr>
+            <tr>
+                <th>Nom:           </th>
+                <td>{{ utilisateur.nom }}</td>
+            </tr>
+            <tr>
+                <th>Prenom:           </th>
+                <td>{{ utilisateur.prenom }}</td>
+            </tr>
+            <tr>
+                <th>Adresse:           </th>
+                <td>{{ utilisateur.adresse }}</td>
+            </tr>
+            <tr>
+    <th>Role:</th>
+    <td>
+        {% if utilisateur.role == 0 %}
+            Admin
+        {% elseif utilisateur.role == 1 %}
+            Representant
+        {% else %}
+            Candidat
+        {% endif %}
+    </td>
+</tr>
+
+            
+        </tbody>
+    </table>
+    <br>
+
+    <div>
+        <a href="{{ path('app_utilisateur_index') }}" class="btn-purple">Back to list</a>
+        <br>
+        </div>
+        <div>
+            <br>
+<form action="{{ path('app_utilisateur_delete', {'id_utilisateur': utilisateur.getIdUtilisateur()}) }}" method="post" style="display: inline-block;">
+        <input type="hidden" name="_method" value="DELETE">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ utilisateur.getIdUtilisateur()) }}">
+        <button type="submit" class="btn-purple">Delete</button>
+    </form>    </div>
+    <br>
+    <a href="{{ path('app_utilisateur_edit', {'id_utilisateur': utilisateur.getIdUtilisateur()}) }}" class="edit-link">Edit</a>
+
+{% endblock %}

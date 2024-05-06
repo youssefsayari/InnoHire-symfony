@@ -4,8 +4,12 @@ namespace App\Entity;
 
 use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
+#[Vich\Uploadable]
 class Utilisateur
 {
     #[ORM\Id]
@@ -34,11 +38,18 @@ class Utilisateur
     #[ORM\Column(type: "string", length: 255, nullable: true)]
     private ?string $image = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $otp = null;
+    #[Vich\UploadableField(mapping: "user_images", fileNameProperty: "image")]
+    private ?File $imageFile = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $status = null;
+    private ?int $OTP ;
+    public function getOTP()
+    {
+        return $this->OTP;
+    }
+    public function setOTP($OTP)
+    {
+        $this->OTP=$OTP;
+    }
 
     public function getIdUtilisateur(): ?int
     {
@@ -122,34 +133,20 @@ class Utilisateur
         return $this->image;
     }
 
-    public function setImage(string $image): self
+    public function setImage(?string $image): self
     {
         $this->image = $image;
 
         return $this;
     }
 
-    public function getOtp(): ?int
+    public function getImageFile(): ?File
     {
-        return $this->otp;
+        return $this->imageFile;
     }
 
-    public function setOtp(?int $otp): static
+    public function setImageFile(?File $imageFile): void
     {
-        $this->otp = $otp;
-
-        return $this;
-    }
-
-    public function getStatus(): ?int
-    {
-        return $this->status;
-    }
-
-    public function setStatus(?int $status): static
-    {
-        $this->status = $status;
-
-        return $this;
+        $this->imageFile = $imageFile;
     }
 }

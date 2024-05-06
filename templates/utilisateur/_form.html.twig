@@ -1,0 +1,75 @@
+{# utilisateur/_form.html.twig #}
+
+{{ form_start(form) }}
+    <div class="form-group">
+        {{ form_label(form.cin, 'CIN:', {'label_attr': {'class': 'form-label text-purple'}}) }}
+        {{ form_widget(form.cin, {'attr': {'class': 'form-control'}}) }}
+         {% if form_errors(form.cin) %}
+                       <div class="error-message">
+                           {{ form_errors(form.cin) }}
+                       </div>
+                   {% endif %}
+    </div>
+    <div class="form-group">
+        {{ form_label(form.nom, 'Nom:', {'label_attr': {'class': 'form-label text-purple'}}) }}
+        {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+         {% if form_errors(form.nom) %}
+                       <div class="error-message">
+                           {{ form_errors(form.nom) }}
+                       </div>
+                   {% endif %}
+    </div>
+    <div class="form-group">
+        {{ form_label(form.prenom, 'Prénom:', {'label_attr': {'class': 'form-label text-purple'}}) }}
+        {{ form_widget(form.prenom, {'attr': {'class': 'form-control'}}) }}
+         {% if form_errors(form.prenom) %}
+                       <div class="error-message">
+                           {{ form_errors(form.prenom) }}
+                       </div>
+                   {% endif %}
+    </div>
+    <div class="form-group">
+        {{ form_label(form.adresse, 'Adresse:', {'label_attr': {'class': 'form-label text-purple'}}) }}
+        {{ form_widget(form.adresse, {'attr': {'class': 'form-control'}}) }}
+         {% if form_errors(form.adresse) %}
+                       <div class="error-message">
+                           {{ form_errors(form.adresse) }}
+                       </div>
+                   {% endif %}
+    </div>
+    <div class="form-group">
+        {{ form_label(form.role, 'Role:', {'label_attr': {'class': 'form-label text-purple'}}) }}
+        {{ form_widget(form.role, {'attr': {'class': 'form-control'}}) }}
+    </div>
+<div class="form-group">
+    {{ form_label(form.mdp, 'Mot de passe:', {'label_attr': {'class': 'form-label text-purple'}}) }}
+    {{ form_widget(form.mdp, {'attr': {'class': 'form-control masked-password', 'autocomplete': 'new-password'}}) }}
+    {% if form_errors(form.mdp) %}
+        <div class="error-message">
+            {{ form_errors(form.mdp) }}
+        </div>
+    {% endif %}
+</div>
+<div class="form-group">
+    {{ form_label(form.image, 'Image:', {'label_attr': {'class': 'form-label text-purple'}}) }}
+    {{ form_widget(form.image, {'attr': {'class': 'form-control'}}) }}
+    {% if form_errors(form.image) %}
+        <div class="error-message">
+            {{ form_errors(form.image) }}
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .masked-password {
+        -webkit-text-security: disc;  /* Safari */
+        text-security: disc;          /* Other modern browsers */
+    }
+</style>
+
+
+
+
+   
+    <button type="submit" class="btn btn-purple">Submit</button>
+{{ form_end(form) }}
