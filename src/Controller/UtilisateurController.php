@@ -173,7 +173,7 @@ class UtilisateurController extends AbstractController
                 } elseif ($user->getRole() == 1) {
                     return $this->redirectToRoute('app_etablissement_front');
                 } elseif ($user->getRole() == 2) {
-                    return $this->redirectToRoute('app_etablissement_front');
+                    return $this->redirectToRoute('app_post_front');
                 }
     
             } else {

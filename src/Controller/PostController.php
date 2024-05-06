@@ -14,6 +14,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
+
 #[Route('/post')]
 class PostController extends AbstractController
 {
@@ -24,6 +27,17 @@ class PostController extends AbstractController
             'posts' => $postRepository->findAll(),
         ]);
     }
+
+
+    private $session;
+    public $idUtilisateurConnecte;
+
+    public function __construct(SessionInterface $session)
+    {
+        $this->session = $session;
+        $this->idUtilisateurConnecte = $this->session->get('id_utilisateur');
+    }
+
 
     #[Route('/front', name: 'app_post_front', methods: ['GET'])]
     public function front(PostRepository $postRepository, CommentaireRepository $commentaireRepository, UtilisateurLikeRepository $utilisateurLikeRepository): Response
@@ -110,7 +124,6 @@ class PostController extends AbstractController
         ]);
     }
      //#FRONT AJOUTER#}
-     public $idUtilisateurConnecte = 2;//change iciiiiiiiiiiiiiiiiiiiiiiiii
     #[Route('/newFront', name: 'app_post_newFront', methods: ['GET', 'POST'])]
     public function newFront(Request $request, EntityManagerInterface $entityManager,UtilisateurRepository $userRepository): Response
     {

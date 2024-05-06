@@ -25,6 +25,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 
 
+
 /*start stripe*/
 use Stripe\Checkout\Session;
 use Stripe\Product;
@@ -56,8 +57,7 @@ class WalletController extends AbstractController
     }
 
 
-
-
+   
     /*start stripe */
     
     #[Route('/recharger/{id}', name: 'app_wallet_recharger', methods: ['GET'])]

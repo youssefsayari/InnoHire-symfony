@@ -17,6 +17,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 use App\Service\SmsGenerator;
 
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
+
 #[Route('/commentaire')]
 class CommentaireController extends AbstractController
 {
@@ -27,6 +30,8 @@ class CommentaireController extends AbstractController
             'commentaires' => $commentaireRepository->findAll(),
         ]);
     }
+
+   
 
    
 
@@ -57,15 +62,21 @@ class CommentaireController extends AbstractController
         ]);
     }
     
+    private $session;
+
+    public function __construct(SessionInterface $session)
+    {
+        $this->session = $session;
+    }
     
     #[Route('/{id_post}/newFront', name: 'app_commentaire_newFront', methods: ['GET', 'POST'])]
     public function newFront(Request $request, EntityManagerInterface $entityManager,Post $post,UtilisateurRepository $userRepository,SmsGenerator $smsGenerator): Response
     {
          // Créez une instance du PostController pour accéder à la propriété $idUtilisateurConnecte
-         $postController = new PostController();
+        
 
          // Accédez à la propriété $idUtilisateurConnecte
-         $idUtilisateurConnecte = $postController->idUtilisateurConnecte;
+        $idUtilisateurConnecte = $this->session->get('id_utilisateur'); // Retrieve idUtilisateurConnecte from session
         
         $user = $userRepository->find($idUtilisateurConnecte);
         

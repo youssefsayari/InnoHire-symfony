@@ -8,6 +8,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
+
 class SmsController extends AbstractController
 {
    
@@ -17,6 +20,15 @@ class SmsController extends AbstractController
     {
         return $this->render('sms/index.html.twig',['smsSent'=>false]);
     }
+    private $session;
+    public $idUtilisateurConnecte;
+
+    public function __construct(SessionInterface $session)
+    {
+        $this->session = $session;
+        $this->idUtilisateurConnecte = $this->session->get('id_utilisateur');
+    }
+
 
     //Gestion de l'envoie du sms
     #[Route('/sendSms', name: 'send_sms', methods:'POST')]
