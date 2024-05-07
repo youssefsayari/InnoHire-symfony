@@ -24,6 +24,8 @@ use Twig\Extension\AbstractExtension;
 
 use App\Form\QuizType;
 use App\Repository\QuizRepository;
+
+use App\Repository\EtablissementRepository;
 use App\Repository\QuizUtilisateurRepository;
 
 use App\Repository\QuestionRepository;
@@ -84,33 +86,55 @@ class QuizController extends AbstractController
 
    
     #[Route('/quizAchete', name: 'app_quiz_achete')]
-public function quizAchete(WalletQuizRepository $walletQuizRepository, QuizRepository $quizRepository, QuizUtilisateurRepository $quizUtilisateurRepository, SessionInterface $session): Response
-{
-    $walletId = 97;
-    $walletQuizzes = $walletQuizRepository->findBy(['id_wallet' => $walletId]);
+    public function quizAchete(Request $request, WalletQuizRepository $walletQuizRepository, QuizRepository $quizRepository, QuizUtilisateurRepository $quizUtilisateurRepository, EtablissementRepository $etablissementRepository, WalletRepository $walletRepository, SessionInterface $session): Response
+    {
+        // Récupérer le code de l'établissement saisi par l'utilisateur depuis la requête HTTP
+        $codeEtablissement = $request->query->get('code_etablissement');
 
-    $quizzes = [];
-    foreach ($walletQuizzes as $walletQuiz) {
-        // Récupérer l'objet Quiz associé à chaque WalletQuiz
-        $quiz = $walletQuiz->getQuiz($quizRepository);
-        if ($quiz) {
-            $quizzes[] = $quiz;
-        }
+        // Si le code de l'établissement est fourni, récupérer l'ID de l'établissement associé
+        if ($codeEtablissement) {
+            $idEtablissement = $etablissementRepository->getIDetablissementByCodeEtablissement($codeEtablissement);
+
+            // Si l'ID de l'établissement est trouvé, récupérer l'ID du portefeuille associé
+            if ($idEtablissement) {
+                $walletId = $walletRepository->getIDwalletbyIDEtablissement($idEtablissement);
+
+                // Récupérer les quiz associés au portefeuille
+                $walletQuizzes = $walletQuizRepository->findBy(['id_wallet' => $walletId]);
+
+                $quizzes = [];
+                foreach ($walletQuizzes as $walletQuiz) {
+                    // Récupérer l'objet Quiz associé à chaque WalletQuiz
+                    $quiz = $walletQuiz->getQuiz($quizRepository);
+                    if ($quiz) {
+                        $quizzes[] = $quiz;
+                    }
+                }
+            } else {
+                // Si aucun établissement correspondant n'est trouvé, afficher un message d'erreur
+                $message = "Aucun établissement trouvé pour le code saisi.";
+                $session->set('message', $message);
+                return $this->redirectToRoute('app_quiz_achete');
+            }
+        } 
+       
+
+        // Récupérer le message de la variable de session
+        $message = $session->get('message');
+        // Effacer le message de la variable de session pour qu'il ne s'affiche pas à nouveau lors du rechargement de la page
+        $session->remove('message');
+        
+        
+
+
+        return $this->render('quiz/quizAchete.html.twig', [
+            'quizzes' => $quizzes ?? [],
+            'walletQuizzes' => $walletQuizzes ?? [],
+            'quizRepository' => $quizRepository,
+            'quizUtilisateurRepository' => $quizUtilisateurRepository,
+            'message' => $message, // Passer le message à la vue
+        ]);
     }
-
-    // Récupérer le message de la variable de session
-    $message = $session->get('message');
-    // Effacer le message de la variable de session pour qu'il ne s'affiche pas à nouveau lors du rechargement de la page
-    $session->remove('message');
-
-    return $this->render('quiz/quizAchete.html.twig', [
-        'quizzes' => $quizzes,
-        'walletQuizzes' => $walletQuizzes,
-        'quizRepository' => $quizRepository,
-        'quizUtilisateurRepository' => $quizUtilisateurRepository,
-        'message' => $message, // Passer le message à la vue
-    ]);
-}
 
 #[Route('/quiz/passer/{id}', name: 'app_passer_quiz', methods: ['GET', 'POST'])]
 public function passerQuiz(Quiz $quiz, QuestionRepository $questionRepository, Request $request, EntityManagerInterface $entityManager, QuizUtilisateurRepository $quizUtilisateurRepository, SessionInterface $session): Response
@@ -203,45 +227,51 @@ public function passerQuiz(Quiz $quiz, QuestionRepository $questionRepository, R
         'quizUtilisateur' => $quizUtilisateur,
     ]);
 }
-    private function genererPdf(Quiz $quiz, array $questions, int $score, string $appreciation): string
-    {
-        // Créer le contenu HTML du PDF
-        $htmlContent = '<h1>Récapitulatif du Quiz</h1>';
-        $htmlContent .= '<p>Score : ' . $score . '</p>';
-        $htmlContent .= '<p>Appréciation : ' . $appreciation . '</p>';
-        $htmlContent .= '<h2>Questions et Réponses Correctes</h2>';
-        foreach ($questions as $question) {
-            // Afficher la question
-            $htmlContent .= "<li>{$question->getQuestion()}</li>";
-        
-            // Afficher les choix (qui est une chaîne de caractères)
-            $htmlContent .= "<ul>";
-            // Séparer les choix par une virgule
-            $choixArray = explode(',', $question->getChoix());
-            foreach ($choixArray as $choix) {
-                $htmlContent .= "<li>{$choix}</li>";
-            }
-            $htmlContent .= "</ul>";
-        
-            // Afficher la réponse correcte
-            $htmlContent .= "<p>Réponse correcte : {$question->getReponseCorrecte()}</p>";
+private function genererPdf(Quiz $quiz, array $questions, int $score, string $appreciation): string
+{
+    // Créer le contenu HTML du PDF avec les styles CSS
+    $htmlContent = '<style>';
+    $htmlContent .= 'h1 { color: #333; }';
+    $htmlContent .= 'p { font-size: 16px; }';
+    $htmlContent .= 'ul { list-style-type: none; }';
+    $htmlContent .= 'li { margin-bottom: 5px; }';
+    $htmlContent .= '</style>';
+
+    $htmlContent .= '<h1>Récapitulatif du Quiz</h1>';
+    $htmlContent .= '<p>Score : ' . $score . '</p>';
+    $htmlContent .= '<p>Appréciation : ' . $appreciation . '</p>';
+    $htmlContent .= '<h2>Questions et Réponses Correctes</h2>';
+    foreach ($questions as $question) {
+        // Afficher la question
+        $htmlContent .= "<li>{$question->getQuestion()}</li>";
+
+        // Afficher les choix (qui est une chaîne de caractères)
+        $htmlContent .= "<ul>";
+        // Séparer les choix par une virgule
+        $choixArray = explode(',', $question->getChoix());
+        foreach ($choixArray as $choix) {
+            $htmlContent .= "<li>{$choix}</li>";
         }
-    
-        // Créer une instance de Dompdf
-        $options = new Options();
-        $options->set('isHtml5ParserEnabled', true);
-        $dompdf = new Dompdf($options);
-    
-        // Charger le contenu HTML dans Dompdf
-        $dompdf->loadHtml($htmlContent);
-    
-        // Rendre le PDF
-        $dompdf->render();
-    
-        // Retourner le contenu du PDF en tant que chaîne de caractères
-        return $dompdf->output();
+        $htmlContent .= "</ul>";
+
+        // Afficher la réponse correcte
+        $htmlContent .= "<p>Réponse correcte : {$question->getReponseCorrecte()}</p>";
     }
-    
+
+    // Créer une instance de Dompdf
+    $options = new Options();
+    $options->set('isHtml5ParserEnabled', true);
+    $dompdf = new Dompdf($options);
+
+    // Charger le contenu HTML dans Dompdf
+    $dompdf->loadHtml($htmlContent);
+
+    // Rendre le PDF
+    $dompdf->render();
+
+    // Retourner le contenu du PDF en tant que chaîne de caractères
+    return $dompdf->output();
+}
     private function determinerAppreciation(int $score): string
     {
         if ($score >= 0 && $score <= 3) {
@@ -258,11 +288,6 @@ public function passerQuiz(Quiz $quiz, QuestionRepository $questionRepository, R
     }
 private function calculerScore(array $questions, array $reponses): int
 {
-    // Implémentez votre logique de calcul du score ici
-    // Comparez les réponses fournies par l'utilisateur avec les réponses correctes
-    // Incrémentez le score pour chaque réponse correcte
-
-    // Exemple de calcul de score basé sur une comparaison simple
     $score = 0;
     foreach ($questions as $question) {
         $questionId = $question->getId();

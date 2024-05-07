@@ -18,7 +18,7 @@ class Wallet
     private ?int $balance = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(name: 'id_etablissement', referencedColumnName: 'id',nullable:false)]
+    #[ORM\JoinColumn(name: 'id_etablissement', referencedColumnName: 'id_etablissement',nullable:false)]
     private ?Etablissement $id_etablissement= null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]

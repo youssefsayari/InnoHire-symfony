@@ -28,7 +28,17 @@ class WalletRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
-    
+    public function getIDwalletbyIDEtablissement(int $idEtablissement): ?int
+    {
+        $result = $this->createQueryBuilder('w')
+            ->select('w.id')
+            ->andWhere('w.id_etablissement = :id_etablissement')
+            ->setParameter('id_etablissement', $idEtablissement)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $result ? $result['id'] : null;
+    }
   
 
 //    /**
