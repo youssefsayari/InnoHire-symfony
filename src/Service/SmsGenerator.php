@@ -10,17 +10,17 @@ class SmsGenerator
     public function SendSms(string $number, string $name, string $text)
     {
         
-        $accountSid = $_ENV['twilio_account_sid'];  //Identifiant du compte twilio
-        $authToken = $_ENV['twilio_auth_token']; //Token d'authentification
-        $fromNumber = $_ENV['twilio_from_number']; // Numéro de test d'envoie sms offert par twilio
+        $accountSid = $_ENV['twilio_account_sid'];  
+        $authToken = $_ENV['twilio_auth_token'];
+        $fromNumber = $_ENV['twilio_from_number']; 
 
-        $toNumber = $number; // Le numéro de la personne qui reçoit le message
+        $toNumber = $number; 
 
         
         $message = ' '.$name . ' a envoyé le commentaire suivant : ' . $text . '. Ce commentaire a été supprimé en raison de l\'utilisation de mots inappropriés. ';
 
 
-        //Client Twilio pour la création et l'envoie du sms
+        
         $client = new Client($accountSid, $authToken);
 
         $client->messages->create(
@@ -34,6 +34,3 @@ class SmsGenerator
 
     }
 }
-
-
-

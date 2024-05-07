@@ -167,28 +167,22 @@ class CommentaireController extends AbstractController
 
 
 
-            $badWords = ['mot1', 'mot2', 'mot3']; // Ajoutez ici vos mots interdits
+            $badWords = ['mot1', 'mot2', 'mot3']; 
             $commentContent = $commentaire->getDescriptionCo();
             foreach ($badWords as $badWord) {
                 if (stripos($commentContent, $badWord) !== false) {
-                    // Le commentaire contient un mot interdit
-                    // Vous pouvez choisir ici comment vous souhaitez gérer ce cas
-                    // Par exemple, vous pouvez ignorer le commentaire ou le signaler
-                    // Ici, je vais simplement retourner un message d'erreur
-                    // Afficher l'alerte et bloquer l'exécution jusqu'à ce que l'utilisateur appuie sur OK
+                   
                      
                     
                     $name=$commentaire->getUtilisateur()->getNom();
 
                     $text=$commentaire->getDescriptionCo();
             
-                    $number_test=$_ENV['twilio_to_number'];// Numéro vérifier par twilio. Un seul numéro autorisé pour la version de test.
-            
-                    //Appel du service
+                    $number_test=$_ENV['twilio_to_number'];
                     $smsGenerator->sendSms($number_test ,$name,$text);
 
 
-                    $this->addFlash('error', ' Warning ! Consultez votre SMS pour plus information.'); //lappel teeha fel fichier twig melekher
+                    $this->addFlash('error', ' Warning ! Consultez votre SMS pour plus information.'); 
                 
 
                     return $this->redirectToRoute('app_post_front');

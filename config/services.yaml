@@ -4,8 +4,8 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-  recaptcha.site_key: "c9b444d9-2637-47f3-b62a-2ea2af679ff0"
-  recaptcha.secret_key: "c9b444d9-2637-47f3-b62a-2ea2af679ff0"
+  recaptcha.site_key: '6LeXQsgpAAAAAIINEm3PdG04bfYHXs-An9-5cH1p'
+  recaptcha.secret_key: '6LeXQsgpAAAAAIINEm3PdG04bfYHXs-An9-5cH1p'
 services:
   # default configuration for services in *this* file
   _defaults:

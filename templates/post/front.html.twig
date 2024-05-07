@@ -42,7 +42,7 @@
 								
 								
 								
-
+{#/*datepost*/#}
 <script>
         var datePublication = "{{ postAndComment.post.date ? postAndComment.post.date|date('Y-m-d H:i:s') : ''  }}";
         var datePublicationObj = new Date(datePublication);
@@ -155,10 +155,10 @@
                             </style>
                             <script>
                       window.addEventListener('DOMContentLoaded', (event) => {
-        // Récupération de tous les éléments avec la classe btn-square
+        
         const btns = document.querySelectorAll('.btn-square');
         
-        // Boucle à travers tous les éléments et ajouter la classe hover-active
+        
         btns.forEach(btn => {
             btn.classList.add('hover-active');
         });

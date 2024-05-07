@@ -46,7 +46,7 @@ class PostController extends AbstractController
             ];
         }
 
-        // Rendre le template Twig avec les données nécessaires
+        
         return $this->render('post/front.html.twig', [
             'postsAndComments' => $postsAndComments,
             'idUtilisateurConnecte' => $idUtilisateurConnecte,
@@ -59,9 +59,6 @@ class PostController extends AbstractController
         $id_post = $post->getIdPost();
         $UtilisateurLikeRepository->addUserLike($id_post, $id_utilisateur);
 
-
-
-        
         $post->setTotalReactions($post->getTotalReactions() + 1);
         $entityManager->persist($post);
         $entityManager->flush();
@@ -76,9 +73,6 @@ class PostController extends AbstractController
         $id_utilisateur = $this->idUtilisateurConnecte;
         $id_post = $post->getIdPost();
         $UtilisateurLikeRepository->removeUserLike($id_post, $id_utilisateur);
-
-
-
 
         $post->setTotalReactions($post->getTotalReactions() - 1);
         $entityManager->persist($post);
