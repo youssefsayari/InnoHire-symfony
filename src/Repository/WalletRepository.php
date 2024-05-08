@@ -42,6 +42,18 @@ class WalletRepository extends ServiceEntityRepository
         
         return intval($count) > 0; // Retourne true si le compte est supérieur à 0, sinon false
     }
+
+    public function getIDwalletbyIDEtablissement(int $idEtablissement): ?int
+    {
+        $result = $this->createQueryBuilder('w')
+            ->select('w.id')
+            ->andWhere('w.id_etablissement = :id_etablissement')
+            ->setParameter('id_etablissement', $idEtablissement)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $result ? $result['id'] : null;
+    }
     
     
     

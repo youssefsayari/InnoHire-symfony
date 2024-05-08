@@ -41,6 +41,18 @@ public function findByUserId(int $userId): array
             ->getQuery()
             ->getResult();
     }
+
+    public function getIDetablissementByCodeEtablissement(int $codeEtablissement): ?int
+    {
+        $result = $this->createQueryBuilder('e')
+            ->select('e.id_etablissement')
+            ->andWhere('e.code_etablissement = :code_etablissement')
+            ->setParameter('code_etablissement', $codeEtablissement)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $result ? $result['id_etablissement'] : null;
+    }
  
 
 
