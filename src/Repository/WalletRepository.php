@@ -23,6 +23,26 @@ class WalletRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Wallet::class);
     }
+    public function findById(int $id): ?Wallet
+    {
+        return $this->createQueryBuilder('w')
+            ->andWhere('w.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+    public function getIDwalletbyIDEtablissement(int $idEtablissement): ?int
+    {
+        $result = $this->createQueryBuilder('w')
+            ->select('w.id')
+            ->andWhere('w.id_etablissement = :id_etablissement')
+            ->setParameter('id_etablissement', $idEtablissement)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $result ? $result['id'] : null;
+    }
+  
 
     /**
      * Vérifie si l'établissement est unique dans la table Wallet.

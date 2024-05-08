@@ -1,0 +1,50 @@
+{% extends 'baseFront.html.twig' %}
+
+{% block title %}Quiz Achetés{% endblock %}
+
+{% block etablissement %}
+    <div class="container mt-5">
+        <h1>Quiz Achetés</h1>
+        <form action="{{ path('app_quiz_achete') }}" method="get">
+            <div class="form-group">
+                <label for="code_etablissement">Tapez le code de l'établissement :</label>
+                <input type="text" class="form-control" id="code_etablissement" name="code_etablissement">
+            </div>
+            <button type="submit" class="btn btn-primary">Rechercher</button>
+        </form>
+        <div class="row">
+            {% for walletQuiz in walletQuizzes %}
+                {% set quiz = walletQuiz.getQuiz(quizRepository) %}
+                <div class="col-md-6">
+                    <div class="card">
+                        <img src="{{ asset('images/' ~ quiz.getImageQuiz()) }}" class="card-img-top" alt="{{ quiz.getNomQuiz() }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ quiz.getNomQuiz() }}</h5>
+                            <p class="card-text">{{ quiz.getDescription() }}</p>
+                            {% set quizDejaPasse = false %}
+                            {% for quizUtilisateur in quizUtilisateurRepository.findAll() %}
+                                {% if quizUtilisateur.getid_quiz() == quiz.getId() and quizUtilisateur.getUtilisateurId() == 97 %}
+                                    {% set quizDejaPasse = true %}
+                                {% endif %}
+                            {% endfor %}
+                            {% if quizDejaPasse %}
+                                <button class="btn btn-primary" disabled>Passer le quiz</button>
+                            {% else %}
+                                <a href="{{ path('app_passer_quiz', {'id': quiz.getId()}) }}" class="btn btn-primary">Passer le quiz</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col">
+                    <p>Aucun quiz acheté</p>
+                </div>
+            {% endfor %}
+             {% if message %}
+                <div class="alert alert-success" role="alert">
+                    {{ message }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Question{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .table {
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .table th {
+            background-color: #6a1b9a;
+            color: #fff;
+            font-weight: bold;
+            text-transform: uppercase;
+            border: none;
+            padding: 15px;
+        }
+
+        .table td {
+            border-top: 1px solid #ddd;
+            padding: 15px;
+            background-color: #f5f5f5;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-right: 10px;
+            background-color: #6a1b9a;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #4a148c;
+        }
+
+        .btn-back {
+            background-color: #1976d2;
+        }
+
+        .btn-back:hover {
+            background-color: #1565c0;
+        }
+
+        .btn-edit {
+            background-color: #ffa000;
+        }
+
+        .btn-edit:hover {
+            background-color: #ff8f00;
+        }
+
+        .title {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #6a1b9a;
+            text-shadow: 2px 2px 4px #ccc;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="title">Question</h1>
+
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Question</th>
+                    <td>{{ question.question }}</td>
+                </tr>
+                <tr>
+                    <th>Choix</th>
+                    <td>{{ question.choix }}</td>
+                </tr>
+                <tr>
+                    <th>Réponse_correcte</th>
+                    <td>{{ question.reponseCorrecte }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="btn-container">
+            <a href="{{ path('app_question_index') }}" class="btn btn-back">back to list</a>
+            <a href="{{ path('app_question_edit', {'id': question.id}) }}" class="btn btn-edit">edit</a>
+            {{ include('question/_delete_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

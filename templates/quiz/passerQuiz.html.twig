@@ -1,0 +1,78 @@
+{% extends 'baseFront.html.twig' %}
+
+{% block title %}Passer le Quiz : {{ quiz.getNomQuiz() }}{% endblock %}
+
+{% block etablissement %}
+    <div class="container mt-5">
+        <h1>Passer le Quiz : {{ quiz.getNomQuiz() }}</h1>
+        <div id="countdown">Temps restant : <span id="timer">{{ tempsRestant }}</span> secondes</div>
+        <form id="quizForm" action="{{ path('app_passer_quiz', {'id': quiz.getId()}) }}" method="post">
+            {% for question in questions %}
+                <h3>{{ question.question }}</h3>
+                <ul>
+                    {% for choix in question.choix|split(',') %}
+                        <li>{{ choix }}</li>
+                    {% endfor %}
+                </ul>
+                <label for="reponse_{{ question.getId() }}">Votre réponse :</label>
+                <input type="text" id="reponse_{{ question.getId() }}" name="reponse_{{ question.getId() }}" required><br><br>
+            {% endfor %}
+            <button type="button" class="btn btn-primary" onclick="showPromptBeforePDFGeneration()">Envoyer</button>
+            <input type="hidden" name="tempsRestant" value="{{ tempsRestant }}">
+            {% if app.session.flashBag.has('error') %}
+                <div class="alert alert-danger" role="alert">
+                    {{ app.session.flashBag.get('error')[0] }}
+                </div>
+            {% endif %}
+        </form>
+    </div>
+
+    <script>
+        function showPromptBeforePDFGeneration() {
+            alert("Vous trouverez le bilan de votre quiz avec votre score dans le PDF 'quiz_bilan' qui va être généré.");
+            document.getElementById("quizForm").submit();
+        }
+
+        var timeLeft = {{ tempsRestant }};
+        var timerElement = document.getElementById('timer');
+        var form = document.getElementById('quizForm');
+
+        function countdown() {
+            if (timeLeft === 0) {
+                clearInterval(timer);
+                // Mettre à jour la valeur de tempsRestant dans le formulaire
+                document.querySelector('input[name="tempsRestant"]').value = 0;
+                form.submit();
+            } else {
+                timerElement.textContent = timeLeft;
+                timeLeft--;
+
+                // Afficher la notification lorsque le temps restant est égal à 10 secondes
+                if (timeLeft === 10) {
+                    showNotification("Il vous reste 10 secondes !");
+                }
+            }
+        }
+
+        var timer = setInterval(countdown, 1000);
+
+        // Fonction pour afficher une notification
+        function showNotification(message) {
+            // Vérifier si les notifications sont supportées par le navigateur
+            if (!("Notification" in window)) {
+                alert("Ce navigateur ne prend pas en charge les notifications de bureau.");
+            } else if (Notification.permission === "granted") {
+                // Si les notifications sont autorisées, afficher la notification
+                var notification = new Notification("Dépêchez-vous !", { body: message });
+            } else if (Notification.permission !== "denied") {
+                // Demander la permission à l'utilisateur s'il ne l'a pas déjà refusée
+                Notification.requestPermission().then(function(permission) {
+                    if (permission === "granted") {
+                        // Si l'utilisateur autorise les notifications, afficher la notification
+                        var notification = new Notification("Dépêchez-vous !", { body: message });
+                    }
+                });
+            }
+        }
+    </script>
+{% endblock %}

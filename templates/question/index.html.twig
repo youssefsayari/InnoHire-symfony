@@ -1,0 +1,182 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Question index{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+            .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin-bottom: 20px;
+        }
+
+        .table th,
+        .table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table th {
+            background-color: #6a1b9a;
+            color: #fff;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .btn-primary,
+        .btn-info,
+        .btn-warning {
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 16px;
+            text-transform: uppercase;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary:hover {
+            background-color: #4a148c;
+            border-color: #4a148c;
+        }
+
+        .btn-info {
+            background-color: #1976d2;
+            border-color: #1976d2;
+        }
+
+        .btn-info:hover {
+            background-color: #1565c0;
+            border-color: #1565c0;
+        }
+
+        .btn-warning {
+            background-color: #ffa000;
+            border-color: #ffa000;
+        }
+
+        .btn-warning:hover {
+            background-color: #ff8f00;
+            border-color: #ff8f00;
+        }
+
+        .actions-btns {
+            display: flex;
+            align-items: center;
+        }
+
+        .actions-btns a {
+            margin-right: 10px;
+        }
+
+        .btn-create-new {
+            background-color: #6a1b9a;
+            color: #fff;
+            border: 2px solid #6a1b9a;
+            font-size: 18px;
+            padding: 12px 24px;
+            border-radius: 50px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .btn-create-new:hover {
+            background-color: #4a148c;
+            color: #fff;
+            border-color: #4a148c;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div>
+            <a href="{{ path('app_question_index') }}" class="btn btn-primary">Tous</a>
+            <a href="{{ path('question_sort', {'sort': 'asc'}) }}" class="btn btn-primary">Tri Ascendant</a>
+            <a href="{{ path('question_sort', {'sort': 'desc'}) }}" class="btn btn-primary">Tri Descendant</a>
+            <form action="{{ path('question_search') }}" method="get" class="d-inline">
+                <input type="text" name="code_quiz" placeholder="Code Quiz">
+                <button type="submit" class="btn btn-primary">Rechercher</button>
+            </form>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Code Quiz</th>
+                        <th>Question</th>
+                        <th>Choix</th>
+                        <th>Reponse correcte</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="search_results">
+                    {% for question in questions %}
+                        <tr>
+                            <td>{{ question.idQuiz.codeQuiz }}</td>
+                            <td>{{ question.question }}</td>
+                            <td>{{ question.choix }}</td>
+                            <td>{{ question.reponseCorrecte }}</td>
+                            <td class="actions-btns">
+                                <a href="{{ path('app_question_show', {'id': question.id}) }}" class="btn btn-info btn-sm">Show</a>
+                                <a href="{{ path('app_question_edit', {'id': question.id}) }}" class="btn btn-warning btn-sm">Edit</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5">No records found</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="text-center mt-3">
+            <a href="{{ path('app_question_new') }}" class="btn btn-create-new">Create New Question</a>
+        </div>
+    </div>
+
+    <!-- Script JavaScript pour la recherche dynamique -->
+    <script>
+        // Fonction pour effectuer la recherche
+        function search() {
+            // Récupérer la valeur de recherche
+            var searchValue = document.getElementById('search_input').value;
+
+            // Effectuer une requête AJAX vers l'endpoint de recherche
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/search?code_quiz=' + searchValue, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        // Mettre à jour la partie de la page avec les nouveaux résultats de recherche
+                        document.getElementById('search_results').innerHTML = xhr.responseText;
+                    } else {
+                        console.error('Erreur lors de la requête AJAX : ' + xhr.status);
+                    }
+                }
+            };
+            xhr.send();
+        }
+
+        // Ecouter les événements de saisie dans le champ de recherche
+        document.getElementById('search_input').addEventListener('input', function() {
+            // Appeler la fonction de recherche à chaque saisie
+            search();
+        });
+    </script>
+{% endblock %}
