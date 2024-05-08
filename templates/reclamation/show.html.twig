@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reclamation
+{% endblock %}
+
+{% block body %}
+	<div class="flex items-center justify-between">
+		<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+			Claim Details
+		</h2>
+		<button onclick="window.location.href='{{ path('app_reclamation_index') }}'" class="flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+			<span>
+				<!--&LeftArrow;-->
+				Back to List</span>
+		</button>
+	</div>
+	<div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+
+		<table class="table">
+			<tbody>
+
+				<tr>
+					<th>Type</th>
+					<td>{{ reclamation.type }}</td>
+				</tr>
+				<tr>
+					<th>Titre</th>
+					<td>{{ reclamation.titre }}</td>
+				</tr>
+				<tr>
+					<th>Description</th>
+					<td>{{ reclamation.description }}</td>
+				</tr>
+				<tr>
+					<th>Date</th>
+					<td>{{ reclamation.date ? reclamation.date|date('Y-m-d H:i:s') : '' }}</td>
+				</tr>
+				<tr>
+					<th>Status</th>
+
+					{% if reclamation.status == 0 %}
+						<td>
+							untreated
+						</td>
+					{% else %}
+						<td>treated
+						</td>
+					{% endif %}
+				</tr>
+               <tr>
+                    <th>User Details </th>
+                     <td id="qr-code-cell" style="display: none;">
+                        {% if qrCodePath is defined %}
+                            <img src="{{ asset(qrCodePath) }}" alt="QR Code">
+                        {% else %}
+                            QR Code not available
+                        {% endif %}
+                    </td>
+                </tr>
+
+			</tbody>
+		</table>
+		<div id="qrcode-container"></div>
+
+		<div class="flex items-center justify-between">
+			<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"></h2>
+			<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+				<button id="show-QRcode"class="flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+					Generate QRCode
+				</button>
+
+				<a href="{{ path('download_reclamation_pdf', {'id': reclamation.id}) }}" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+					Download PDF
+				</a>
+			</div>
+
+		</div>
+	</div>
+	
+
+{#}	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+document.querySelector('#generate-qrcode-button').addEventListener('click', function () {
+const reclamationId = this.getAttribute('data-reclamation-id');
+fetch('/reclamation/' + reclamationId + '/generate-qrcode').then(response => response.blob()).then(blob => {
+const qrCodeUrl = URL.createObjectURL(blob);
+document.querySelector('#qrcode-container').innerHTML = `<img src="${qrCodeUrl}" alt="QR Code">`;
+}).catch(error => {
+console.error('Error fetching QR code:', error);
+});
+});
+});
+	</script>#}
+<script>
+document.getElementById('show-QRcode').addEventListener('click', function () {
+    var tdElement = document.getElementById('qr-code-cell');
+    tdElement.style.display = 'block'; // Show the <td> element
+});
+
+</script>
+
+{% endblock %}

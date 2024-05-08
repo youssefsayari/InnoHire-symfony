@@ -1,0 +1,71 @@
+{% extends 'baseFront.html.twig' %}
+{% block body %}
+
+	<!-- Contact Start -->
+	<div class="container-xxl py-5">
+		<div class="container py-5 px-lg-5">
+			<div class="row justify-content-center">
+
+	<div class="flex items-center justify-between">
+		<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+			Update Message
+		</h2>
+		<button onclick="window.location.href='{{ path('app_reclamation_index') }}'" class="flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+			<span>
+				<!--&LeftArrow;-->
+				Back to Chat</span>
+		</button>
+	</div>
+
+
+	{{ form_start(form , {'attr': {'class':'form-horizontal','novalidate':'novalidate', 'enctype': 'multipart/form-data'}}) }}
+	<!-- Your footer content here -->
+	<div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800" style="width: 66rem;">
+		<div class="flex items-center justify-between">
+			<div>
+				<br>
+				<input type="file" name="file" id="file" style="display: none;" onchange="updateContenu()">
+				<label for="file">
+					<img src="{{ asset('/images/up.png') }}" class="rounded-circle" style="width: 30px; height: 30px;" alt="...">
+				</label>
+			</div>
+			&nbsp;&nbsp;
+
+			{% set content_class = 'block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-textarea' %}
+			{% if form.contenu.vars.errors|length > 0 %}
+				{% set content_class = content_class ~ ' border-red-600 focus:border-red-400 focus:shadow-outline-red' %}
+			{% endif %}
+			{{ form_widget(form.contenu, {'attr': {'class': content_class, 'rows': '7', 'cols': '3', 'placeholder': 'Enter your message content here'}}) }}
+													
+													
+													                &nbsp;&nbsp;
+			<button class="flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+				<span>{{ button_label|default('Send') }}</span>
+			</button>
+		</div>
+	</div>
+	{{ form_end(form) }}
+	<script>
+		function updateContenu() {
+var fileInput = document.getElementById('file');
+var contenuInput = document.getElementById('{{ form.contenu.vars.id }}');
+var typeInput = document.getElementById('{{ form.type.vars.id }}'); // Get the hidden input field for type
+
+if (fileInput.files.length > 0) {
+var file = fileInput.files[0];
+var fileName = file.name;
+var fileType = file.type;
+
+if (fileType.startsWith('image')) { // If the selected file is an image
+contenuInput.value = fileName;
+typeInput.value = 'image'; // Set the value of the hidden type field to "image"
+} else { // If the selected file is not an image
+contenuInput.value = fileName;
+typeInput.value = 'file'; // Set the value of the hidden type field to "file"
+}
+}
+}
+	</script>
+    </div></div></div>
+
+{% endblock %}

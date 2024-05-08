@@ -1,0 +1,99 @@
+{% extends 'baseFront.html.twig' %}
+
+{% block title %}New Reclamation
+{% endblock %}
+
+{% block body %}
+
+        <!-- Contact Start -->
+        <div class="container-xxl py-5">
+            <div class="container py-5 px-lg-5">
+                <div class="row justify-content-center">
+<div class="flex items-center justify-between">
+    <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+        Make a New Claim
+    </h2>
+    <button onclick="window.location.href='{{ path('app_reclamation_indexfront') }}'"
+            class="flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+        <span><!--&LeftArrow;--> Back to List</span>
+    </button>
+</div>
+
+
+	<div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+		{{ form_start(form , {'attr': {'class':'form-horizontal','novalidate':'novalidate'}}
+		) }}
+<label class="block text-sm">
+    <span class="text-gray-700 dark:text-gray-400">Title</span>
+    {% set title_class = 'block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input' %}
+    {% if form.titre.vars.errors|length > 0 %}
+        {% set title_class = title_class ~ ' border-red-600 focus:border-red-400 focus:shadow-outline-red' %}
+    {% elseif form.titre.vars.value is not empty %}
+        {% set title_class = title_class ~ ' border-green-600 focus:border-green-400 focus:shadow-outline-green' %}
+    {% endif %}
+    {{ form_widget(form.titre, {'attr': {'class': title_class, 'placeholder': 'Title'}}) }}
+    {% if form.titre.vars.errors|length > 0 %}
+        <span class="text-xs text-red-600 dark:text-red-400">Title can't be empty</span>
+    {% elseif form.titre.vars.value is not empty %}
+        <span class="text-xs text-green-600 dark:text-green-400">Title valide</span>
+    {% endif %}
+</label>
+
+<label class="block mt-4 text-sm">
+    <span class="text-gray-700 dark:text-gray-400">Type</span>
+    {% set type_class = 'block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input' %}
+    {% if form.type.vars.errors|length > 0 %}
+        {% set type_class = type_class ~ ' border-red-600 focus:border-red-400 focus:shadow-outline-red' %}
+    {% elseif form.type.vars.value is not empty %}
+        {% set type_class = type_class ~ ' border-green-600 focus:border-green-400 focus:shadow-outline-green' %}
+    {% endif %}
+    {{ form_widget(form.type, {'attr': {'class': type_class, 'placeholder': 'Type'}}) }}
+    {% if form.type.vars.errors|length > 0 %}
+        <span class="text-xs text-red-600 dark:text-red-400">Type can't be empty</span>
+    {% elseif form.type.vars.value is not empty %}
+        <span class="text-xs text-green-600 dark:text-green-400">Type valide</span>
+    {% endif %}
+</label>
+
+<label class="block mt-4 text-sm">
+    <span class="text-gray-700 dark:text-gray-400">Description</span>
+    {% set description_class = 'block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray' %}
+    {% if form.description.vars.errors|length > 0 %}
+        {% set description_class = description_class ~ ' border-red-600 focus:border-red-400 focus:shadow-outline-red' %}
+    {% elseif form.description.vars.value is not empty %}
+        {% set description_class = description_class ~ ' border-green-600 focus:border-green-400 focus:shadow-outline-green' %}
+    {% endif %}
+    {{ form_widget(form.description, {'attr': {'class': description_class, 'rows': '7', 'placeholder': 'Enter some long form description'}}) }}
+    {% if form.description.vars.errors|length > 0 %}
+        <span class="text-xs text-red-600 dark:text-red-400">Description can't be empty</span>
+    {% elseif form.description.vars.value is not empty %}
+        <span class="text-xs text-green-600 dark:text-green-400">Description valide</span>
+    {% endif %}
+</label>
+
+
+		<div class="flex mt-6 text-sm">
+			<label class="flex items-center dark:text-gray-400">
+				<input type="checkbox" class="text-purple-600 form-checkbox focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"/>
+				<span class="ml-2">
+					Status :
+					<span class="underline">Seen / Unseen</span>
+				</span>
+			</label>
+		</div>
+	</div>
+
+
+	<button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+		{{ button_label|default(' + Add') }}
+	</button>
+	<br>
+    		</div>
+	</div>
+    		</div>
+	
+
+
+	{{ form_end(form) }}
+
+{% endblock %}

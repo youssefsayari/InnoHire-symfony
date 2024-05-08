@@ -1,0 +1,239 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reclamation index
+{% endblock %}
+
+{% block body %}
+	<div class="flex items-center justify-between">
+		<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+			Claim List
+		</h2>
+		<!-- Search input -->
+		<div class="flex justify-center flex-1 lg:mr-32">
+			<div class="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
+				<div class="absolute inset-y-0 flex items-center pl-2">
+					<svg class="w-4 h-4" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20">
+						<path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+					</svg>
+				</div>
+				<input id="searchInput" class="w-full pl-8 pr-2 text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input" type="text" placeholder="Search for a claim " aria-label="Search"/>
+			</div>
+		</div>
+
+	<!-- Button to sort by oldest date -->
+<div>
+    <button id="downButton" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-full active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" aria-label="Sort by Oldest">
+        <img src="/images/downnn.png" alt="" loading="lazy" style="width: 20px; height: 20px;"/>
+    </button>
+</div>
+&nbsp; &nbsp; 
+<!-- Button to sort by newest date -->
+<div>
+    <button id="upButton" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-full active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple" aria-label="Sort by Newest">
+        <img src="/images/up-arrow.png" alt="" loading="lazy" style="width: 20px; height: 20px;"/>
+    </button>
+</div>
+
+	</div>
+
+
+	<div class="w-full overflow-hidden rounded-lg shadow-xs">
+		<div class="w-full overflow-x-auto">
+			<table class="w-full whitespace-no-wrap">
+				<thead>
+					<tr class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
+						<th class="px-4 py-3">User</th>
+						<th class="px-4 py-3">Cin</th>
+						<th class="px-4 py-3">Title</th>
+						<th class="px-4 py-3">Date</th>
+						<th class="px-4 py-3">Status</th>
+						<th class="px-4 py-3">Actions</th>
+					</tr>
+				</thead>
+				<tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+					{% for reclamation in reclamations %}
+						<tr class="text-gray-700 dark:text-gray-400">
+							<td class="px-4 py-3">
+								<div
+									class="flex items-center text-sm">
+									<!-- Avatar with inset shadow -->
+									<div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
+										<img class="object-cover w-full h-full rounded-full" src="{{ '/images/' ~ reclamation.utilisateur.getImage() }}" alt="" loading="lazy"/>
+										<div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
+									</div>
+									<div>
+										<p class="font-semibold">{{ reclamation.utilisateur.getNom() ~ ' ' ~ reclamation.utilisateur.getPrenom() }}</p>
+
+										<p class="text-xs text-gray-600 dark:text-gray-400">
+											{{ reclamation.utilisateur.getAdresse() }}
+										</p>
+									</div>
+								</div>
+							</td>
+							<td class="px-4 py-3 text-sm">
+								{{ reclamation.utilisateur.getCin() }}
+							</td>
+							<td class="px-4 py-3 text-sm">
+								{{ reclamation.titre }}
+							</td>
+							<td class="px-4 py-3 text-sm">
+								{{ reclamation.date ? reclamation.date|date('Y-m-d H:i:s') : '' }}
+							</td>
+							<td class="px-4 py-3 text-xs">
+								{% if reclamation.status == 0 %}
+									<span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
+										Unseen
+									</span>
+								{% else %}
+									<span class="px-2 py-1 font-semibold leading-tight text-gray-700 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-100">
+										Seen
+									</span>
+								{% endif %}
+							</td>
+
+							<td class="px-4 py-3">
+								<div class="flex items-center space-x-4 text-sm">
+									<a href="{{ path('app_reclamation_edit', {'id': reclamation.id}) }}" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray" aria-label="Edit">
+										<svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20">
+											<path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+										</svg>
+									</a>
+									<a href="{{ path('app_reclamation_show', {'id': reclamation.id}) }}" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray" aria-label="Edit">
+										   <img src="/images/inf2.png" alt="" loading="lazy" style="width: 16px; height: 16px;"/>
+									</a>
+									{# 
+																																						<a href="{{ path('app_reclamation_show', {'id': reclamation.id}) }}" class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray" aria-label="Delete">
+																																							<img class="w-5 h-5 mr-2" src="/images/signs.png" alt="Image"/>
+																																						</a>
+																																					#}
+
+									<a href="{{ path('app_messagerie_messages', {'senderId': 1, 'reciverId': reclamation.utilisateur.getIdUtilisateur() }) }} " class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray" aria-label="Delete">
+										<img class="w-5 h-5 mr-2" src="/images/meetme2.png" alt="Image"/>
+									</a>
+									<button class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray" aria-label="delete" data-bs-toggle="modal" data-bs-target="#exampleModal{{ reclamation.id }}">
+										<svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20">
+											<path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+										</svg>
+									</button>
+								</div>
+							</td>
+						</tr>
+
+						<!-- Modal -->
+						<div class="modal fade" id="exampleModal{{ reclamation.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h1 class="modal-title fs-5" id="exampleModalLabel">Delete Warning !</h1>
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+									</div>
+									<div class="modal-body">
+										Are you sure you want to delete the claim ?
+									</div>
+									<div
+										class="modal-footer">
+										<!-- Form for deletion -->
+										<form method="post" action="{{ path('app_reclamation_delete', {'id': reclamation.id}) }}">
+											<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reclamation.id) }}">
+											<button type="submit" class="btn btn-success">Confirm</button>
+										</form>
+										<button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					{% else %}
+						<tr>
+							<td colspan="7">no records found</td>
+						</tr>
+					{% endfor %}
+
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<br>
+	<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+		<button onclick="window.location.href='{{ path('app_reclamation_new') }}'" class="flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+			<span>
+				<!--&LeftArrow;-->
+				+ New Claim</span>
+		</button>
+	</div>
+	<!-- Include JavaScript at the bottom of your Twig template -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('searchInput');
+        const rows = document.querySelectorAll('tbody tr');
+        const downButton = document.querySelector('#downButton');
+        const upButton = document.querySelector('#upButton');
+
+        // Add event listener for search input
+        searchInput.addEventListener('input', filterRows);
+
+        // Add event listener for down button
+        downButton.addEventListener('click', function () {
+            sortRows('asc');
+        });
+
+        // Add event listener for up button
+        upButton.addEventListener('click', function () {
+            sortRows('desc');
+        });
+
+        function filterRows() {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+
+            rows.forEach(function (row) {
+                const cells = row.querySelectorAll('td');
+                let found = false;
+
+                cells.forEach(function (cell) {
+                    const cellText = cell.textContent.trim().toLowerCase();
+
+                    if (cellText.includes(searchTerm)) {
+                        found = true;
+                    }
+                });
+
+                if (found) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function sortRows(order) {
+            const sortedRows = Array.from(rows).sort(function (a, b) {
+                const dateA = new Date(getDateFromRow(a));
+                const dateB = new Date(getDateFromRow(b));
+
+                if (order === 'asc') {
+                    return dateA - dateB;
+                } else {
+                    return dateB - dateA;
+                }
+            });
+
+            // Remove existing rows
+            rows.forEach(function (row) {
+                row.parentNode.removeChild(row);
+            });
+
+            // Append sorted rows
+            sortedRows.forEach(function (sortedRow) {
+                document.querySelector('tbody').appendChild(sortedRow);
+            });
+        }
+
+        function getDateFromRow(row) {
+            return row.querySelector('td:nth-child(4)').textContent.trim();
+        }
+    });
+</script>
+
+
+
+{% endblock %}

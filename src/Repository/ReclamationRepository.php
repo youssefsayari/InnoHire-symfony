@@ -21,6 +21,16 @@ class ReclamationRepository extends ServiceEntityRepository
         parent::__construct($registry, Reclamation::class);
     }
 
+    public function findByUserId(int $userId): array
+{
+    return $this->createQueryBuilder('r')
+        ->andWhere('r.utilisateur = :userId')
+        ->setParameter('userId', $userId)
+        ->getQuery()
+        ->getResult();
+}
+
+
 //    /**
 //     * @return Reclamation[] Returns an array of Reclamation objects
 //     */

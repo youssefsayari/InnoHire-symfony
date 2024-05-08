@@ -12,7 +12,7 @@ class Reclamation
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(name: "id_reclamation")]
-    private ?int $id_reclamation = null;
+    private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     private ?string $type = null;
@@ -29,17 +29,22 @@ class Reclamation
     #[ORM\Column]
     private ?int $status = null;
 
-    #[ORM\ManyToOne(targetEntity:"Post")]
-    #[ORM\JoinColumn(name:"id_post",nullable: false, referencedColumnName:"id_post")]
-    private ?Post $post;
+    #[ORM\ManyToOne(targetEntity: Post::class)]
+    #[ORM\JoinColumn(name: "id_post", referencedColumnName: "id_post", nullable: false)]
+    private ?Post $id_post = null;
+    
+   /* #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
+    #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
+    private ?Utilisateur $id_utilisateur = null;*/
 
-    #[ORM\ManyToOne(targetEntity:"Utilisateur")]
-    #[ORM\JoinColumn(name:"id_utilisateur",nullable: false, referencedColumnName:"id_utilisateur")]
-    private ?Utilisateur $utilisateur;
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
+#[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
+private ?Utilisateur $utilisateur = null;
+    
 
     public function getId(): ?int
     {
-        return $this->id_reclamation;
+        return $this->id;
     }
 
     public function getType(): ?string
@@ -47,7 +52,7 @@ class Reclamation
         return $this->type;
     }
 
-    public function setType(string $type): static
+    public function setType(?string $type): static
     {
         $this->type = $type;
 
@@ -59,7 +64,7 @@ class Reclamation
         return $this->titre;
     }
 
-    public function setTitre(string $titre): static
+    public function setTitre(?string $titre): static
     {
         $this->titre = $titre;
 
@@ -71,7 +76,7 @@ class Reclamation
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
 
@@ -102,27 +107,39 @@ class Reclamation
         return $this;
     }
 
-    public function getPost(): ?Post
+    public function getIdPost(): ?Post
     {
-        return $this->post;
+        return $this->id_post;
     }
 
-    public function setPost(?Post $post): static
+    public function setIdPost(?Post $id_post): static
     {
-        $this->post = $post;
+        $this->id_post = $id_post;
 
         return $this;
     }
+
+   /* public function getIdUtilisateur(): ?Utilisateur
+    {
+        return $this->id_utilisateur;
+    }*/
+
+   /* public function setIdUtilisateur(?Utilisateur $id_utilisateur): static
+    {
+        $this->id_utilisateur = $id_utilisateur;
+
+        return $this;
+    }*/
 
     public function getUtilisateur(): ?Utilisateur
-    {
-        return $this->utilisateur;
-    }
+{
+    return $this->utilisateur;
+}
 
-    public function setUtilisateur(?Utilisateur $utilisateur): static
-    {
-        $this->utilisateur = $utilisateur;
+public function setUtilisateur(?Utilisateur $utilisateur): self
+{
+    $this->utilisateur = $utilisateur;
 
-        return $this;
-    }
+    return $this;
+}
 }

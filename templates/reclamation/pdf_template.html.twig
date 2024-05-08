@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Invoice V1</title>
+
+		<style>
+			body,
+			html {
+				font-family: 'Poppins', sans-serif;
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+			.container {
+				width: 80%;
+				margin: auto;
+				overflow: hidden;
+			}
+			.text-center {
+				text-align: center;
+			}
+			.border-top {
+				border-top: 1px solid #eee;
+			}
+			.border-bottom {
+				border-bottom: 1px solid #eee;
+			}
+			.my-5 {
+				margin-top: 3rem;
+				margin-bottom: 3rem;
+			}
+			.py-5 {
+				padding-top: 3rem;
+				padding-bottom: 3rem;
+			}
+			.d-md-flex {
+				display: flex;
+				justify-content: space-between;
+			}
+			.mt-5 {
+				margin-top: 3rem;
+			}
+			.text-primary {
+				color: #007bff;
+			}
+			.fw-bold {
+				font-weight: bold;
+			}
+			.list-unstyled {
+				list-style: none;
+				padding: 0;
+			}
+			table {
+				width: 100%;
+				border-collapse: collapse;
+				margin-bottom: 20px;
+			}
+			th,
+			td {
+				border: 1px solid #ccc;
+				padding: 8px;
+				text-align: left;
+			}
+			th {
+				background-color: #f2f2f2;
+			}
+			.bg-primary-subtle {
+				background-color: #f0f8ff;
+			}
+			.text-muted {
+				color: #6c757d;
+			}
+			.fw-semibold {
+				font-weight: 600;
+			}
+			.text-decoration-none {
+				text-decoration: none;
+			}
+			.text-black-50 {
+				color: rgba(0, 0, 0, 0.5);
+			}
+			.copyright {
+				text-align: left;
+				padding: 1rem;
+			}
+			.text-md-end {
+				text-align: right;
+			}
+		</style>
+	</head>
+	<body></body>
+	<body>
+
+		<section id="invoice">
+			<div class="container my-4 py-4">
+				<div class="text-center">
+					<img src="{{ absolute_url(asset('images/inner.png')) }}" alt="" width="60" height="60">
+					<h3 class="display-5 fw-bold">InnoHire
+					</h3>
+				</div>
+				<div class="text-center border-top border-bottom my-4 py-4">
+					<h3 class="display-5 fw-bold">Claim Details
+					</h3>
+					<p class="m-0">Invoice Date: 20 May, 2024</p>
+				</div>
+
+				<div class="flex items-center justify-between">
+					<div>
+						<p class="text-primary">Belongs To</p>
+						<h4>{{ reclamation.utilisateur.getAdresse() }}</h4>
+
+					</div>
+				</div>
+
+				<div class="d-md-flex justify-content-between"></div>
+
+				<table>
+					<th>Type</th>
+					<td>{{ reclamation.type }}</td>
+				</tr>
+				<tr>
+					<th>Titre</th>
+					<td>{{ reclamation.titre }}</td>
+				</tr>
+				<tr>
+					<th>Description</th>
+					<td>{{ reclamation.description }}</td>
+				</tr>
+				<tr>
+					<th>Date</th>
+					<td>{{ reclamation.date ? reclamation.date|date('Y-m-d H:i:s') : '' }}</td>
+				</tr>
+				<tr>
+					<th>Status</th>
+
+					{% if reclamation.status == 0 %}
+						<td>
+							untreated
+						</td>
+					{% else %}
+						<td>treated
+						</td>
+					{% endif %}
+				</tr>
+				<tr>
+					<th>Full Name
+					</th>
+					<td>{{ reclamation.utilisateur.getNom() ~ ' ' ~ reclamation.utilisateur.getPrenom() }}</td>
+				</tr>
+				<tr>
+					<th>Cin
+					</th>
+					<td>{{ reclamation.utilisateur.getCin()}}</td>
+				</tr>
+				<tr>
+					<th>Email
+					</th>
+					<td>{{ reclamation.utilisateur.getAdresse()}}</td>
+				</tr>
+				<tr>
+					<th>Role
+					</th>
+					{% if reclamation.utilisateur.getRole() == 0 %}
+						<td>Admin</td>
+					{% elseif reclamation.utilisateur.getRole() == 1 %}
+						<td>Owner</td>
+					{% else %}
+						<td>Student</td>
+					{% endif %}
+
+				</tr>
+			</table>
+
+			<div class="d-md-flex justify-content-between my-5">
+				<div>
+					<ul class="list-unstyled">
+						<li>
+							<h4 class="fw-bold my-4">Contact Us</h4>
+						</li>
+						<li>
+							<span class="fw-semibold">Phone Number:
+							</span>
+							+216 75 555 666</li>
+						<li>
+							<span class="fw-semibold">Email Adresse  :
+							</span>
+							Info@innohire.net
+						</li>
+
+					</ul>
+				</div>
+
+
+			</div>
+
+			<div id="footer-bottom">
+				<div class="container border-top">
+					<div class="row mt-3">
+						<div class="col-md-6 copyright">
+							<p>©no copyright
+								<a href="#" target="_blank" class="text-decoration-none text-black-50">2024 InnoHire Team</a>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</body>
+</html></section><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script><script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script></body></body></html>
