@@ -20,18 +20,7 @@ class EtablissementRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Etablissement::class);
     }
-     public function getIDetablissementByCodeEtablissement(int $codeEtablissement): ?int
-    {
-        $result = $this->createQueryBuilder('e')
-            ->select('e.id')
-            ->andWhere('e.code_etablissement = :code_etablissement')
-            ->setParameter('code_etablissement', $codeEtablissement)
-            ->getQuery()
-            ->getOneOrNullResult();
-
-        return $result ? $result['id'] : null;
-    }
-
+   
     public function isCodeEtablissementUnique(int $codeEtablissement, ?Etablissement $currentEtablissement = null): bool
 {
     $existingEtablissement = $this->findOneBy(['code_etablissement' => $codeEtablissement]);

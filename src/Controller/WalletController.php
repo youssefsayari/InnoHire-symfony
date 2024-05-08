@@ -221,4 +221,17 @@ class WalletController extends AbstractController
 
 
 
+    #[Route('/{id}/acheterQuiz', name: 'acheterQuiz', methods: ['GET', 'POST'])]
+    public function acheterQuiz(Request $request, Wallet $wallet, EntityManagerInterface $entityManager,WalletRepository $walletRepository,SessionInterface $session): Response
+    {
+        $session->set('id_wallet', $wallet->getId());
+
+        return $this->redirectToRoute('quiz_dispo', [], Response::HTTP_SEE_OTHER);
+    }
+
+
+
+
+   
+
 }

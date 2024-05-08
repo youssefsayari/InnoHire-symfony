@@ -26,7 +26,7 @@ class WalletRepository extends ServiceEntityRepository
     public function findById(int $id): ?Wallet
     {
         return $this->createQueryBuilder('w')
-            ->andWhere('w.id = :id')
+            ->andWhere('w.id_wallet = :id')
             ->setParameter('id', $id)
             ->getQuery()
             ->getOneOrNullResult();
@@ -34,13 +34,13 @@ class WalletRepository extends ServiceEntityRepository
     public function getIDwalletbyIDEtablissement(int $idEtablissement): ?int
     {
         $result = $this->createQueryBuilder('w')
-            ->select('w.id')
-            ->andWhere('w.id_etablissement = :id_etablissement')
+            ->select('w')
+            ->andWhere('w.etablissement = :id_etablissement')
             ->setParameter('id_etablissement', $idEtablissement)
             ->getQuery()
             ->getOneOrNullResult();
 
-        return $result ? $result['id'] : null;
+        return $result ? $result->getId() : null;
     }
   
 
@@ -63,17 +63,7 @@ class WalletRepository extends ServiceEntityRepository
         return intval($count) > 0; // Retourne true si le compte est supérieur à 0, sinon false
     }
 
-    public function getIDwalletbyIDEtablissement(int $idEtablissement): ?int
-    {
-        $result = $this->createQueryBuilder('w')
-            ->select('w.id')
-            ->andWhere('w.id_etablissement = :id_etablissement')
-            ->setParameter('id_etablissement', $idEtablissement)
-            ->getQuery()
-            ->getOneOrNullResult();
-
-        return $result ? $result['id'] : null;
-    }
+   
     
     
     

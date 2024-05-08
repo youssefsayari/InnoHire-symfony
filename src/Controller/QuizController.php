@@ -46,6 +46,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 
 
+
+
+
+
+
 class QuizController extends AbstractController
 {
    
@@ -136,10 +141,22 @@ class QuizController extends AbstractController
         ]);
     }
 
+
+    private $session;
+    public $idUtilisateurConnecte;
+
+    public function __construct(SessionInterface $session)
+    {
+        $this->session = $session;
+        $this->idUtilisateurConnecte = $this->session->get('id_utilisateur');
+        $this->idWalletConnecte = $this->session->get('id_wallet');
+    }
+
+
 #[Route('/quiz/passer/{id}', name: 'app_passer_quiz', methods: ['GET', 'POST'])]
 public function passerQuiz(Quiz $quiz, QuestionRepository $questionRepository, Request $request, EntityManagerInterface $entityManager, QuizUtilisateurRepository $quizUtilisateurRepository, SessionInterface $session): Response
 {
-    $utilisateurId = 2217;
+    $utilisateurId = $this->idUtilisateurConnecte;
     $tempsRestant = 20;
 
     // Vérifier si le formulaire a été soumis
@@ -202,7 +219,8 @@ public function passerQuiz(Quiz $quiz, QuestionRepository $questionRepository, R
         $pdfContent = $this->genererPdf($quiz, $questions, $score, $appreciation);
 
         // Enregistrer le PDF sur le bureau
-        $outputFilePath = 'C:/projet/quiz_bilan.pdf';
+        $outputFilePath = 'C:/Users/digoh/InnoHire-symfony/public/pdf-quiz/quiz_bilan.pdf';
+        
         file_put_contents($outputFilePath, $pdfContent);
 
         // Définir le message de la variable de session pour indiquer que le quiz a été passé avec succès
@@ -318,7 +336,7 @@ private function calculerScore(array $questions, array $reponses): int
     public function quizDejaAchete(Request $request, $quizId, $walletQuizRepository)
     {
         // Récupérer l'id du portefeuille associé à l'utilisateur (à remplacer par la méthode appropriée pour récupérer l'ID du portefeuille de l'utilisateur connecté)
-        $walletId = 97;
+        $walletId = $this->idWalletConnecte;
 
         // Vérifier si l'association quiz-wallet existe déjà dans la table wallet_quiz
         $existingAssociation = $walletQuizRepository->findOneBy(['id_quiz' => $quizId, 'id_wallet' => $walletId]);
@@ -336,7 +354,7 @@ public function acheterQuiz(
     WalletQuizRepository $walletQuizRepository
 ): Response {
     // Récupérer l'id du portefeuille associé à l'utilisateur (à remplacer par la méthode appropriée pour récupérer l'ID du portefeuille de l'utilisateur connecté)
-    $walletId = 97;
+    $walletId = $this->idWalletConnecte;
     
     // Récupérer le portefeuille associé à l'utilisateur
     $wallet = $walletRepository->find($walletId);
