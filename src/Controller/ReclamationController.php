@@ -26,6 +26,16 @@ use Endroid\QrCode\Builder\BuilderInterface;
 use Endroid\QrCode\Color\Color;
 
 
+
+
+
+
+
+
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
+
+
 #[Route('/reclamation')]
 class ReclamationController extends AbstractController
 {
@@ -39,11 +49,29 @@ class ReclamationController extends AbstractController
     }
 
     ///////////////////////////////////////// Front //////////////////////////////////////
+
+
+    private $session;
+    public $idUtilisateurConnecte;
+
+    public function __construct(SessionInterface $session)
+    {
+        $this->session = $session;
+        $this->idUtilisateurConnecte = $this->session->get('id_utilisateur');
+    }
+
+
+
+
+
+
+
     #[Route('/front', name: 'app_reclamation_indexfront', methods: ['GET'])]
     public function indexfront(ReclamationRepository $reclamationRepository): Response
     {
+        $idUtilisateurConnecte = $this->idUtilisateurConnecte;
         return $this->render('reclamation/indexfront.html.twig', [
-            'reclamations' => $reclamationRepository->findByUserId(3),
+            'reclamations' => $reclamationRepository->findByUserId($idUtilisateurConnecte),
         ]);
     }
     ////////////////////////////////////////////////////////////////////////////////////
@@ -51,13 +79,15 @@ class ReclamationController extends AbstractController
     #[Route('/new', name: 'app_reclamation_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+        $idUtilisateurConnecte = $this->idUtilisateurConnecte;
+
         $reclamation = new Reclamation();
         
         // Set the default value for the date field as a DateTime object
         $reclamation->setDate(new \DateTime());
     
         // Set the id_utilisateur to 1
-        $reclamation->setUtilisateur($this->getDoctrine()->getRepository(Utilisateur::class)->find(3));
+        $reclamation->setUtilisateur($this->getDoctrine()->getRepository(Utilisateur::class)->find($idUtilisateurConnecte));
         
         $form = $this->createForm(ReclamationType::class, $reclamation);
         $form->handleRequest($request);
@@ -79,13 +109,15 @@ class ReclamationController extends AbstractController
     #[Route('/newfront', name: 'app_reclamation_newfront', methods: ['GET', 'POST'])]
     public function newfront(Request $request, EntityManagerInterface $entityManager): Response
     {
+        $idUtilisateurConnecte = $this->idUtilisateurConnecte;
+
         $reclamation = new Reclamation();
         
         // Set the default value for the date field as a DateTime object
         $reclamation->setDate(new \DateTime());
     
         // Set the id_utilisateur to 1
-        $reclamation->setUtilisateur($this->getDoctrine()->getRepository(Utilisateur::class)->find(3));
+        $reclamation->setUtilisateur($this->getDoctrine()->getRepository(Utilisateur::class)->find($idUtilisateurConnecte));
         
         $form = $this->createForm(ReclamationType::class, $reclamation);
         $form->handleRequest($request);
