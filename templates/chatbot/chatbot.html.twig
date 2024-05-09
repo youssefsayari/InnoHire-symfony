@@ -1,0 +1,178 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	chatbot
+{% endblock %}
+
+{% block body %}
+
+	<div class="flex items-center justify-between">
+		<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+			How can I help you today ?
+		</h2>
+		<div class="btn-group btn-group-toggle" data-toggle="buttons">
+			<button type="button" class="btn btn-outline-dark" id="openModalBtn">What is InnoHire,how can i use it ? </button>
+		</div>
+      
+        		<div class="btn-group btn-group-toggle" data-toggle="buttons">
+			<button type="button" class="btn btn-outline-dark" >{{ "now"|date('Y-m-d H:i:s') }}</button>
+		</div>
+                		<div class="btn-group btn-group-toggle" data-toggle="buttons">
+			<button type="button" class="btn btn-outline-dark" >InnoHire Version 3.5</button>
+		</div>
+        
+		<button onclick="window.location.href='{{ path('app_reclamation_index') }}'" class="flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+			<span>
+				<!--&LeftArrow;-->
+				Back Home</span>
+		</button>
+	</div>
+
+
+	<div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800" style="width: 62rem;">
+		<div class="row align-items-center">
+			<div class="col-auto">
+				<img src="{{ asset('/images/blink.gif') }}" class="rounded-circle" style="width: 75px; height: 75px;" alt="...">
+			</div>
+			<div class="col">
+				<p class="card-text">
+					I'm ChatBot, an AI designed to assist and converse with people like you. Whether you need information, want to chat, or have questions, I'm here to help!</p>
+			</div>
+		</div>
+	</div>
+
+
+	<div id="conversation" class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800" style="width: 62rem;"></div>
+
+	<br><br><br><br><br>
+
+	{% block footer %}
+		<!-- Textarea and Send button -->
+		<footer class="fixed bottom-0 w-full bg-gray-200 p-4">
+			<div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800" style="width: 59rem;">
+				<div class="flex items-center justify-between">
+					<textarea id="userMessage" class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray" rows="2" cols="3" placeholder="Enter your message here"></textarea>
+					<button id="sendMessageBtn" class="flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+						<span>Send</span>
+					</button>
+				</div>
+			</div>
+		</footer>
+	{% endblock %}
+
+
+	<!-- JavaScript for handling user messages -->
+	<script>
+		$(document).ready(function () { // Open modal when button is clicked
+        
+$('#openModalBtn').click(function () { // Create modal HTML dynamically
+var modalHTML = `
+                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">InnoHire</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                       <p class="card-text">InnoHire is a comprehensive web desktop application designed to streamline the recruitment process for individuals seeking employment opportunities. Tailored to cater to three distinct user roles, namely the administrative team, company owners, and job seekers, InnoHire offers a seamless platform for efficient recruitment. </p><br>
+                                        <p class="card-text">For developers and administrative personnel, InnoHire provides a robust suite of tools to manage job listings, applicant data, and overall recruitment processes. With intuitive controls and insightful analytics, administrators can oversee the entire recruitment lifecycle with ease. </p><br>
+                                         <p class="card-text">
+InnoHire is a comprehensive web desktop application designed to streamline the recruitment process for individuals seeking employment opportunities. Tailored to cater to three distinct user roles, namely the administrative team, company owners, and job seekers, InnoHire offers a seamless platform for efficient recruitment.
+
+For developers and administrative personnel, InnoHire provides a robust suite of tools to manage job listings, applicant data, and overall recruitment processes.</p><br>
+<p> With intuitive controls and insightful analytics, administrators can oversee the entire recruitment lifecycle with ease.
+
+Company owners benefit from a dedicated dashboard within InnoHire, empowering them to oversee their organization's hiring activities, monitor job postings, and engage with potential candidates directly. This streamlined approach enhances collaboration and decision-making for hiring managers. </p><br>
+                                          <p class="card-text">Job seekers, the primary users of InnoHire, enjoy a user-friendly interface that enables them to explore job listings, submit applications, and interact with hiring companies. In addition to browsing available positions, users can post inquiries, engage with community discussions, and submit claims for enhanced support. </p><br>
+                                           <p class="card-text">With its multifaceted functionality and user-centric design, InnoHire revolutionizes the recruitment process, offering a unified platform where job seekers and employers can connect, collaborate, and thrive in their respective endeavors. </p><br>
+                          
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+// Append modal HTML to body
+$('body').append(modalHTML);
+
+// Show modal
+$('#exampleModal').modal('show');
+// Close modal when "Close" button is clicked
+$(document).on('click', '.modal-footer .btn-secondary', function () {
+$('#exampleModal').modal('hide'); // Hide the modal
+$('#exampleModal').remove(); // Remove the modal from DOM
+});
+});
+
+$('#sendMessageBtn').click(function () {
+var userMessage = $('#userMessage').val();
+
+if (! userMessage.trim()) {
+alert('Please enter a message');
+return;
+}
+
+$('#userMessage').val('');
+
+var userMessageHTML = `
+                <div class="px-2 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800" style="width: 59rem;">
+                    <div class="flex items-center justify-between">
+                        <div class="d-grid gap-2 d-md-block">
+                            <div class="row">
+                                <div class="col-auto">
+                                    <img src="{{ asset('/images/manh.png') }}" class="card-img-top" style="width: 45px; height: 45px;" alt="...">&nbsp;&nbsp;
+                                </div>
+                                <div class="col-auto">
+                                    <p class="card-text">${userMessage}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+$('#conversation').append(userMessageHTML);
+
+$.ajax({
+url: '/chat',
+type: 'POST',
+data: {
+message: userMessage
+},
+success: function (response) {
+var botMessageHTML = `
+                        <div class="px-2 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800" style="width: 59rem;">
+                            <div class="flex items-center justify-between">
+                                <div class="d-grid gap-2 d-md-block">
+                                    <div class="row">
+                                        <div class="col-auto">
+                                            <img src="{{ asset('/images/blink.gif') }}" class="card-img-top" style="width: 45px; height: 45px;" alt="...">&nbsp;&nbsp;
+                                        </div>
+                                        <div class="col-auto">
+                                            <p class="card-text">${response}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+$('#conversation').append(botMessageHTML);
+},
+error: function (xhr, status, error) {
+console.error(error);
+}
+});
+});
+
+
+});
+	</script>
+
+{% endblock %}
