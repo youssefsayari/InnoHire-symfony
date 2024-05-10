@@ -219,7 +219,14 @@ public function passerQuiz(Quiz $quiz, QuestionRepository $questionRepository, R
         $pdfContent = $this->genererPdf($quiz, $questions, $score, $appreciation);
 
         // Enregistrer le PDF sur le bureau
-        $outputFilePath = 'C:/Users/digoh/InnoHire-symfony/public/pdf-quiz/quiz_bilan.pdf';
+// Chemin du fichier PDF
+$outputFilePath = 'C:/Users/digoh/InnoHire-symfony/public/pdf-quiz/quiz_bilan.pdf';
+
+// Générer le code JavaScript pour ouvrir le PDF dans une nouvelle fenêtre
+$javascript = "<script>window.open('{$outputFilePath}', '_blank');</script>";
+
+// Afficher le code JavaScript pour ouvrir le PDF dans le navigateur
+echo $javascript;
         
         file_put_contents($outputFilePath, $pdfContent);
 

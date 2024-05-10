@@ -71,6 +71,7 @@ class WalletController extends AbstractController
     #[Route('/rechargerSuccess/{id}', name: 'app_wallet_rechargerSuccess', methods: ['GET'])]
     public function rechargerSuccess(Request $request,EntityManagerInterface $entityManager, WalletRepository $walletRepository,Wallet $wallet): Response
     {
+        $idUtilisateurConnecte = $this->idUtilisateurConnecte;
         $montant = $request->query->get('montant');
         
         $balance = $wallet->getBalance();
@@ -81,6 +82,7 @@ class WalletController extends AbstractController
 
         return $this->render('wallet/rechargerSuccess.html.twig', [
             'montant' => $montant,
+            'idUtilisateurConnecte'=> $idUtilisateurConnecte,
         ]);
     }
     #[Route('/rechargerCancel', name: 'app_wallet_rechargerCancel', methods: ['GET'])]

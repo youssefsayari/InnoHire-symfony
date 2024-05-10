@@ -70,6 +70,11 @@ class UtilisateurRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+    public function findUserById(int $userId): ?Utilisateur
+{
+    return $this->find($userId);
+}
+
 
 
 //    /**

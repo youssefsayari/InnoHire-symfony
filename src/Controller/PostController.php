@@ -40,9 +40,13 @@ class PostController extends AbstractController
 
 
     #[Route('/front', name: 'app_post_front', methods: ['GET'])]
-    public function front(PostRepository $postRepository, CommentaireRepository $commentaireRepository, UtilisateurLikeRepository $utilisateurLikeRepository): Response
+    public function front(PostRepository $postRepository, CommentaireRepository $commentaireRepository, UtilisateurLikeRepository $utilisateurLikeRepository, UtilisateurRepository $utilisateurRepository): Response
     {
         $idUtilisateurConnecte = $this->idUtilisateurConnecte; // Supposons que l'ID de l'utilisateur connecté est récupéré à partir du système de sécurité Symfony
+        $user = $utilisateurRepository->findUserById($idUtilisateurConnecte);
+        $roleConnecte = $user->getRole();
+
+
 
         $posts = $postRepository->findAll(); // Récupérer tous les posts
         $postsAndComments = []; // Initialiser un tableau vide pour stocker les posts et les commentaires associés
@@ -64,6 +68,7 @@ class PostController extends AbstractController
         return $this->render('post/front.html.twig', [
             'postsAndComments' => $postsAndComments,
             'idUtilisateurConnecte' => $idUtilisateurConnecte,
+            'roleConnecte' =>$roleConnecte ,
         ]);
     }
     #[Route('/{id_post}/postLike', name: 'app_post_like', methods: ['GET'])]

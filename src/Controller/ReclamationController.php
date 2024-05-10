@@ -6,6 +6,7 @@ use App\Entity\Reclamation;
 use App\Entity\Utilisateur;
 use App\Form\ReclamationType;
 use App\Repository\ReclamationRepository;
+use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -67,11 +68,15 @@ class ReclamationController extends AbstractController
 
 
     #[Route('/front', name: 'app_reclamation_indexfront', methods: ['GET'])]
-    public function indexfront(ReclamationRepository $reclamationRepository): Response
+    public function indexfront(ReclamationRepository $reclamationRepository,UtilisateurRepository $utilisateurRepository): Response
     {
+
         $idUtilisateurConnecte = $this->idUtilisateurConnecte;
+        $user = $utilisateurRepository->findUserById($idUtilisateurConnecte);
+        $roleConnecte = $user->getRole();
         return $this->render('reclamation/indexfront.html.twig', [
             'reclamations' => $reclamationRepository->findByUserId($idUtilisateurConnecte),
+            'roleConnecte'=>$roleConnecte,
         ]);
     }
     ////////////////////////////////////////////////////////////////////////////////////

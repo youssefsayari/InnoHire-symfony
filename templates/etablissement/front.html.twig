@@ -1,7 +1,26 @@
 {% extends 'baseFront.html.twig' %}
 {% block title %}Etablissement index
 {% endblock %}
+{% block navBar %} 
+<a href="{{ path('app_post_front') }}" class="nav-item nav-link ">
+								Home
 
+							</a>
+                        <a href="{{ path('app_etablissement_front') }}" class="nav-item nav-link active">
+								Etablissements
+
+							</a>
+							<a href="{{ path('app_reclamation_indexfront') }}" class="nav-item nav-link">
+								Reclamation
+
+							</a>
+							
+							<a href="{{ path('login') }}" class="nav-link" style="color: red;">
+								Logout
+
+							</a>
+
+{% endblock %}
 
 {% block etablissement %}
 	<!-- Projects Start -->

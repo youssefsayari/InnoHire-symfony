@@ -132,7 +132,7 @@ private $session;
     WalletRepository $walletRepository): Response
     {
         
-        $idUtilisateurConnecte = $this->idUtilisateurConnecte;
+        $idUtilisateurConnecte = $this->session->get('id_utilisateur');
         //$etablissements = $etablissementRepository->findAll(); // Get all establishments
         $etablissements = $etablissementRepository->findByUserId($idUtilisateurConnecte); 
 

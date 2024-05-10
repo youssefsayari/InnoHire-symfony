@@ -1,12 +1,57 @@
 {% extends 'baseFront.html.twig' %}
 {% block title %}Etablissement index
 {% endblock %}
-{% block passerQuizz %}
-<a href="{{ path('app_quiz_achete') }}" class="btn rounded-pill py-2 px-4 ms-3 d-none d-lg-block">
-							Passer Quizz
 
-						</a>
+
+
+{% block navBar %} 
+ {% if roleConnecte == 1 %}
+        <a href="{{ path('app_post_front') }}" class="nav-item nav-link active ">
+								Home
+
+							</a>
+                        <a href="{{ path('app_etablissement_front') }}" class="nav-item nav-link ">
+								Etablissements
+
+							</a>
+							<a href="{{ path('app_reclamation_indexfront') }}" class="nav-item nav-link">
+								Reclamation
+
+							</a>
+							
+							<a href="{{ path('login') }}" class="nav-link" style="color: red;">
+								Logout
+
+							</a>
+                            {% else %}
+                            <a href="{{ path('app_post_front') }}" class="nav-item nav-link active ">
+								Home
+
+							</a>
+                        
+							<a href="{{ path('app_reclamation_indexfront') }}" class="nav-item nav-link">
+								Reclamation
+
+							</a>
+							
+							<a href="{{ path('login') }}" class="nav-link" style="color: red;">
+								Logout
+
+							</a>
+
+    {% endif %}
+
 {% endblock %}
+
+
+{% block passerQuizz %}
+    {% if roleConnecte == 2 %}
+        <a href="{{ path('app_quiz_achete') }}" class="btn rounded-pill py-2 px-4 ms-3 d-none d-lg-block">
+            Passer Quizz
+        </a>
+    {% endif %}
+{% endblock %}
+
 
 {% block publication %}
 	<!-- Team Start -->
@@ -196,7 +241,7 @@
 							<a class="btn btn-square mx-1"  href="{{ path('app_commentaire_newFront', {'id_post': postAndComment.post.idPost}) }}">
 								<i class="far fa-comment"></i>
 							</a>
-							<a class="btn btn-square mx-1"  href="#">
+							<a class="btn btn-square mx-1"  href="{{ path('app_reclamation_newfront') }}">
 								<i class="fas fa-bullhorn"></i>
 
 							</a>

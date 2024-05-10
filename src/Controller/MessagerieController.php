@@ -17,6 +17,12 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 
+
+
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
+
+
 #[Route('/messagerie')]
 class MessagerieController extends AbstractController
 {
@@ -155,6 +161,17 @@ class MessagerieController extends AbstractController
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+ private $session;
+    public $idUtilisateurConnecte;
+
+    public function __construct(SessionInterface $session)
+    {
+        $this->session = $session;
+        $this->idUtilisateurConnecte = $this->session->get('id_utilisateur');
+    }
+
+
+
     #[Route('/messages/{senderId}/{reciverId}', name: 'app_messagerie_messages')]
     public function getMessagesBySenderreciver(int $senderId, int $reciverId, MessagerieRepository $messagerieRepository, Request $request, EntityManagerInterface $entityManager, UtilisateurRepository $utilisateurRepository): Response
     {
@@ -198,11 +215,17 @@ class MessagerieController extends AbstractController
 #[Route('/messagesfront/{senderId}/{reciverId}', name: 'app_messagerie_messagesfront')]
 public function getMessagesBySenderreciverfront(int $senderId, int $reciverId, MessagerieRepository $messagerieRepository, Request $request, EntityManagerInterface $entityManager, UtilisateurRepository $utilisateurRepository): Response
 {
-    // Fetch sender and reciver entities from the repository
-    $sender = $utilisateurRepository->find($senderId);
-    $reciver = $utilisateurRepository->find($reciverId);
 
-    $messages = $messagerieRepository->findMessagesBySenderreciverOrderedByDateDesc($senderId, $reciverId);
+    $idUtilisateurConnecte = $this->idUtilisateurConnecte;
+    $idAdmin = 1;
+
+
+
+    // Fetch sender and reciver entities from the repository
+    $sender = $utilisateurRepository->find($idUtilisateurConnecte);
+    $reciver = $utilisateurRepository->find($idAdmin);
+
+    $messages = $messagerieRepository->findMessagesBySenderreciverOrderedByDateDesc($idUtilisateurConnecte, $idAdmin);
 
     $messagerie = new Messagerie();
     
@@ -221,8 +244,8 @@ public function getMessagesBySenderreciverfront(int $senderId, int $reciverId, M
         $entityManager->flush();
         // Redirect after form submission
         return $this->redirectToRoute('app_messagerie_messagesfront', [
-            'senderId' => $senderId,
-            'reciverId' => $reciverId,
+            'senderId' => $idUtilisateurConnecte,
+            'reciverId' => $idAdmin,
         ], Response::HTTP_SEE_OTHER);
         
     }
