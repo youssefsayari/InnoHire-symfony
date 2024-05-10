@@ -1,6 +1,28 @@
 {% extends 'baseFront.html.twig' %}
 
 {% block title %}Passer le Quiz : {{ quiz.getNomQuiz() }}{% endblock %}
+{% block navBar %} 
+ 
+                           
+                            <a href="{{ path('app_post_front') }}" class="nav-item nav-link  ">
+								Home
+
+							</a>
+                        
+							<a href="{{ path('app_reclamation_indexfront') }}" class="nav-item nav-link">
+								Reclamation
+
+							</a>
+							
+							<a href="{{ path('login') }}" class="nav-link" style="color: red;">
+								Logout
+
+							</a>
+
+    
+
+{% endblock %}
+
 
 {% block etablissement %}
     <div class="container mt-5">

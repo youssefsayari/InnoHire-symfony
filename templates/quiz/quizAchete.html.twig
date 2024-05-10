@@ -2,6 +2,33 @@
 
 {% block title %}Quiz Achetés{% endblock %}
 
+
+
+{% block navBar %} 
+ 
+                           
+                            <a href="{{ path('app_post_front') }}" class="nav-item nav-link ">
+								Home
+
+							</a>
+                        
+							<a href="{{ path('app_reclamation_indexfront') }}" class="nav-item nav-link">
+								Reclamation
+
+							</a>
+							
+							<a href="{{ path('login') }}" class="nav-link" style="color: red;">
+								Logout
+
+							</a>
+
+    
+
+{% endblock %}
+
+
+
+
 {% block etablissement %}
     <div class="container mt-5">
         <h1>Quiz Achetés</h1>
