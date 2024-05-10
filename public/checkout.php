@@ -5,7 +5,7 @@ $stripeSecretKey = 'sk_test_51P9BbQKgsQeJx6lcOwpRhmr3TeJCakO6YOYbhK67ToJzdHkcAmI
 \Stripe\Stripe::setApiKey($stripeSecretKey);
 header('Content-Type: application/json');
 
-$YOUR_DOMAIN = 'http://localhost:8000';
+$YOUR_DOMAIN = 'http://innohire.com:8000';
 
 // Récupérer la quantité depuis le formulaire
 $montant = $_POST['montant'] * 100 * 0.32;
