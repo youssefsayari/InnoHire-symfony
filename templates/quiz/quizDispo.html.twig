@@ -118,6 +118,7 @@
             <div>
                 <!-- Affichage des messages flash -->
                 {% for message in app.flashes('success_' ~ quiz.getId()) %}
+                
                     <div class="alert alert-success" role="alert">{{ message }}</div>
                 {% endfor %}
                 {% for message in app.flashes('error_' ~ quiz.getId()) %}
