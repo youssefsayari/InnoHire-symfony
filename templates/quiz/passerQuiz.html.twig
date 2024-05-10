@@ -50,10 +50,35 @@
     </div>
 
     <script>
-        function showPromptBeforePDFGeneration() {
-            alert("Vous trouverez le bilan de votre quiz avec votre score dans le PDF 'quiz_bilan' qui va être généré.");
-            document.getElementById("quizForm").submit();
-        }
+       function showPromptBeforePDFGeneration() {
+        alert("Vous trouverez le bilan de votre quiz avec votre score dans un nouvel onglet.");
+
+        // Créer un nouvel objet FormData pour envoyer les données du formulaire
+        var formData = new FormData(document.getElementById('quizForm'));
+
+        // Envoyer une requête AJAX pour générer le PDF
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "{{ path('app_passer_quiz', {'id': quiz.getId()}) }}", true);
+        xhr.responseType = 'blob'; // Spécifiez le type de réponse comme un objet Blob
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    // Si la requête a réussi, créer un objet URL pour le contenu du PDF
+                    var url = window.URL.createObjectURL(xhr.response);
+                    // Ouvrir l'URL dans un nouvel onglet
+                    window.open(url, '_blank');
+                } else {
+                    // Gérer les erreurs de la requête AJAX ici
+                    alert("Une erreur s'est produite lors de la génération du PDF.");
+                }
+            }
+        };
+
+        // Envoyer la requête AJAX avec les données du formulaire
+        xhr.send(formData);
+    }
+
 
         var timeLeft = {{ tempsRestant }};
         var timerElement = document.getElementById('timer');

@@ -7,6 +7,7 @@ use Twig\Environment;
 use Twig\TwigFunction;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Symfony\Component\HttpFoundation\Response;
 
 
 
@@ -37,7 +38,6 @@ use App\Repository\WalletQuizRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
 use App\Repository\WalletRepository;
@@ -217,17 +217,16 @@ public function passerQuiz(Quiz $quiz, QuestionRepository $questionRepository, R
         // Générer le PDF avec le bilan du quiz
         $appreciation = $this->determinerAppreciation($score);
         $pdfContent = $this->genererPdf($quiz, $questions, $score, $appreciation);
-
-        // Enregistrer le PDF sur le bureau
-// Chemin du fichier PDF
-$outputFilePath = 'C:/Users/digoh/InnoHire-symfony/public/pdf-quiz/quiz_bilan.pdf';
-
-// Générer le code JavaScript pour ouvrir le PDF dans une nouvelle fenêtre
-$javascript = "<script>window.open('{$outputFilePath}', '_blank');</script>";
-
-// Afficher le code JavaScript pour ouvrir le PDF dans le navigateur
-echo $javascript;
-        
+    
+        // Créer une réponse HTTP avec le contenu PDF
+        $response = new Response($pdfContent);
+    
+        // Ajouter les en-têtes appropriés pour indiquer qu'il s'agit d'un fichier PDF à afficher dans le navigateur
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'inline; filename="quiz_bilan.pdf"');
+    
+        // Retourner la réponse HTTP pour afficher le PDF dans le navigateur
+        return $response;
         file_put_contents($outputFilePath, $pdfContent);
 
         // Définir le message de la variable de session pour indiquer que le quiz a été passé avec succès
