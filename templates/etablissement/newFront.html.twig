@@ -66,10 +66,13 @@
         <div class="form-floating mb-3">
             <div class="input-group">
                 <div class="input-group-prepend">
-                    <span class="input-group-text">Lieu</span>
+                    <span class="input-group-text">Lieu</span> 
                 </div>
                 {{ form_widget(form.lieu, {'id': 'lieuInput', 'attr': {'class': 'form-control'}}) }}
             </div>
+            <button type="button" class="btn btn-primary " onclick="window.location.href='{{ path('app_mapFront') }}'">
+                        Get Coords
+                    </button>
             <span id="lieuError" class="text-xs" style="color: red;"></span>
             <span class="error-message">{{ form_errors(form.lieu) }}</span>
         </div>

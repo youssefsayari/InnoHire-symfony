@@ -70,6 +70,9 @@
                 </div>
                 {{ form_widget(form.lieu, {'id': 'lieuInput', 'attr': {'class': 'form-control'}}) }}
             </div>
+            <button type="button" class="btn btn-primary " onclick="window.location.href='{{ path('app_mapFront') }}'">
+                        Get Coords
+                    </button>
             <span id="lieuError" class="text-xs" style="color: red;"></span>
             <span class="error-message">{{ form_errors(form.lieu) }}</span>
         </div>
@@ -215,7 +218,6 @@
 		// Fonction de validation du formulaire
 function validateForm() {
 let nom = document.getElementById('nomInput').value.trim();
-let lieu = document.getElementById('lieuInput').value.trim();
 let codeEtablissement = document.getElementById('code_etablissementInput').value.trim();
 
 let typeEtablissementInput = document.getElementById('type_etablissementInput');
@@ -225,7 +227,6 @@ let image = document.getElementById('fileNameInput').value.trim();
 let utilisateur = document.getElementById('utilisateurInput').value;
 
 let nomError = document.getElementById('nomError');
-let lieuError = document.getElementById('lieuError');
 let codeEtablissementError = document.getElementById('code_etablissementError');
 let typeEtablissementError = document.getElementById('type_etablissementError');
 let imageError = document.getElementById('imageError');
@@ -245,16 +246,7 @@ return false;
 nomError.textContent = '';
 }
 
-// Validation du champ lieu
-if (lieu === '') {
-lieuError.textContent = 'Lieu is required';
-return false;
-} else if (! letterOnlyRegex.test(lieu)) {
-lieuError.textContent = 'Lieu doit contenir uniquement des lettres';
-return false;
-} else {
-lieuError.textContent = '';
-}
+
 
 if (codeEtablissement === '') {
 codeEtablissementError.textContent = 'Code is required';
