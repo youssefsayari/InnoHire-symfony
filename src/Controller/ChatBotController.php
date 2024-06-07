@@ -31,7 +31,7 @@ class ChatBotController extends AbstractController
 
         $response = $client->post('https://api.openai.com/v1/chat/completions', [
             'headers' => [
-              'Authorization' => 'Bearer sk-proj-BFZ2vH4xdZl469kANnpyT3BlbkFJXPnVGk01nCbe4XDXXBXF', // Replace with your actual API key
+              'Authorization' => 'Bearer sk-proj-dCNUsgUD6uJPOOSX6GzKT3BlbkFJzREMzi220QhSgCF5yt6g', // Replace with your actual API key
                 'Content-Type' => 'application/json',
             ],
             'json' => [
